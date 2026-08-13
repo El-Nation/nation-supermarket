@@ -2,6 +2,8 @@ import express, { Application, Request, Response } from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db';
+import cookieParser from 'cookie-parser';
+import authRoutes from './routes/authRoutes';
 
 dotenv.config();
 
@@ -9,8 +11,12 @@ const app: Application = express();
 const PORT = process.env.PORT || 5000;
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173', credentials: true })); // Setup frontend domain
 app.use(express.json());
+app.use(cookieParser());
+
+// API Routes
+app.use('/api/auth', authRoutes);
 
 // Basic Route for testing
 app.get('/api/health', (req: Request, res: Response) => {
