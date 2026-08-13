@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node dist/server.js",
     "dev": "tsc && concurrently \"tsc --watch\" \"nodemon dist/server.js\"",
-    "build": "tsc"
+    "build": "tsc",
+    "db:init": "tsc && node dist/scripts/initDb.js"
   },
   "keywords": [],
   "author": "",
