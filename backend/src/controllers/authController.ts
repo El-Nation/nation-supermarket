@@ -4,6 +4,8 @@ import jwt from 'jsonwebtoken';
 import speakeasy from 'speakeasy';
 import qrcode from 'qrcode';
 import { User } from '../models/User';
+import { pool } from '../config/db';
+import { send2FAToggle } from '../utils/mailer';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
@@ -121,8 +123,16 @@ export const verify2FA = async (req: Request, res: Response): Promise<void> => {
 
     if (verified) {
         await User.update2FA(user.id, dbUser.two_factor_secret, true);
+        send2FAToggle(dbUser.email, true);
         res.json({ message: '2FA verified and enabled successfully.' });
     } else {
         res.status(400).json({ message: 'Invalid token. Verification failed.' });
     }
+};
+
+export const disable2FA = async (req: Request, res: Response): Promise<void> => {
+    const user = (req as any).user;
+    await pool.query('UPDATE users SET two_factor_enabled = false, two_factor_secret = null WHERE id = $1', [user.id]);
+    send2FAToggle(user.email, false);
+    res.json({ message: '2FA security constraint successfully removed.' });
 };

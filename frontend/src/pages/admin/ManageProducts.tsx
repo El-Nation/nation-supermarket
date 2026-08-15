@@ -1,0 +1,166 @@
+import React, { useState, useEffect } from 'react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
+import api from '../../services/api';
+
+export default function ManageProducts() {
+    const [products, setProducts] = useState<any[]>([]);
+    const [categories, setCategories] = useState<any[]>([]);
+    const [loading, setLoading] = useState(false);
+    
+    const [name, setName] = useState('');
+    const [price, setPrice] = useState('');
+    const [stock, setStock] = useState('');
+    const [catId, setCatId] = useState('');
+    const [desc, setDesc] = useState('');
+    const [images, setImages] = useState<FileList | null>(null);
+    const [uploading, setUploading] = useState(false);
+
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const fetchData = async () => {
+        try {
+            const [pRes, cRes] = await Promise.all([
+                api.get('/admin/products'),
+                api.get('/admin/categories')
+            ]);
+            setProducts(pRes.data);
+            setCategories(cRes.data);
+        } catch (e) {
+            console.error('Failed fetching data', e);
+        }
+    };
+
+    const handleCreateProduct = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('name', name);
+            formData.append('price', price);
+            formData.append('stock_quantity', stock);
+            formData.append('category_id', catId);
+            formData.append('description', desc);
+            formData.append('status', 'active');
+            
+            if (images) {
+                for (let i = 0; i < images.length; i++) {
+                    formData.append('images', images[i]);
+                }
+            }
+
+            await api.post('/admin/products', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            alert('Product successfully managed globally.');
+            fetchData();
+        } catch (error) {
+            alert('Cloudinary or API rejection.');
+        } finally {
+            setUploading(false);
+        }
+    };
+    
+    const handleDelete = async (id: number) => {
+        if (!window.confirm("Permanently remove this item from the catalog?")) return;
+        try {
+            await api.delete(`/admin/products/${id}`);
+            fetchData();
+        } catch(e) {
+            alert('Error deleting');
+        }
+    };
+
+    return (
+        <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
+                <h2 style={{ fontSize: '1.5rem', color: '#1e293b', margin: 0, fontWeight: 700 }}>Product Management</h2>
+            </div>
+
+            <div style={{display: 'grid', gridTemplateColumns: 'minmax(350px, 1fr) 2fr', gap: '2rem'}}>
+                <div className="admin-card">
+                    <h3 style={{margin: '0 0 1.5rem 0', color: '#1e293b'}}>Add New Product</h3>
+                    <form onSubmit={handleCreateProduct}>
+                        <div style={{marginBottom: '1rem'}}>
+                            <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Product Name</label>
+                            <input type="text" className="form-input" required value={name} onChange={e => setName(e.target.value)} />
+                        </div>
+                        <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginBottom: '1rem'}}>
+                            <div>
+                                <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Base Price (₦)</label>
+                                <input type="number" className="form-input" required value={price} onChange={e => setPrice(e.target.value)} />
+                            </div>
+                            <div>
+                                <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Stock Qty</label>
+                                <input type="number" className="form-input" required value={stock} onChange={e => setStock(e.target.value)} />
+                            </div>
+                        </div>
+                        <div style={{marginBottom: '1rem'}}>
+                            <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Category</label>
+                            <select className="form-input" required value={catId} onChange={e => setCatId(e.target.value)}>
+                                <option value="">Select Category</option>
+                                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                            </select>
+                        </div>
+                        <div style={{marginBottom: '1rem'}}>
+                            <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Description (Optional)</label>
+                            <textarea className="form-input" rows={3} value={desc} onChange={e => setDesc(e.target.value)} />
+                        </div>
+                        <div style={{marginBottom: '1.5rem'}}>
+                            <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Cloudinary Images</label>
+                            <input type="file" multiple accept="image/*" className="form-input" onChange={e => setImages(e.target.files)} />
+                        </div>
+                        <button type="submit" disabled={uploading} className="admin-btn-primary" style={{width: '100%', justifyContent: 'center'}}>
+                            {uploading ? 'Negotiating Cloud Upload...' : 'Publish Product'}
+                        </button>
+                    </form>
+                </div>
+
+                <div className="admin-table-panel" style={{alignSelf: 'start'}}>
+                    <div style={{overflowX: 'auto'}}>
+                        <table className="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Img</th>
+                                    <th>Product</th>
+                                    <th>Category</th>
+                                    <th>Price</th>
+                                    <th>Stock</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {products.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={6} style={{textAlign: 'center', color: '#94a3b8', padding: '3rem 1rem'}}>
+                                            No products available in this namespace.
+                                        </td>
+                                    </tr>
+                                ) : products.map(p => {
+                                    const imgs = Array.isArray(p.images) ? p.images : (typeof p.images === 'string' ? JSON.parse(p.images || '[]') : []);
+                                    return (
+                                        <tr key={p.id}>
+                                            <td>{imgs[0] ? <img src={imgs[0]} alt="img" style={{width: 48, height: 48, objectFit: 'cover', borderRadius: 8}}/> : '-'}</td>
+                                            <td style={{fontWeight: 600, color: '#1e293b'}}>{p.name}</td>
+                                            <td>{p.category_name || '-'}</td>
+                                            <td>₦{Number(p.price).toLocaleString()}</td>
+                                            <td style={{color: p.stock_quantity < 5 ? '#f43f5e' : 'inherit'}}>{p.stock_quantity}</td>
+                                            <td>
+                                                <div style={{display: 'flex', gap: '0.5rem'}}>
+                                                    <button onClick={() => handleDelete(p.id)} style={{background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.5rem'}}>
+                                                        <Trash2 size={18} />
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

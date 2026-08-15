@@ -6,12 +6,14 @@ interface User {
     name: string;
     email: string;
     role: string;
+    avatar_url?: string;
 }
 
 interface AuthContextType {
     user: User | null;
     isGuest: boolean;
     login: (userData: User) => void;
+    updateUser: (data: Partial<User>) => void;
     logout: () => Promise<void>;
     setGuestMode: (status: boolean) => void;
 }
@@ -42,6 +44,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.removeItem('isGuest');
     };
 
+    const updateUser = (data: Partial<User>) => {
+        if (!user) return;
+        const updated = { ...user, ...data };
+        setUser(updated);
+        localStorage.setItem('user', JSON.stringify(updated));
+    };
+
     const logout = async () => {
         try {
             await api.post('/auth/logout');
@@ -60,7 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     return (
-        <AuthContext.Provider value={{ user, isGuest, login, logout, setGuestMode }}>
+        <AuthContext.Provider value={{ user, isGuest, login, updateUser, logout, setGuestMode }}>
             {children}
         </AuthContext.Provider>
     );

@@ -9,22 +9,28 @@ export default function Login() {
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [token, setToken] = useState('');
+    const [requires2FA, setRequires2FA] = useState(false);
     const [error, setError] = useState('');
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         try {
-            const res = await api.post('/auth/login', { email, password });
-            if (res.data.requires2FA) {
-                // Future implementation: show 2FA prompt for admin instead of auto login
-                alert('Admin 2FA requires specialized prompt (coming soon)');
-                return;
-            }
+            const res = await api.post('/auth/login', { email, password, token: requires2FA ? token : undefined });
             login(res.data);
-            navigate('/dashboard'); // Route to be created in Stage 4/5
+            if (res.data.role === 'admin') {
+                navigate('/admin/products');
+            } else {
+                navigate('/dashboard'); // Route to be created in Stage 4/5
+            }
         } catch (error: any) {
-            setError(error.response?.data?.message || 'Login failed. Please check credentials.');
+            if (error.response?.data?.requires2FA) {
+                setRequires2FA(true);
+                setError('2FA Authentication Required. Please enter your code.');
+            } else {
+                setError(error.response?.data?.message || 'Login failed. Please check credentials.');
+            }
         }
     };
 
@@ -42,16 +48,25 @@ export default function Login() {
                 {error && <div style={{ color: 'var(--error)', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
 
                 <form onSubmit={handleLogin}>
-                    <div className="form-group">
-                        <label className="form-label">Email Address</label>
-                        <input type="email" required className="form-input" placeholder="you@example.com"
-                            value={email} onChange={e => setEmail(e.target.value)} />
-                    </div>
-                    <div className="form-group">
-                        <label className="form-label">Password</label>
-                        <input type="password" required className="form-input" placeholder="••••••••"
-                            value={password} onChange={e => setPassword(e.target.value)} />
-                    </div>
+                    {!requires2FA ? (
+                        <>
+                            <div className="form-group">
+                                <label className="form-label">Email Address</label>
+                                <input type="email" required className="form-input" placeholder="you@example.com"
+                                    value={email} onChange={e => setEmail(e.target.value)} />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Password</label>
+                                <input type="password" required className="form-input" placeholder="••••••••"
+                                    value={password} onChange={e => setPassword(e.target.value)} />
+                            </div>
+                        </>
+                    ) : (
+                        <div className="form-group">
+                            <input type="text" required className="form-input" placeholder="6-digit TOTP"
+                                value={token} onChange={e => setToken(e.target.value)} style={{letterSpacing: '2px', textAlign: 'center', fontWeight: 'bold'}} />
+                        </div>
+                    )}
                     
                     <button type="submit" className="btn-primary">Sign In</button>
                     

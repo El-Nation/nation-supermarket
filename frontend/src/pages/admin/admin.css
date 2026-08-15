@@ -1,0 +1,336 @@
+/* admin.css */
+
+.admin-layout {
+  display: flex;
+  height: 100vh;
+  background-color: #f8faff;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
+}
+
+/* --- SIDEBAR --- */
+.admin-sidebar {
+  width: 260px;
+  background-color: #1a1b26;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.admin-brand {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.admin-brand-logo {
+  width: 42px;
+  height: 42px;
+  background: white;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1a1b26;
+  font-weight: 800;
+  font-size: 1.25rem;
+}
+
+.admin-brand-text {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+.admin-nav-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-nav-container::-webkit-scrollbar {
+  width: 4px;
+}
+.admin-nav-container::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+}
+
+.admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.85rem 1.5rem;
+  color: #8c97ad;
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  border-left: 4px solid transparent;
+}
+
+.admin-nav-item:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.admin-nav-item.active {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-left-color: #ff6b6b;
+}
+
+.admin-sidebar-footer {
+  padding: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* --- MAIN CONTENT AREA --- */
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.admin-header {
+  height: 80px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2.5rem;
+  flex-shrink: 0;
+}
+
+.admin-header-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-header-title span {
+  font-weight: 400;
+}
+
+.admin-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.admin-bell {
+  color: #64748b;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: background 0.2s;
+}
+.admin-bell:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.admin-avatar {
+  width: 40px;
+  height: 40px;
+  background: #46ccc3;
+  border-radius: 50%;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.admin-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 2.5rem 2.5rem 2.5rem;
+}
+
+/* --- UI COMPONENTS --- */
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.dash-card {
+  background: white;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+}
+
+.dash-icon-box {
+  width: 60px;
+  height: 60px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: white;
+}
+.icon-red { background: #ff8a80; }
+.icon-teal { background: #4dd0e1; }
+.icon-purple { background: #b388ff; }
+.icon-yellow { background: #ffd54f; }
+
+.dash-info h4 {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+  font-weight: 500;
+}
+.dash-info h2 {
+  margin: 0.25rem 0;
+  font-size: 1.75rem;
+  color: #1e293b;
+  font-weight: 700;
+}
+.dash-info p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* Table Area */
+.admin-table-panel {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  padding: 1.5rem;
+  overflow-x: auto;
+}
+
+.admin-table-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.admin-table-panel-header h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #1e293b;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 800px;
+}
+
+.admin-table th {
+  text-align: left;
+  padding: 1rem;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  color: #64748b;
+  font-weight: 600;
+  border-bottom: 2px solid #f1f5f9;
+}
+
+.admin-table td {
+  padding: 1.25rem 1rem;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 0.95rem;
+  color: #1e293b;
+  vertical-align: middle;
+}
+
+.admin-btn-primary {
+  background: #ff6b6b;
+  color: white;
+  border: none;
+  padding: 0.65rem 1.25rem;
+  border-radius: 99px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s;
+}
+.admin-btn-primary:hover {
+  background: #fa5252;
+  transform: translateY(-1px);
+}
+
+.status-badge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 99px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: inline-block;
+}
+.status-pending { background: #fef3c7; color: #b45309; }
+.status-paid { background: #dcfce7; color: #166534; }
+.status-info { background: #e0f2fe; color: #0369a1; }
+
+.hamburger-btn {
+  display: none;
+  background: none;
+  border: none;
+  color: #1e293b;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Responsive */
+.sidebar-overlay {
+  display: none;
+}
+
+@media (max-width: 1024px) {
+  .admin-header {
+    padding: 0 1.5rem;
+  }
+  .admin-content {
+    padding: 0 1.5rem 1.5rem 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .hamburger-btn {
+    display: block;
+  }
+  .admin-sidebar {
+    position: fixed;
+    height: 100%;
+    transform: translateX(-100%);
+  }
+  .admin-sidebar.open {
+    transform: translateX(0);
+  }
+  .sidebar-overlay.open {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 40;
+  }
+}
