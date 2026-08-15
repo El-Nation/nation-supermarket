@@ -18,26 +18,9 @@ import ManageNotifications from './pages/admin/ManageNotifications';
 import MockCheckout from './pages/customer/MockCheckout';
 import DigitalReceipt from './pages/customer/DigitalReceipt';
 import ContactUs from './pages/customer/ContactUs';
-import { useAuth } from './context/AuthContext';
-import { Link } from 'react-router-dom';
 import './index.css'; // Global styling
 
-const PlaceholderDashboard = () => {
-  const { user } = useAuth();
-  return (
-    <div className="auth-container">
-      <div className="auth-card" style={{textAlign: 'center'}}>
-        <h1 className="auth-title">Dashboard</h1>
-        <p className="auth-subtitle" style={{marginBottom: user?.role === 'admin' ? '1rem' : 0}}>Congratulations, you are securely logged in!</p>
-        {user?.role === 'admin' && (
-           <Link to="/admin/products" className="btn-primary" style={{display: 'inline-block', textDecoration: 'none'}}>
-             Enter Admin Dashboard
-           </Link>
-        )}
-      </div>
-    </div>
-  );
-};
+import CustomerDashboard from './pages/customer/CustomerDashboard';
 
 function App() {
   return (
@@ -51,7 +34,7 @@ function App() {
           <Route path="/checkout-test" element={<MockCheckout />} />
           <Route path="/receipt/:reference" element={<DigitalReceipt />} />
           <Route path="/contact" element={<ContactUs />} />
-          <Route path="/dashboard" element={<PlaceholderDashboard />} />
+          <Route path="/dashboard" element={<CustomerDashboard />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
             <Route path="dashboard" element={<DashboardOverview />} />

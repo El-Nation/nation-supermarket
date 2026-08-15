@@ -78,3 +78,49 @@ export const updateAdminProfile = async (req: Request, res: Response): Promise<v
         res.status(500).json({ message: 'Failed to apply security profile updates.' });
     }
 };
+
+export const updateCustomerProfile = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = (req as any).user.id;
+        const { name, email, phone } = req.body;
+        
+        await pool.query(
+            'UPDATE users SET name = COALESCE($1, name), email = COALESCE($2, email), phone = COALESCE($3, phone) WHERE id = $4',
+            [name, email, phone, userId]
+        );
+        res.json({ message: 'Customer profile updated natively.' });
+    } catch(e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error mapping customer profile updates.' });
+    }
+};
+
+export const changeCustomerPassword = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = (req as any).user.id;
+        const { current_password, new_password, confirm_password } = req.body;
+        
+        if (new_password !== confirm_password) {
+            res.status(400).json({ message: 'New passwords heavily mismatch structurally.' });
+            return;
+        }
+
+        const dbUser = await User.findById(userId);
+        const isMatch = await bcrypt.compare(current_password, dbUser.password);
+        if (!isMatch) {
+            res.status(401).json({ message: 'Invalid current password. Operation completely blocked.' });
+            return;
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashed = await bcrypt.hash(new_password, salt);
+        
+        await pool.query('UPDATE users SET password = $1 WHERE id = $2', [hashed, userId]);
+        await sendPasswordChange(dbUser.email);
+        
+        res.json({ message: 'Customer secure password safely swapped natively.' });
+    } catch(e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error dynamically routing customer password payload.' });
+    }
+};

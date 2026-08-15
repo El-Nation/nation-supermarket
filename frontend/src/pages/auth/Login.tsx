@@ -20,9 +20,9 @@ export default function Login() {
             const res = await api.post('/auth/login', { email, password, token: requires2FA ? token : undefined });
             login(res.data);
             if (res.data.role === 'admin') {
-                navigate('/admin/products');
+                navigate('/admin/dashboard');
             } else {
-                navigate('/dashboard'); // Route to be created in Stage 4/5
+                navigate('/dashboard'); 
             }
         } catch (error: any) {
             if (error.response?.data?.requires2FA) {

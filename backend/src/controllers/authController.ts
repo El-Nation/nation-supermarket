@@ -5,7 +5,8 @@ import speakeasy from 'speakeasy';
 import qrcode from 'qrcode';
 import { User } from '../models/User';
 import { pool } from '../config/db';
-import { send2FAToggle } from '../utils/mailer';
+import { send2FAToggle, sendSystemEmail } from '../utils/mailer';
+import { triggerSystemNotification } from '../utils/notificationHelper';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
 
@@ -35,6 +36,35 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         const user = await User.create({
             name, email, password: hashedPassword, phone, address, role: 'customer'
         });
+
+        // Formally intercept registration lifecycle to dispatch admin signals natively.
+        try {
+            await triggerSystemNotification(null, 'Customer Registration', `A new customer account was authenticated by ${name} (${email}).`);
+            
+            // Notify Admin
+            if (process.env.SMTP_USER) {
+                await sendSystemEmail(
+                    process.env.SMTP_USER,
+                    'New Customer Registration Notification',
+                    `<p>A brand new customer has efficiently joined Nation Supermarket securely.</p>
+                     <p><strong>Name:</strong> ${name}<br/>
+                     <strong>Email:</strong> ${email}</p>`
+                );
+            }
+
+            // Welcome Customer
+            await sendSystemEmail(
+                email,
+                'Welcome to Nation Supermarket!',
+                `<div style="font-family: sans-serif; color: #1e293b;">
+                    <h2 style="color: #ef4444;">Welcome, ${name}!</h2>
+                    <p>Congratulations! Your account has been authenticated effectively and securely.</p>
+                    <p>We are thrilled to welcome you to the Nation Supermarket platform. You can now securely manage your profile, track digital receipts, and add items natively to your Wishlist.</p>
+                    <br/>
+                    <p>Happy Shopping!</p>
+                </div>`
+            );
+        } catch (skip) {}
 
         generateToken(res, user.id);
         res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role });

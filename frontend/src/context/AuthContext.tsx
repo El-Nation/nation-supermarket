@@ -7,6 +7,7 @@ interface User {
     email: string;
     role: string;
     avatar_url?: string;
+    phone?: string;
 }
 
 interface AuthContextType {

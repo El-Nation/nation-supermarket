@@ -18,3 +18,21 @@ export const getAllOrders = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Error retrieving active order pipelines.' });
     }
 };
+
+export const getCustomerOrders = async (req: Request, res: Response) => {
+    try {
+        const userId = (req as any).user.id;
+        const query = await pool.query(`
+            SELECT 
+                id, order_reference, delivery_type, 
+                total_amount, order_status, payment_status, delivery_address, created_at
+            FROM orders
+            WHERE user_id = $1
+            ORDER BY created_at DESC
+        `, [userId]);
+        res.json(query.rows);
+    } catch(e) {
+        console.error(e);
+        res.status(500).json({ message: 'Error mapping dynamic customer order structures.' });
+    }
+};
