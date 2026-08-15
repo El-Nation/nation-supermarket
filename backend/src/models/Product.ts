@@ -25,6 +25,71 @@ export class Product {
         return result.rows;
     }
 
+    static async getById(id: number) {
+        const result = await pool.query(`
+            SELECT p.*, c.name as category_name 
+            FROM products p 
+            LEFT JOIN categories c ON p.category_id = c.id 
+            WHERE p.id = $1
+        `, [id]);
+        return result.rows[0];
+    }
+
+    static async getPublicFiltered(queryParams: any) {
+        let queryText = `
+            SELECT p.*, c.name as category_name 
+            FROM products p 
+            LEFT JOIN categories c ON p.category_id = c.id 
+            WHERE p.status = 'active'
+        `;
+        const values: any[] = [];
+        let valueCount = 1;
+
+        if (queryParams.search) {
+            queryText += ` AND (p.name ILIKE $${valueCount} OR p.description ILIKE $${valueCount})`;
+            values.push(`%${queryParams.search}%`);
+            valueCount++;
+        }
+        if (queryParams.category) {
+            queryText += ` AND p.category_id = $${valueCount}`;
+            values.push(queryParams.category);
+            valueCount++;
+        }
+        if (queryParams.minPrice) {
+            queryText += ` AND p.price >= $${valueCount}`;
+            values.push(queryParams.minPrice);
+            valueCount++;
+        }
+        if (queryParams.maxPrice) {
+            queryText += ` AND p.price <= $${valueCount}`;
+            values.push(queryParams.maxPrice);
+            valueCount++;
+        }
+        if (queryParams.is_featured === 'true') {
+            queryText += ` AND p.is_featured = true`;
+        }
+        if (queryParams.special_offers === 'true') {
+            queryText += ` AND p.discount > 0`;
+        }
+
+        if (queryParams.sort === 'price_asc') {
+            queryText += ` ORDER BY p.price ASC`;
+        } else if (queryParams.sort === 'price_desc') {
+            queryText += ` ORDER BY p.price DESC`;
+        } else {
+            queryText += ` ORDER BY p.created_at DESC`;
+        }
+        
+        if (queryParams.limit) {
+            queryText += ` LIMIT $${valueCount}`;
+            values.push(queryParams.limit);
+            valueCount++;
+        }
+
+        const result = await pool.query(queryText, values);
+        return result.rows;
+    }
+
     static async update(id: number, data: any) {
         // Dynamic update query (ignoring images array complexity for brevity, handled separately usually)
         const result = await pool.query(

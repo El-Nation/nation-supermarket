@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Tag, ChevronRight } from 'lucide-react';
 import ProductCard from '../../components/shop/ProductCard';
-import { MOCK_PRODUCTS } from './Shop';
+import api from '../../services/api';
 
 // Utilizing the 14 physical categories natively mapping to the API seed sequences 
 const CATEGORIES = [
@@ -23,10 +23,34 @@ const CATEGORIES = [
 ];
 
 export default function Home() {
-    const popularProducts = MOCK_PRODUCTS.slice(0, 8);
+    const [popularProducts, setPopularProducts] = useState<any[]>([]);
+    const [specialOffers, setSpecialOffers] = useState<any[]>([]);
     
-    // Special Offers rigorously scans strictly for verified deal bounds cleanly natively
-    const specialOffers = MOCK_PRODUCTS.filter(p => p.compare_price && p.compare_price > p.price).slice(0, 8);
+    useEffect(() => {
+        const fetchFeatures = async () => {
+            try {
+                const popRes = await api.get('/public/products?is_featured=true&limit=8');
+                setPopularProducts(popRes.data.map(formatProduct));
+
+                const specialRes = await api.get('/public/products?special_offers=true&limit=8');
+                setSpecialOffers(specialRes.data.map(formatProduct));
+            } catch (e) {
+                console.error("Home DB link failed");
+            }
+        };
+        fetchFeatures();
+    }, []);
+
+    const formatProduct = (p: any) => ({
+        id: p.id,
+        name: p.name,
+        description: p.description,
+        price: Number(p.price),
+        compare_price: p.discount > 0 ? Number(p.price) + Number(p.discount) : undefined,
+        image_url: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : '',
+        stock: p.stock_quantity,
+        category_id: p.category_id
+    });
 
     // Intelligent auto-scrolling matrix states
     const categoryScrollRef = useRef<HTMLDivElement>(null);
@@ -137,9 +161,10 @@ export default function Home() {
                     onTouchEnd={() => setIsSliderHovered(false)}
                     style={{ display: 'flex', gap: '1rem', overflowX: 'auto', paddingBottom: '1rem', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
                 >
-                    {CATEGORIES.map(cat => {
-                        // Dynamically resolve an authentic transparent mock product image mapping cleanly to the category
-                        const referenceImage = MOCK_PRODUCTS.find(p => p.category_id === cat.id)?.image_url || '/images/cat_produce.png';
+                    {CATEGORIES.map((cat, index) => {
+                        // Maintain static category avatars for aesthetic matrix stability securely natively
+                        const referenceImages = ['/images/cat_produce.png','/images/cat_bakery.png','/images/mock/eggs.png','/images/cat_meat.png','/images/cat_pantry.png','/images/cat_snacks.png','/images/mock/juice.png','/images/cat_clothing.png','/images/cat_electronics.png','/images/cat_kitchen.png','/images/mock/shampoo.png','/images/cat_baby.png','/images/cat_pets.png','/images/cat_household.png'];
+                        const referenceImage = referenceImages[index] || '/images/cat_produce.png';
                         
                         return (
                             <Link key={cat.id} to={`/shop?category=${cat.id}`} style={{ flex: '0 0 auto', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-end', textDecoration: 'none', width: '100px', padding: '0.5rem', backgroundColor: 'transparent', transition: 'transform 0.2s', border: 'none' }}>

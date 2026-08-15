@@ -35,6 +35,25 @@ export const getProducts = async (req: Request, res: Response) => {
     }
 };
 
+export const getPublicProducts = async (req: Request, res: Response) => {
+    try {
+        const products = await Product.getPublicFiltered(req.query);
+        res.json(products);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal error actively filtering storefront metrics natively.' });
+    }
+};
+
+export const getSingleProduct = async (req: Request, res: Response) => {
+    try {
+        const product = await Product.getById(Number(req.params.id));
+        if(!product) return res.status(404).json({ message: 'Product structurally absent.' });
+        res.json(product);
+    } catch (error) {
+        res.status(500).json({ message: 'Internal error fetching isolated catalog entity natively.' });
+    }
+};
+
 export const deleteProduct = async (req: Request, res: Response) => {
     try {
         const deleted = await Product.delete(Number(req.params.id));

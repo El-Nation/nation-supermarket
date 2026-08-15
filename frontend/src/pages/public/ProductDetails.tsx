@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { ChevronLeft, ShoppingCart, Heart, Truck, Tag, ShieldCheck } from 'lucide-react';
-import { MOCK_PRODUCTS } from './Shop';
+import api from '../../services/api';
 
 export default function ProductDetails() {
     const { id } = useParams();
@@ -11,20 +11,43 @@ export default function ProductDetails() {
     const { addToCart } = useCart();
     const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
     const [quantity, setQuantity] = useState(1);
-    
-    // Simulate fetching based on the URL parameter explicitly
-    const product = MOCK_PRODUCTS.find(p => p.id === Number(id));
+    const [product, setProduct] = useState<any>(null);
+    const [loading, setLoading] = useState(true);
     const inWishlist = wishlist.some(item => item.id === product?.id);
 
     useEffect(() => {
-        window.scrollTo(0, 0); // Reset scroll perfectly when clicking into products organically natively
+        window.scrollTo(0, 0);
+        const fetchIsolatedProduct = async () => {
+            setLoading(true);
+            try {
+                const res = await api.get(`/public/products/${id}`);
+                const p = res.data;
+                setProduct({
+                    id: p.id,
+                    name: p.name,
+                    description: p.description,
+                    price: Number(p.price),
+                    compare_price: p.discount > 0 ? Number(p.price) + Number(p.discount) : undefined,
+                    image_url: Array.isArray(p.images) && p.images.length > 0 ? p.images[0] : '',
+                    stock: p.stock_quantity,
+                    category_id: p.category_id
+                });
+            } catch(e) {
+                setProduct(null);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchIsolatedProduct();
     }, [id]);
+
+    if (loading) return <div style={{ textAlign: 'center', padding: '6rem 2rem', color: '#64748b' }}>Locating structural node arrays...</div>;
 
     if (!product) {
         return (
             <div style={{ textAlign: 'center', padding: '6rem 2rem', color: '#64748b' }}>
                 <h1 style={{ fontSize: '2rem', color: '#0f172a' }}>Product Not Found</h1>
-                <p>The specific item you are looking for mapping the coordinates could not be loaded.</p>
+                <p>The specific item you are looking for natively resolving mapping the coordinates could not be loaded.</p>
                 <Link to="/shop" style={{ display: 'inline-block', marginTop: '1rem', padding: '0.85rem 2rem', background: '#0284c7', color: 'white', textDecoration: 'none', borderRadius: '6px', fontWeight: 600 }}>Back to Shop</Link>
             </div>
         );
