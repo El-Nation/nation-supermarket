@@ -1,5 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { CartProvider } from './context/CartContext';
+import { WishlistProvider } from './context/WishlistContext';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
 import AdminLayout from './pages/admin/AdminLayout';
@@ -21,19 +23,35 @@ import ContactUs from './pages/customer/ContactUs';
 import './index.css'; // Global styling
 
 import CustomerDashboard from './pages/customer/CustomerDashboard';
+import PublicLayout from './components/layout/PublicLayout';
+import Home from './pages/public/Home';
+import Shop from './pages/public/Shop';
+import Categories from './pages/public/Categories';
+import CartPage from './pages/public/CartPage';
+import WishlistPage from './pages/public/WishlistPage';
+import ProductDetails from './pages/public/ProductDetails';
 
 function App() {
   return (
     <AuthProvider>
-      <Router>
+      <CartProvider>
+        <WishlistProvider>
+          <Router>
         <Routes>
-          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/" element={<PublicLayout />}>
+            <Route index element={<Home />} />
+            <Route path="shop" element={<Shop />} />
+            <Route path="product/:id" element={<ProductDetails />} />
+            <Route path="categories" element={<Categories />} />
+            <Route path="cart" element={<CartPage />} />
+            <Route path="wishlist" element={<WishlistPage />} />
+            <Route path="contact" element={<ContactUs />} />
+          </Route>
           <Route path="/login" element={<Login />} />
           <Route path="/admin/login" element={<Navigate to="/login" replace />} />
           <Route path="/register" element={<Register />} />
           <Route path="/checkout-test" element={<MockCheckout />} />
           <Route path="/receipt/:reference" element={<DigitalReceipt />} />
-          <Route path="/contact" element={<ContactUs />} />
           <Route path="/dashboard" element={<CustomerDashboard />} />
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<Navigate to="dashboard" replace />} />
@@ -51,7 +69,9 @@ function App() {
             <Route path="settings" element={<ManageSettings />} />
           </Route>
         </Routes>
-      </Router>
+          </Router>
+        </WishlistProvider>
+      </CartProvider>
     </AuthProvider>
   );
 }

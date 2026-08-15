@@ -39,7 +39,7 @@ export default function DigitalReceipt() {
             
             <button onClick={() => window.print()} style={{ marginBottom: '1rem', padding: '0.5rem 1rem', backgroundColor: '#334155', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 600, fontSize: '0.85rem' }}>🖨️ Print Receipt</button>
 
-            <div style={{ backgroundColor: 'white', width: '100%', maxWidth: '600px', borderRadius: '8px', padding: '1.25rem 1.5rem', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)', position: 'relative' }}>
+            <div style={{ backgroundColor: 'white', width: '100%', maxWidth: '480px', borderRadius: '8px', padding: '1rem 1.25rem', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.05)', position: 'relative' }}>
                 
                 {/* Header Sequence */}
                 <div style={{ textAlign: 'center', marginBottom: '0.75rem' }}>
@@ -51,7 +51,7 @@ export default function DigitalReceipt() {
                 <div style={{ borderBottom: '1px dashed #cbd5e1', margin: '0.5rem 0 1rem' }}></div>
 
                 {/* Customer Matrix Data */}
-                <div style={{ display: 'grid', gap: '0.25rem', fontSize: '0.85rem' }}>
+                <div style={{ display: 'grid', gap: '0.15rem', fontSize: '0.8rem' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.25rem', borderBottom: '1px dotted #e2e8f0' }}>
                         <span style={{ color: '#475569' }}>Order Reference:</span>
                         <span style={{ color: '#ef4444', letterSpacing: '1px' }}>{receipt.order_reference}</span>
@@ -70,19 +70,19 @@ export default function DigitalReceipt() {
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'space-between', paddingBottom: '0.25rem', borderBottom: '1px dotted #e2e8f0' }}>
                         <span style={{ color: '#475569' }}>Email:</span>
-                        <span style={{ color: '#334155' }}>{receipt.customer.email}</span>
+                        <span style={{ color: '#334155', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px', textAlign: 'right' }}>{receipt.customer.email}</span>
                     </div>
                 </div>
 
                 {/* Items Architecture */}
-                <div style={{ marginTop: '1rem' }}>
-                    <h3 style={{ margin: '0 0 0.5rem 0', color: '#1e293b', fontSize: '0.85rem', fontWeight: 800, letterSpacing: '0.5px' }}>ITEMS PURCHASED</h3>
+                <div style={{ marginTop: '0.75rem' }}>
+                    <h3 style={{ margin: '0 0 0.25rem 0', color: '#1e293b', fontSize: '0.8rem', fontWeight: 800, letterSpacing: '0.5px' }}>ITEMS PURCHASED</h3>
                     
-                    <div style={{ backgroundColor: '#f8fafc', padding: '0.75rem', borderRadius: '8px' }}>
+                    <div style={{ backgroundColor: '#f8fafc', padding: '0.5rem', borderRadius: '8px' }}>
                         {receipt.items.map((item: any, idx: number) => (
-                            <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                                    <div style={{ width: '32px', height: '32px', backgroundColor: '#e2e8f0', borderRadius: '4px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                            <div key={idx} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem', paddingBottom: '0.25rem', borderBottom: idx !== receipt.items.length - 1 ? '1px dashed #e2e8f0' : 'none' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                    <div style={{ width: '28px', height: '28px', backgroundColor: '#e2e8f0', borderRadius: '4px', overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                        {item.image ? (
                                            <img src={item.image} alt={item.name} style={{width: '100%', height: '100%', objectFit: 'cover'}} />
                                        ) : (
@@ -127,14 +127,14 @@ export default function DigitalReceipt() {
                     </p>
                 </div>
 
-                <div style={{ borderBottom: '1px dashed #cbd5e1', margin: '1rem 0' }}></div>
+                <div style={{ borderBottom: '1px dashed #cbd5e1', margin: '0.75rem 0' }}></div>
 
                 {/* Validation Footer Token */}
                 <div style={{ textAlign: 'center' }}>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 24, height: 24, backgroundColor: '#10b981', borderRadius: '50%', marginBottom: '0.25rem' }}>
-                        <CheckCircle2 color="white" size={14} />
+                    <div style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: 20, height: 20, backgroundColor: '#10b981', borderRadius: '50%', marginBottom: '0.15rem' }}>
+                        <CheckCircle2 color="white" size={12} />
                     </div>
-                    <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.75rem' }}>Payment verified via Paystack • NATION SUPERMARKET © {new Date().getFullYear()}</p>
+                    <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.7rem' }}>Payment verified via Paystack • NATION SUPERMARKET © {new Date().getFullYear()}</p>
                 </div>
             </div>
             

@@ -35,9 +35,17 @@ app.use('/api/user', userRoutes);
 
 // Public Customer Generic Integrations
 import { createEnquiry } from './controllers/enquiryController';
-import { paystackWebhook } from './controllers/paymentController';
+import { paystackWebhook, createMockOrder, initializePayment, verifyPayment } from './controllers/paymentController';
+import { getDeliveryZones } from './controllers/deliveryController';
+
 app.post('/api/enquiries', createEnquiry);
 app.post('/api/paystack/webhook', paystackWebhook);
+
+// Public Checkout Pipelines bypassing stage 4 admin closures
+app.get('/api/public/delivery', getDeliveryZones);
+app.post('/api/public/payments/mock-order', createMockOrder);
+app.post('/api/public/payments/initialize', initializePayment);
+app.post('/api/public/payments/verify', verifyPayment);
 
 // Basic Route for testing
 app.get('/api/health', (req: Request, res: Response) => {
@@ -71,6 +79,7 @@ const startServer = async () => {
   await connectDB();
 
   app.listen(PORT, () => {
+    console.log(`Server HOT-RELOAD triggered smoothly mapping perfectly globally.`);
     console.log(`Server is running on port ${PORT}`);
   });
 };

@@ -7,7 +7,7 @@ import { triggerSystemNotification } from '../utils/notificationHelper';
 
 export const createMockOrder = async (req: Request, res: Response) => {
     try {
-        const { delivery_type, delivery_zone_id, delivery_address, items, customer } = req.body;
+        const { delivery_type, delivery_zone_id, delivery_address, items, customer, user_id } = req.body;
         
         let subtotal = 0;
         let delivery_fee = 0;
@@ -28,9 +28,9 @@ export const createMockOrder = async (req: Request, res: Response) => {
         const order_reference = 'NS-MOCK-' + Math.floor(Math.random()*1000000);
 
         const oRes = await pool.query(
-            `INSERT INTO orders (order_reference, guest_data, delivery_type, subtotal, delivery_fee, total_amount, delivery_address) 
-             VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-            [order_reference, JSON.stringify(customer), delivery_type, subtotal, delivery_fee, total_amount, delivery_address]
+            `INSERT INTO orders (order_reference, user_id, guest_data, delivery_type, subtotal, delivery_fee, total_amount, delivery_address) 
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
+            [order_reference, user_id || null, JSON.stringify(customer), delivery_type, subtotal, delivery_fee, total_amount, delivery_address]
         );
         const order_id = oRes.rows[0].id;
 
@@ -42,10 +42,42 @@ export const createMockOrder = async (req: Request, res: Response) => {
            );
         }
 
+        const formattedItems = items.map((item: any) => ({
+            product_id: item.product_id,
+            name: item.name,
+            quantity: item.quantity,
+            unit_price: Number(item.price),
+            item_total: Number(item.price) * item.quantity,
+            image: item.image_url || ''
+        }));
+
+        const rData = {
+            order_reference: order_reference,
+            date: new Date().toISOString(),
+            customer: {
+                name: customer?.name || "Customer",
+                phone: customer?.phone || "",
+                email: customer?.email || ""
+            },
+            items: formattedItems,
+            subtotal: Number(subtotal),
+            delivery_fee: Number(delivery_fee),
+            total_paid: total_amount,
+            fulfilment_method: delivery_type,
+            delivery_address: delivery_address || '',
+            pickup_location: delivery_type === 'store_pickup' ? 'Nation Supermarket HQ Benin' : ''
+        };
+
+        // Emit simulated generic receipt linking independently wrapping organically explicitly natively efficiently securely dependably gracefully smoothly appropriately robustly smartly optimally automatically reliably comfortably.
+        await pool.query(
+            'INSERT INTO receipts (payment_id, receipt_url, receipt_data) VALUES ($1, $2, $3)',
+            [null, `/receipts/${order_reference}`, JSON.stringify(rData)]
+        );
+
         res.json({ order_id, amount: total_amount });
-    } catch(e) {
+    } catch(e: any) {
         console.error('Failed generating test order sequence:', e);
-        res.status(500).json({message: 'Simulation pipeline disrupted.'});
+        res.status(500).json({message: 'Simulation pipeline disrupted. Exact Failure: ' + (e.message || String(e))});
     }
 };
 

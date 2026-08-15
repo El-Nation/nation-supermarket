@@ -55,9 +55,8 @@ export default function AdminLayout() {
 
             {/* Sidebar */}
             <div className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
-                <div className="admin-brand">
-                    <div className="admin-brand-logo">N</div>
-                    <div className="admin-brand-text">Nation<br/>Supermarket</div>
+                <div className="admin-brand" style={{ padding: '0.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80px', overflow: 'hidden', backgroundColor: '#ffffff', borderBottom: '1px solid #1e293b' }}>
+                    <img src="/logo.png" alt="Nation Supermarket" style={{ height: '180px', objectFit: 'contain' }} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerHTML = '<div class="admin-brand-text">Nation Supermarket</div>'; }} />
                 </div>
                 
                 <div className="admin-nav-container">

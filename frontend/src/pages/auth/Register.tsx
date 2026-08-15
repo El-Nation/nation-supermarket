@@ -28,8 +28,10 @@ export default function Register() {
     return (
         <div className="auth-container">
             <div className="auth-card">
-                <h1 className="auth-title">Join Nation Supermarket</h1>
-                <p className="auth-subtitle">Create a new customer account</p>
+                {/* Crop Box Wrapper to forcefully chop off empty PNG whitespace */}
+                <div style={{ height: '70px', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'center', marginTop: '-1.5rem', marginBottom: '1.5rem' }}>
+                    <img src="/logo.png" alt="Nation Supermarket" style={{ height: '220px', objectFit: 'contain' }} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerHTML = '<h1 class="auth-title">Join Nation Supermarket</h1>'; }} />
+                </div>
 
                 {error && <div style={{ color: 'var(--error)', marginBottom: '1rem', textAlign: 'center' }}>{error}</div>}
 

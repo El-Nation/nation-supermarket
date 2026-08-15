@@ -5,13 +5,22 @@ export const getWishlist = async (req: Request, res: Response) => {
     try {
         const userId = (req as any).user.id;
         const result = await pool.query(`
-            SELECT w.product_id, p.name, p.price, p.stock_quantity, p.image_urls
+            SELECT w.product_id, p.name, p.price, p.stock_quantity, p.images
             FROM wishlist w
             JOIN products p ON w.product_id = p.id
             WHERE w.user_id = $1
             ORDER BY w.created_at DESC
         `, [userId]);
-        res.json(result.rows);
+
+        const mapped = result.rows.map(r => ({
+             product_id: r.product_id,
+             name: r.name,
+             price: r.price,
+             stock_quantity: r.stock_quantity,
+             image_url: r.images && Array.isArray(r.images) && r.images.length > 0 ? r.images[0] : ''
+        }));
+
+        res.json(mapped);
     } catch (e) {
         console.error("Wishlist fetch error:", e);
         res.status(500).json({ message: 'Internal error resolving customer wishlist.' });
