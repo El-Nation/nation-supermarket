@@ -86,10 +86,20 @@ export const updateCustomerProfile = async (req: Request, res: Response): Promis
         const userId = (req as any).user.id;
         const { name, email, phone } = req.body;
         
+        const dbUser = await User.findById(userId);
+        let emailChanged = email && email !== dbUser.email;
+        let phoneChanged = phone && phone !== dbUser.phone;
+        
         await pool.query(
             'UPDATE users SET name = COALESCE($1, name), email = COALESCE($2, email), phone = COALESCE($3, phone) WHERE id = $4',
             [name, email, phone, userId]
         );
+        
+        if(phoneChanged) await sendPhoneChange(email || dbUser.email);
+        if(emailChanged) {
+            await sendEmailChangeWarning(dbUser.email);
+            await sendEmailChangeConfirmation(email);
+        }
         res.json({ message: 'Customer profile updated natively.' });
     } catch(e) {
         console.error(e);

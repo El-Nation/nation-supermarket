@@ -73,6 +73,23 @@ export const createMockOrder = async (req: Request, res: Response) => {
             'INSERT INTO receipts (payment_id, receipt_url, receipt_data) VALUES ($1, $2, $3)',
             [null, `/receipts/${order_reference}`, JSON.stringify(rData)]
         );
+        
+        const customer_email = customer?.email || 'contact@nationsupermarket.com';
+        
+        await sendSystemEmail(customer_email, 'Nation Supermarket: Mock Purchase Confirmed', `
+           <div style="font-family:sans-serif; padding:20px; background:#f8fafc">
+            <h3 style="color:#0f172a">Mock Payment Authorized</h3>
+            <p style="color:#334155; font-size:16px;">Hello ${customer?.name || 'Customer'},</p>
+            <div style="padding:15px; background:white; border-left:4px solid #10b981; margin:20px 0;">
+                <p style="margin:0; font-size: 1.1rem">Order Code: <strong>${order_reference}</strong></p>
+                <p style="margin:10px 0 0 0; color:#64748b; font-size: 0.95rem">Digital Receipt (Simulated): https://nationsupermarket.eghedev.com/receipt/${order_reference}</p>
+            </div>
+           </div>
+        `);
+        
+        if (process.env.SMTP_USER) {
+            await sendSystemEmail(process.env.SMTP_USER, 'New Order Checkout (Mock Sandbox)', `<p>An external order was cleanly verified by ${customer_email}.</p><p>Total Value: ₦${total_amount}</p>`);
+        }
 
         res.json({ order_id, amount: total_amount });
     } catch(e: any) {
@@ -182,6 +199,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
 
             const customer_email = o.customer_email || o.guest_data?.email || 'contact@nationsupermarket.com';
             await triggerSystemNotification(null, 'Payment Settlement Cleared', `Order ${o.order_reference} physically secured ₦${amount} organically securely via React Verification Pipeline cleanly.`);
+            
             await sendSystemEmail(customer_email, 'Nation Supermarket: Purchase Confirmed', `
                <div style="font-family:sans-serif; padding:20px; background:#f8fafc">
                 <h3 style="color:#0f172a">Payment Authorized & Validated</h3>
@@ -193,6 +211,10 @@ export const verifyPayment = async (req: Request, res: Response) => {
                 <p style="color:#64748b; font-size:14px;">Regards,<br/>Nation Supermarket Administration</p>
                </div>
             `);
+            
+            if (process.env.SMTP_USER) {
+               await sendSystemEmail(process.env.SMTP_USER, 'New Paid Order Secured (Paystack)', `<p>An external order physically cleared settlement by ${customer_email}.</p><p>Total Value: ₦${amount}</p><p>Review the dashboard structurally.</p>`);
+            }
 
             res.json({ message: 'Payment authenticated and digitally certified.' });
         } else {
@@ -230,6 +252,10 @@ export const paystackWebhook = async (req: Request, res: Response): Promise<void
 
                     await triggerSystemNotification(null, 'Webhook Settlement Cleared', `Order ${metadata.order_id} physically secured ₦${paymentAmount} strictly generically cleanly.`);
                     await sendSystemEmail(metadata.customer_email || 'contact@nationsupermarket.com', 'Nation Supermarket: Purchase Confirmed via Webhook', `<p>Your purchase linked to ${reference} was successfully authorized via strict webhooks.</p>`);
+                    
+                    if (process.env.SMTP_USER) {
+                       await sendSystemEmail(process.env.SMTP_USER, 'New Paid Order Secured (Webhook)', `<p>An external order settled successfully via secondary async webhooks physically routed.</p><p>Total Value: ₦${paymentAmount}</p><p>Review the generic admin dashboard safely.</p>`);
+                    }
                 }
             }
         }
