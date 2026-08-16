@@ -1,4 +1,5 @@
 import express, { Application, Request, Response } from 'express';
+import path from 'path';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db';
@@ -75,6 +76,19 @@ app.get('/api/receipt/:reference', async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Error mapping digital receipt parameters globally.' });
     }
 });
+
+// Production Frontend Server Mapping
+if (process.env.NODE_ENV === 'production') {
+    app.use(express.static(path.join(__dirname, '../../frontend/dist')));
+
+    app.get('*', (req: Request, res: Response) => {
+        res.sendFile(path.resolve(__dirname, '../../frontend/dist', 'index.html'));
+    });
+} else {
+    app.get('/', (req: Request, res: Response) => {
+        res.send('API is running securely in Development environment...');
+    });
+}
 
 // Initialize server
 const startServer = async () => {
