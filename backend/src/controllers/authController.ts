@@ -110,7 +110,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         }
 
         generateToken(res, user.id);
-        res.status(200).json({ id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone || '' });
+        res.status(200).json({ id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone || '', avatar_url: user.avatar_url || '' });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }

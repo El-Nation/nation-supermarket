@@ -22,21 +22,39 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [user, setUser] = useState<User | null>(null);
-    const [isGuest, setIsGuest] = useState<boolean>(false);
+    const [user, setUser] = useState<User | null>(() => {
+        const storedUser = localStorage.getItem('user');
+        return storedUser ? JSON.parse(storedUser) : null;
+    });
+    const [isGuest, setIsGuest] = useState<boolean>(() => {
+        return localStorage.getItem('isGuest') === 'true';
+    });
 
     useEffect(() => {
-        // Quickly rehydrate state across tabs
-        const storedUser = localStorage.getItem('user');
-        if (storedUser) {
-            setUser(JSON.parse(storedUser));
-        }
+        let timeoutId: number;
+
+        const resetTimer = () => {
+            clearTimeout(timeoutId);
+            if (user) {
+                timeoutId = setTimeout(() => {
+                    logout();
+                    alert("Your session has securely expired natively due to 1 hour of inactivity.");
+                }, 3600000); // 1 hr securely
+            }
+        };
+
+        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
         
-        const guestStatus = localStorage.getItem('isGuest');
-        if (guestStatus === 'true') {
-            setIsGuest(true);
+        if (user) {
+            events.forEach(e => window.addEventListener(e, resetTimer, { passive: true }));
+            resetTimer();
         }
-    }, []);
+
+        return () => {
+            clearTimeout(timeoutId);
+            events.forEach(e => window.removeEventListener(e, resetTimer));
+        };
+    }, [user]);
 
     const login = (userData: User) => {
         setUser(userData);

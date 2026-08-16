@@ -161,7 +161,7 @@ export default function AdminLayout() {
                             {user.avatar_url ? (
                                 <img src={user.avatar_url} alt="Avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                             ) : (
-                                user.name.charAt(0).toUpperCase()
+                                user.email.charAt(0).toUpperCase()
                             )}
                         </div>
                     </div>
