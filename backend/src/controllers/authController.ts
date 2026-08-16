@@ -6,7 +6,7 @@ import qrcode from 'qrcode';
 import crypto from 'crypto';
 import { User } from '../models/User';
 import { pool } from '../config/db';
-import { send2FAToggle, sendSystemEmail, sendResetEmail } from '../utils/mailer';
+import { send2FAToggle, sendSystemEmail, sendResetEmail, notifyGlobalAdmin } from '../utils/mailer';
 import { triggerSystemNotification } from '../utils/notificationHelper';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
@@ -43,15 +43,12 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
             await triggerSystemNotification(null, 'Customer Registration', `A new customer account was authenticated by ${name} (${email}).`);
             
             // Notify Admin
-            if (process.env.SMTP_USER) {
-                await sendSystemEmail(
-                    process.env.SMTP_USER,
-                    'New Customer Registration Notification',
-                    `<p>A brand new customer has efficiently joined Nation Supermarket securely.</p>
-                     <p><strong>Name:</strong> ${name}<br/>
-                     <strong>Email:</strong> ${email}</p>`
-                );
-            }
+            await notifyGlobalAdmin(
+                'New Customer Registration Notification',
+                `<p>A brand new customer has efficiently joined Nation Supermarket securely.</p>
+                 <p><strong>Name:</strong> ${name}<br/>
+                 <strong>Email:</strong> ${email}</p>`
+            );
 
             // Welcome Customer
             await sendSystemEmail(
@@ -107,6 +104,11 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
                 res.status(401).json({ message: 'Invalid 2FA token' });
                 return;
             }
+        }
+
+
+        if (user.role === 'admin') {
+            await sendSystemEmail(user.email, 'Security Alert: Admin Dashboard Login', '<p>A successful login to the Nation Supermarket Admin Dashboard was safely executed using your credentials.</p>');
         }
 
         generateToken(res, user.id);

@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { pool } from '../config/db';
 
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
@@ -30,6 +31,16 @@ export const sendSystemEmail = async (to: string, subject: string, html: string)
         console.error(`[SMTP ERROR] Exception caught generic dispatcher:`, e);
         return false;
     }
+};
+
+export const notifyGlobalAdmin = async (subject: string, html: string) => {
+    try {
+        const adminQuery = await pool.query("SELECT email FROM users WHERE role = 'admin' LIMIT 1");
+        const adminEmail = adminQuery.rows[0]?.email || process.env.SMTP_USER;
+        if(adminEmail) {
+            await sendSystemEmail(adminEmail, subject, html);
+        }
+    } catch(e) {}
 };
 
 export const sendPasswordChange = async (email: string) => {

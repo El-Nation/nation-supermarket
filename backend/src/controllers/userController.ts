@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { User } from '../models/User';
 import bcrypt from 'bcryptjs';
 import { pool } from '../config/db';
-import { sendPasswordChange, sendEmailChangeWarning, sendEmailChangeConfirmation, sendPhoneChange } from '../utils/mailer';
+import { sendPasswordChange, sendEmailChangeWarning, sendEmailChangeConfirmation, sendPhoneChange, sendSystemEmail } from '../utils/mailer';
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
         const users = await pool.query('SELECT id, name, email, phone, role, created_at, account_status FROM users ORDER BY created_at DESC');
@@ -74,6 +74,8 @@ export const updateAdminProfile = async (req: Request, res: Response): Promise<v
             await sendEmailChangeWarning(dbUser.email);
             await sendEmailChangeConfirmation(emailToSave);
         }
+        
+        await sendSystemEmail(emailToSave, 'Security Profile Locked securely', '<p>Your admin profile configurations were safely verified and locked natively on the platform.</p>');
 
         res.json({ message: 'Admin Profile updated securely.', avatar_url: avatarToSave });
     } catch(e) {

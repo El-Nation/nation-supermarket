@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { pool } from '../config/db';
 import axios from 'axios';
 import crypto from 'crypto';
-import { sendSystemEmail } from '../utils/mailer';
+import { sendSystemEmail, notifyGlobalAdmin } from '../utils/mailer';
 import { triggerSystemNotification } from '../utils/notificationHelper';
 
 export const createMockOrder = async (req: Request, res: Response) => {
@@ -87,9 +87,7 @@ export const createMockOrder = async (req: Request, res: Response) => {
            </div>
         `);
         
-        if (process.env.SMTP_USER) {
-            await sendSystemEmail(process.env.SMTP_USER, 'New Order Checkout (Mock Sandbox)', `<p>An external order was cleanly verified by ${customer_email}.</p><p>Total Value: ₦${total_amount}</p>`);
-        }
+        await notifyGlobalAdmin('New Order Checkout (Mock Sandbox)', `<p>An external order was cleanly verified by ${customer_email}.</p><p>Total Value: ₦${total_amount}</p>`);
 
         res.json({ order_id, amount: total_amount });
     } catch(e: any) {
@@ -212,9 +210,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
                </div>
             `);
             
-            if (process.env.SMTP_USER) {
-               await sendSystemEmail(process.env.SMTP_USER, 'New Paid Order Secured (Paystack)', `<p>An external order physically cleared settlement by ${customer_email}.</p><p>Total Value: ₦${amount}</p><p>Review the dashboard structurally.</p>`);
-            }
+            await notifyGlobalAdmin('New Paid Order Secured (Paystack)', `<p>An external order physically cleared settlement by ${customer_email}.</p><p>Total Value: ₦${amount}</p><p>Review the dashboard structurally.</p>`);
 
             res.json({ message: 'Payment authenticated and digitally certified.' });
         } else {
@@ -253,9 +249,7 @@ export const paystackWebhook = async (req: Request, res: Response): Promise<void
                     await triggerSystemNotification(null, 'Webhook Settlement Cleared', `Order ${metadata.order_id} physically secured ₦${paymentAmount} strictly generically cleanly.`);
                     await sendSystemEmail(metadata.customer_email || 'contact@nationsupermarket.com', 'Nation Supermarket: Purchase Confirmed via Webhook', `<p>Your purchase linked to ${reference} was successfully authorized via strict webhooks.</p>`);
                     
-                    if (process.env.SMTP_USER) {
-                       await sendSystemEmail(process.env.SMTP_USER, 'New Paid Order Secured (Webhook)', `<p>An external order settled successfully via secondary async webhooks physically routed.</p><p>Total Value: ₦${paymentAmount}</p><p>Review the generic admin dashboard safely.</p>`);
-                    }
+                    await notifyGlobalAdmin('New Paid Order Secured (Webhook)', `<p>An external order settled successfully via secondary async webhooks physically routed.</p><p>Total Value: ₦${paymentAmount}</p><p>Review the generic admin dashboard safely.</p>`);
                 }
             }
         }

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { pool } from '../config/db';
 import { triggerSystemNotification } from '../utils/notificationHelper';
-import { sendSystemEmail } from '../utils/mailer';
+import { sendSystemEmail, notifyGlobalAdmin } from '../utils/mailer';
 
 export const createEnquiry = async (req: Request, res: Response) => {
     try {
@@ -14,17 +14,14 @@ export const createEnquiry = async (req: Request, res: Response) => {
 
         await triggerSystemNotification(null, 'New Customer Enquiry', `A new structured communication from ${name} (${email}) has explicitly dropped into your inbox.`);
         
-        if (process.env.SMTP_USER) {
-            await sendSystemEmail(
-                process.env.SMTP_USER,
-                'New Customer Enquiry Received',
-                `<p>A customer has just submitted an enquiry.</p>
-                 <p><strong>Name:</strong> ${name}<br/>
-                 <strong>Email:</strong> ${email}<br/>
-                 <strong>Subject:</strong> ${subject}</p>
-                 <p><strong>Message:</strong><br/>${message}</p>`
-            );
-        }
+        await notifyGlobalAdmin(
+            'New Customer Enquiry Received',
+            `<p>A customer has just submitted an enquiry.</p>
+             <p><strong>Name:</strong> ${name}<br/>
+             <strong>Email:</strong> ${email}<br/>
+             <strong>Subject:</strong> ${subject}</p>
+             <p><strong>Message:</strong><br/>${message}</p>`
+        );
         
         res.status(201).json({ message: 'Enquiry physically officially recorded perfectly natively.' });
     } catch(e) {
