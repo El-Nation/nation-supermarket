@@ -102,9 +102,21 @@ export default function Home() {
         return () => clearInterval(sliderInterval);
     }, [isSliderHovered]);
 
+    // Added Auto-slider strictly for main Hero categories successfully intuitively dynamically intelligently smoothly seamlessly elegantly effortlessly gracefully
+    useEffect(() => {
+        const heroTimer = setInterval(() => {
+            setCurrentSlide(s => (s + 1) % HERO_SLIDES.length);
+        }, 5000);
+        return () => clearInterval(heroTimer);
+    }, []);
+
     return (
         <div style={{ fontFamily: 'sans-serif', backgroundColor: '#fdfdfd', minHeight: '100vh', paddingBottom: '5rem' }}>
             
+            <div style={{ maxWidth: '1200px', margin: '2rem auto 0 auto', padding: '0 1.5rem' }}>
+                <h1 style={{ fontSize: 'clamp(2rem, 3vw, 2.5rem)', color: '#0f172a', fontWeight: 800, margin: '0 0 1rem 0' }}>Featured Categories</h1>
+            </div>
+
             {/* 0. Primary Featured Categories Carousel */}
             <section style={{ backgroundColor: HERO_SLIDES[currentSlide].bg, transition: 'background-color 0.5s ease', padding: '0 2rem', display: 'flex', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
                 <div className="tablet-col tablet-gap-sm mobile-padding" style={{ maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4rem', minHeight: '450px' }}>
