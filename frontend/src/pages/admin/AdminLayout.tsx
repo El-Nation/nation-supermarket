@@ -9,7 +9,7 @@ import {
 import './admin.css';
 
 export default function AdminLayout() {
-    const { user, logout } = useAuth();
+    const { user, logout, updateUser } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const [notifications, setNotifications] = useState<any[]>([]);
@@ -17,6 +17,18 @@ export default function AdminLayout() {
 
     useEffect(() => {
         if(user && user.role === 'admin') {
+            const syncGlobalState = async () => {
+                try {
+                    const { default: api } = await import('../../services/api');
+                    const profileRes = await api.get('/admin/profile');
+                    updateUser({
+                        avatar_url: profileRes.data.avatar_url || '',
+                        name: profileRes.data.name || user.name,
+                        email: profileRes.data.email || user.email,
+                        phone: profileRes.data.phone || ''
+                    });
+                } catch(e) {}
+            };
             const fetchNotifs = async () => {
                 try {
                     const { default: api } = await import('../../services/api');
@@ -25,6 +37,7 @@ export default function AdminLayout() {
                     setUnreadCount(res.data.filter((n: any) => !n.is_read).length);
                 } catch(e) {}
             };
+            syncGlobalState();
             fetchNotifs();
             const interval = setInterval(fetchNotifs, 10000);
             return () => clearInterval(interval);
