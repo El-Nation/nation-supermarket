@@ -64,6 +64,17 @@ export default function Navbar() {
                                 <ShoppingCart size={24} color="#0f172a" />
                                 {cartCount > 0 && <span style={badgeStyle}>{cartCount}</span>}
                             </Link>
+                            {user && user.role !== 'admin' ? (
+                                <Link to="/dashboard" style={iconLinkStyle}>
+                                    <User size={24} color="#0f172a" />
+                                </Link>
+                            ) : user && user.role === 'admin' ? (
+                                <Link to="/admin/dashboard" style={{ textDecoration: 'none', color: '#ea580c', fontWeight: 600 }}>Admin</Link>
+                            ) : (
+                                <Link to="/login" style={iconLinkStyle}>
+                                    <User size={24} color="#0f172a" />
+                                </Link>
+                            )}
                         </div>
                     </div>
                 </div>
