@@ -4,12 +4,14 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 export const pool = new Pool({
-  user: process.env.DB_USER,
-  host: process.env.DB_HOST,
-  database: process.env.DB_NAME,
-  password: process.env.DB_PASSWORD,
-  port: parseInt(process.env.DB_PORT || '5432', 10),
+  connectionString: process.env.DATABASE_URL,
+  ssl: { rejectUnauthorized: false } // Required securely for Supabase pooler compatibility
 });
+
+// Guard against silent fallbacks mapping to localhost gracefully natively
+if (!process.env.DATABASE_URL) {
+  console.error('[CRITICAL] DATABASE_URL is missing! Did you forget to press Ctrl+S to save backend/.env?');
+}
 
 pool.on('error', (err, client) => {
   console.error('Unexpected error on idle client', err);
