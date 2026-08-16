@@ -136,8 +136,7 @@ export default function ManageSettings() {
                     <p style={{ color: '#64748b', margin: 0, fontSize: '0.95rem' }}>Configure structural environment states, security limits, and system integrations.</p>
                 </div>
             </div>
-
-            <div style={{display: 'grid', gridTemplateColumns: 'minmax(0, 1fr) 350px', gap: '2rem', alignItems: 'start'}}>
+            <div className="settings-grid">
                 
                 {/* Main Settings Column */}
                 <div style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
@@ -151,7 +150,7 @@ export default function ManageSettings() {
                         
                         <form onSubmit={handleUpdateProfile} style={{display: 'flex', flexDirection: 'column', gap: '1.5rem'}}>
                             
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                            <div className="settings-form-grid">
                                 <div>
                                     <label style={{display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#475569', fontWeight: 500}}>
                                         <Mail size={16} /> Notification Email Binding
@@ -211,8 +210,8 @@ export default function ManageSettings() {
                                 <button onClick={handleGenerate2FA} className="admin-btn-primary" style={{backgroundColor: '#0f172a'}}>Provision Secure Key</button>
                             </div>
                         ) : (
-                            <div style={{backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', gap: '2rem', alignItems: 'center'}}>
-                                <div style={{backgroundColor: 'white', padding: 8, borderRadius: 12, border: '1px solid #cbd5e1'}}>
+                            <div style={{backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', gap: '2rem', alignItems: 'center', flexWrap: 'wrap'}}>
+                                <div style={{backgroundColor: 'white', padding: 8, borderRadius: 12, border: '1px solid #cbd5e1', margin: '0 auto'}}>
                                     <img src={qrCode} alt="2FA QR" style={{display: 'block'}}/>
                                 </div>
                                 <div style={{flex: 1}}>
