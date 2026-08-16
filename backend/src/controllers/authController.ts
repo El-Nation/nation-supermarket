@@ -3,9 +3,10 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import speakeasy from 'speakeasy';
 import qrcode from 'qrcode';
+import crypto from 'crypto';
 import { User } from '../models/User';
 import { pool } from '../config/db';
-import { send2FAToggle, sendSystemEmail } from '../utils/mailer';
+import { send2FAToggle, sendSystemEmail, sendResetEmail } from '../utils/mailer';
 import { triggerSystemNotification } from '../utils/notificationHelper';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
@@ -163,4 +164,59 @@ export const disable2FA = async (req: Request, res: Response): Promise<void> => 
     await pool.query('UPDATE users SET two_factor_enabled = false, two_factor_secret = null WHERE id = $1', [user.id]);
     send2FAToggle(user.email, false);
     res.json({ message: '2FA security constraint successfully removed.' });
+};
+
+export const forgotPassword = async (req: Request, res: Response): Promise<void> => {
+    const { email } = req.body;
+    const normalizedEmail = email?.toLowerCase().trim();
+    console.log(`\n[AUTH] forgotPassword invoked for email: ${normalizedEmail}`);
+    try {
+        const user = await User.findByEmail(normalizedEmail);
+        if (user) {
+            console.log(`[AUTH] User found in DB. Generating token...`);
+            const token = crypto.randomBytes(32).toString('hex');
+            const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+            const expiry = new Date(Date.now() + 60 * 60 * 1000);
+            
+            await User.saveResetToken(user.id, hashedToken, expiry);
+            console.log(`[AUTH] Token securely persisted. Handing off to mailer...`);
+            
+            const sent = await sendResetEmail(email, token);
+            if (!sent) {
+                console.error(`[AUTH] CRITICAL ERROR: sendResetEmail failed for ${email}`);
+            } else {
+                console.log(`[AUTH] Reset email successfully transmitted to SMTP.`);
+            }
+            res.json({ message: 'Reset link sent! Check your email.' });
+        } else {
+            console.warn(`[AUTH] WARNING: Email ${normalizedEmail} not found in DB. Returning 404.`);
+            res.status(404).json({ message: 'Invalid email address' });
+        }
+    } catch (e) {
+        console.error('[AUTH] Exception caught in forgotPassword loop:', e);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+export const resetPassword = async (req: Request, res: Response): Promise<void> => {
+    const { token, newPassword } = req.body;
+    try {
+        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+        const user = await User.findByResetToken(hashedToken);
+        if (!user) {
+            res.status(400).json({ message: 'Invalid or expired reset token.' });
+            return;
+        }
+        
+        const salt = await bcrypt.genSalt(10);
+        const passwordHash = await bcrypt.hash(newPassword, salt);
+        await User.updatePassword(user.id, passwordHash);
+        
+        await sendSystemEmail(user.email, 'Security Alert: Password Changed', '<p>Your account password was just reset successfully. If you did not make this change, please contact support.</p>');
+        
+        res.json({ message: 'Password has been safely updated.' });
+    } catch (e) {
+        console.error(e);
+        res.status(500).json({ message: 'Server error' });
+    }
 };

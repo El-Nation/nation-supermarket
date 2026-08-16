@@ -57,10 +57,13 @@ export default function Login() {
                                 <input type="email" required className="form-input" placeholder="you@example.com"
                                     value={email} onChange={e => setEmail(e.target.value)} />
                             </div>
-                            <div className="form-group">
+                            <div className="form-group" style={{ marginBottom: '0.25rem' }}>
                                 <label className="form-label">Password</label>
                                 <input type="password" required className="form-input" placeholder="••••••••"
                                     value={password} onChange={e => setPassword(e.target.value)} />
+                            </div>
+                            <div style={{ textAlign: 'right', marginBottom: '1.25rem' }}>
+                                <Link to="/forgot-password" style={{ color: '#0d9488', fontSize: '13px', textDecoration: 'none' }} onMouseOver={e => e.currentTarget.style.textDecoration='underline'} onMouseOut={e => e.currentTarget.style.textDecoration='none'}>Forgot Password?</Link>
                             </div>
                         </>
                     ) : (

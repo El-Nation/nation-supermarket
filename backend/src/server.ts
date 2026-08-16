@@ -24,7 +24,7 @@ const globalLimiter = rateLimit({
 
 // Middleware
 app.use(globalLimiter);
-app.use(cors({ origin: 'http://localhost:5173', credentials: true })); // Setup frontend domain
+app.use(cors({ origin: ['http://localhost:5173', 'http://localhost:5174'], credentials: true })); // Setup frontend domain
 app.use(express.json());
 app.use(cookieParser());
 

@@ -59,7 +59,7 @@ export default function ProductCard({ product }: { product: Product }) {
             <button onClick={toggleWishlist} style={{ position: 'absolute', top: '10px', right: '10px', background: 'white', border: 'none', borderRadius: '50%', padding: '0.5rem', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.1)', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <Heart size={18} fill={inWishlist ? '#ef4444' : 'none'} color={inWishlist ? '#ef4444' : '#64748b'} />
             </button>
-            <Link to={`/product/${product.id}`} style={{ backgroundColor: '#f8fafc', padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', overflow: 'hidden' }}>
+            <Link to={`/product/${(product as any).slug || product.id}`} style={{ backgroundColor: '#f8fafc', padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', overflow: 'hidden' }}>
                 {product.image_url ? (
                     <img 
                         src={product.image_url} 
@@ -85,7 +85,7 @@ export default function ProductCard({ product }: { product: Product }) {
             </Link>
             <div style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', flexGrow: 1 }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
-                    <Link to={`/product/${product.id}`} style={{ textDecoration: 'none' }}>
+                    <Link to={`/product/${(product as any).slug || product.id}`} style={{ textDecoration: 'none' }}>
                         <h3 style={{ margin: 0, fontSize: '1.05rem', color: '#0f172a', fontWeight: 700, lineHeight: 1.4 }}>{product.name}</h3>
                     </Link>
                 </div>

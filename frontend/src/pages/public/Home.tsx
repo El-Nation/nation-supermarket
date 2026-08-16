@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Tag, ChevronRight } from 'lucide-react';
 import ProductCard from '../../components/shop/ProductCard';
+import { Helmet } from 'react-helmet-async';
 import api from '../../services/api';
 
 // Utilizing the 14 physical categories natively mapping to the API seed sequences 

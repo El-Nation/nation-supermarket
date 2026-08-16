@@ -8,6 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
     password VARCHAR(255),
     address TEXT,
     account_status VARCHAR(50) DEFAULT 'active',
+    reset_token VARCHAR(255),
+    reset_token_expires TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -23,6 +25,7 @@ CREATE TABLE IF NOT EXISTS categories (
 CREATE TABLE IF NOT EXISTS products (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
+    slug VARCHAR(255) UNIQUE,
     description TEXT,
     price DECIMAL(10, 2) NOT NULL,
     discount DECIMAL(10, 2) DEFAULT 0.00,

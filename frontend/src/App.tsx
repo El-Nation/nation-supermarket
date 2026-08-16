@@ -2,8 +2,11 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { AuthProvider } from './context/AuthContext';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { HelmetProvider } from 'react-helmet-async';
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+import ForgotPassword from './pages/auth/ForgotPassword';
+import ResetPassword from './pages/auth/ResetPassword';
 import AdminLayout from './pages/admin/AdminLayout';
 import DashboardOverview from './pages/admin/DashboardOverview';
 import ManageProducts from './pages/admin/ManageProducts';
@@ -34,6 +37,7 @@ import ProductDetails from './pages/public/ProductDetails';
 function App() {
   return (
     <AuthProvider>
+      <HelmetProvider>
       <CartProvider>
         <WishlistProvider>
           <Router>
@@ -48,6 +52,8 @@ function App() {
             <Route path="contact" element={<ContactUs />} />
           </Route>
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/admin/login" element={<Navigate to="/login" replace />} />
           <Route path="/register" element={<Register />} />
           <Route path="/checkout-test" element={<MockCheckout />} />
@@ -72,6 +78,7 @@ function App() {
           </Router>
         </WishlistProvider>
       </CartProvider>
+      </HelmetProvider>
     </AuthProvider>
   );
 }

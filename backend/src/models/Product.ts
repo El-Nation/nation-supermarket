@@ -35,6 +35,34 @@ export class Product {
         return result.rows[0];
     }
 
+    static async getByIdOrSlug(identifier: string | number) {
+        let query;
+        let values;
+        
+        // If numeric, check both ID and slug fallback
+        if (/^\d+$/.test(String(identifier))) {
+            query = `
+                SELECT p.*, c.name as category_name 
+                FROM products p 
+                LEFT JOIN categories c ON p.category_id = c.id 
+                WHERE p.id = $1 OR p.slug = $2
+            `;
+            values = [Number(identifier), String(identifier)];
+        } else {
+            // alphanumeric slug explicitly
+            query = `
+                SELECT p.*, c.name as category_name 
+                FROM products p 
+                LEFT JOIN categories c ON p.category_id = c.id 
+                WHERE p.slug = $1
+            `;
+            values = [String(identifier)];
+        }
+        
+        const result = await pool.query(query, values);
+        return result.rows[0];
+    }
+
     static async getPublicFiltered(queryParams: any) {
         let queryText = `
             SELECT p.*, c.name as category_name 

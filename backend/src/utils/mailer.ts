@@ -55,3 +55,19 @@ export const send2FAToggle = async (email: string, isEnabled: boolean) => {
         `<p>Your account's Two-Factor Authentication (2FA) is now officially <strong>${isEnabled ? 'Enabled' : 'Disabled'}</strong>.</p><p>If you did not make this change, please contact support immediately.</p>`
     );
 };
+
+export const sendResetEmail = async (email: string, token: string) => {
+    return sendSystemEmail(
+        email, 
+        'Reset your Nation Supermarket password',
+        `<div style="font-family: sans-serif; color: #1e293b;">
+            <p>You requested a password reset. Click the link below to set a new password:</p>
+            <p><a href="https://nationsupermarket.com/reset-password?token=${token}" style="color: #0d9488; font-weight: bold;">Reset Password</a></p>
+            <p>This link expires in 60 minutes.</p>
+            <p>If you didn't request this, ignore this email.</p>
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin-top: 2rem;"/>
+            <p style="font-size: 0.8rem; color: #64748b;">© 2026 Nation Supermarket. All rights reserved.</p>
+        </div>`
+    );
+};
+

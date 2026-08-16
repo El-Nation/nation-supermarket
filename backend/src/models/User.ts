@@ -25,4 +25,26 @@ export class User {
             [secret, isEnabled, id]
         );
     }
+
+    static async saveResetToken(id: number, hashedToken: string, expiry: Date) {
+        await pool.query(
+            'UPDATE users SET reset_token = $1, reset_token_expires = $2 WHERE id = $3',
+            [hashedToken, expiry, id]
+        );
+    }
+
+    static async findByResetToken(hashedToken: string) {
+        const result = await pool.query(
+            'SELECT * FROM users WHERE reset_token = $1 AND reset_token_expires > NOW()',
+            [hashedToken]
+        );
+        return result.rows[0];
+    }
+
+    static async updatePassword(id: number, hashedPassword: string) {
+        await pool.query(
+            'UPDATE users SET password = $1, reset_token = NULL, reset_token_expires = NULL WHERE id = $2',
+            [hashedPassword, id]
+        );
+    }
 }

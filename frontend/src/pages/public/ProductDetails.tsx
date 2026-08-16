@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { ChevronLeft, ShoppingCart, Heart, Truck, Tag, ShieldCheck } from 'lucide-react';
+import { Helmet } from 'react-helmet-async';
 import api from '../../services/api';
 
 export default function ProductDetails() {
@@ -13,7 +14,7 @@ export default function ProductDetails() {
     const [quantity, setQuantity] = useState(1);
     const [product, setProduct] = useState<any>(null);
     const [loading, setLoading] = useState(true);
-    const inWishlist = wishlist.some(item => item.id === product?.id);
+    const inWishlist = wishlist.some(item => (item as any).product_id === product?.id || (item as any).id === product?.id);
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -41,7 +42,21 @@ export default function ProductDetails() {
         fetchIsolatedProduct();
     }, [id]);
 
-    if (loading) return <div style={{ textAlign: 'center', padding: '6rem 2rem', color: '#64748b' }}>Locating structural node arrays...</div>;
+    if (loading) return (
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 450px) 1fr', gap: '4rem' }}>
+                <div style={{ width: '100%', aspectRatio: '1', backgroundColor: '#e2e8f0', borderRadius: '16px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ width: '60%', height: '3rem', backgroundColor: '#e2e8f0', borderRadius: '8px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+                    <div style={{ width: '40%', height: '2rem', backgroundColor: '#e2e8f0', borderRadius: '8px', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+                    <div style={{ width: '100%', height: '10rem', backgroundColor: '#e2e8f0', borderRadius: '8px', marginTop: '2rem', animation: 'pulse 1.5s infinite ease-in-out' }}></div>
+                </div>
+            </div>
+            <style>
+                {`@keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }`}
+            </style>
+        </div>
+    );
 
     if (!product) {
         return (
@@ -68,6 +83,31 @@ export default function ProductDetails() {
 
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 2rem' }}>
+            <Helmet>
+                <title>{product.name} | Nation Supermarket</title>
+                <meta name="description" content={product.description ? product.description.substring(0, 150) + '...' : `Buy ${product.name} at Nation Supermarket.`} />
+                <meta property="og:title" content={product.name} />
+                <meta property="og:description" content={product.description ? product.description.substring(0, 150) + '...' : `Buy ${product.name} at Nation Supermarket.`} />
+                <meta property="og:image" content={product.image_url} />
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org/",
+                        "@type": "Product",
+                        "name": product.name,
+                        "image": product.image_url,
+                        "description": product.description,
+                        "sku": product.id,
+                        "offers": {
+                            "@type": "Offer",
+                            "url": typeof window !== 'undefined' ? window.location.href : '',
+                            "priceCurrency": "NGN",
+                            "price": product.price,
+                            "availability": product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+                        }
+                    })}
+                </script>
+            </Helmet>
+            
             <Link to="/shop" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', color: '#64748b', textDecoration: 'none', fontWeight: 600, marginBottom: '2rem', transition: '0.2s' }}>
                 <ChevronLeft size={20} /> Continue Shopping
             </Link>

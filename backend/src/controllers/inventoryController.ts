@@ -46,7 +46,8 @@ export const getPublicProducts = async (req: Request, res: Response) => {
 
 export const getSingleProduct = async (req: Request, res: Response) => {
     try {
-        const product = await Product.getById(Number(req.params.id));
+        const identifier = req.params.id as string;
+        const product = await Product.getByIdOrSlug(identifier);
         if(!product) return res.status(404).json({ message: 'Product structurally absent.' });
         res.json(product);
     } catch (error) {
