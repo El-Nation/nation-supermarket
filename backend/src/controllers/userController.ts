@@ -56,7 +56,9 @@ export const updateAdminProfile = async (req: Request, res: Response): Promise<v
         if (new_phone && new_phone !== dbUser.phone) phoneChanged = true;
 
         let avatarToSave = dbUser.avatar_url;
-        if (req.file) { // Provided by uploadMedia.single('avatar')
+        if (req.body.remove_avatar === 'true') {
+            avatarToSave = null;
+        } else if (req.file) { // Provided by uploadMedia.single('avatar')
             avatarToSave = req.file.path;
         }
 

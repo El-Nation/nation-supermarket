@@ -78,6 +78,24 @@ export default function ManageSettings() {
         }
     };
 
+    const handleRemoveAvatar = async () => {
+        if (!window.confirm("Are you sure you want to remove your profile image?")) return;
+        setUploadingAvatar(true);
+        try {
+            const formData = new FormData();
+            formData.append('remove_avatar', 'true');
+            await api.post('/admin/profile', formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+            setAvatarUrl('');
+            updateUser({ avatar_url: '' });
+        } catch(e) {
+            alert('Failed to remove avatar.');
+        } finally {
+            setUploadingAvatar(false);
+        }
+    };
+
     const handleUpdateProfile = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
@@ -141,6 +159,49 @@ export default function ManageSettings() {
                 {/* Main Settings Column */}
                 <div style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
                     
+                    {/* Graphic Profile Avatar Module (Moved to Top) */}
+                    <div className="admin-card" style={{padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', textAlign: 'center'}}>
+                        <h3 style={{margin: '0 0 1.5rem 0', color: '#0f172a', fontWeight: 600, fontSize: '1.1rem'}}>Administrative Avatar</h3>
+                        <div style={{
+                            width: 140, height: 140, borderRadius: '50%', backgroundColor: '#f1f5f9', 
+                            overflow: 'hidden', margin: '0 auto 1.5rem', display: 'flex', alignItems: 'center', 
+                            justifyContent: 'center', border: '3px solid #e2e8f0', position: 'relative'
+                        }}>
+                            {avatarUrl ? (
+                                <img src={avatarUrl} alt="Admin Avatar" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
+                            ) : (
+                                <Camera size={48} color="#94a3b8" />
+                            )}
+                            {uploadingAvatar && (
+                                <div style={{position: 'absolute', inset: 0, backgroundColor: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+                                    <div className="admin-spinner" style={{width: 24, height: 24, borderColor: '#0f172a', borderTopColor: 'transparent'}}></div>
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div style={{display: 'flex', gap: '1rem', justifyContent: 'center', alignItems: 'center'}}>
+                            <div style={{position: 'relative'}}>
+                                <input 
+                                    type="file" 
+                                    accept="image/*" 
+                                    onChange={handleAvatarUpload} 
+                                    style={{position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', zIndex: 10}}
+                                    title="Upload Profile Picture"
+                                    disabled={uploadingAvatar}
+                                />
+                                <button type="button" className="admin-btn-primary" style={{backgroundColor: '#0f172a', color: 'white', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '0.5rem'}}>
+                                    <UploadCloud size={18} /> {uploadingAvatar ? 'Uploading...' : 'Upload Profile Image'}
+                                </button>
+                            </div>
+                            {avatarUrl && (
+                                <button type="button" onClick={handleRemoveAvatar} className="admin-btn-primary" style={{backgroundColor: '#ef4444', color: 'white', display: 'flex', alignItems: 'center', gap: '0.5rem'}} disabled={uploadingAvatar}>
+                                    Remove
+                                </button>
+                            )}
+                        </div>
+                        <p style={{margin: '1rem 0 0 0', color: '#94a3b8', fontSize: '0.8rem'}}>PNG, JPG up to 5MB.</p>
+                    </div>
+
                     {/* Security Management Panel */}
                     <div className="admin-card" style={{padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)'}}>
                         <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid #f1f5f9'}}>
@@ -153,13 +214,13 @@ export default function ManageSettings() {
                             <div className="settings-form-grid">
                                 <div>
                                     <label style={{display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#475569', fontWeight: 500}}>
-                                        <Mail size={16} /> Notification Email Binding
+                                        <Mail size={16} /> Email
                                     </label>
                                     <input type="email" required className="form-input" style={{backgroundColor: '#f8fafc', borderColor: '#cbd5e1'}} value={email} onChange={e=>setEmail(e.target.value)} />
                                 </div>
                                 <div>
                                     <label style={{display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#475569', fontWeight: 500}}>
-                                        <Smartphone size={16} /> Direct Phone Binding
+                                        <Smartphone size={16} /> Phone Number
                                     </label>
                                     <input type="text" className="form-input" style={{backgroundColor: '#f8fafc', borderColor: '#cbd5e1'}} value={phone} onChange={e=>setPhone(e.target.value)} />
                                 </div>
@@ -171,7 +232,7 @@ export default function ManageSettings() {
                                 </div>
                                 <div>
                                     <label style={{display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#475569', fontWeight: 500}}>
-                                        <Key size={16} /> Overwrite Password (Optional)
+                                        <Key size={16} /> New Password (Optional)
                                     </label>
                                     <input type="password" className="form-input" value={newPass} onChange={e=>setNewPass(e.target.value)} placeholder="Leave blank to preserve" />
                                 </div>
@@ -205,8 +266,8 @@ export default function ManageSettings() {
                         ) : !qrCode ? (
                             <div style={{backgroundColor: '#f8fafc', padding: '2rem', borderRadius: 8, border: '1px dashed #cbd5e1', textAlign: 'center'}}>
                                 <Shield color="#94a3b8" size={48} style={{marginBottom: '1rem', opacity: 0.5}} />
-                                <h4 style={{margin: '0 0 0.5rem 0', color: '#334155'}}>Security Vulnerable</h4>
-                                <p style={{color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem'}}>It is highly recommended you encrypt this profile using TOTP application limits natively.</p>
+                                <h4 style={{margin: '0 0 0.5rem 0', color: '#334155'}}>2FA Authentication</h4>
+                                <p style={{color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem'}}>Secure your administrative account strictly against unauthorized access by enabling Two-Factor Authentication. This integrates seamlessly with Google Authenticator or Authy natively.</p>
                                 <button onClick={handleGenerate2FA} className="admin-btn-primary" style={{backgroundColor: '#0f172a'}}>Provision Secure Key</button>
                             </div>
                         ) : (
@@ -233,42 +294,6 @@ export default function ManageSettings() {
                 {/* Right Side Column */}
                 <div style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
                     
-                    {/* Graphic Profile Avatar Module */}
-                    <div className="admin-card" style={{padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', textAlign: 'center'}}>
-                        <h3 style={{margin: '0 0 1.5rem 0', color: '#0f172a', fontWeight: 600, fontSize: '1.1rem'}}>Administrative Avatar</h3>
-                        <div style={{
-                            width: 140, height: 140, borderRadius: '50%', backgroundColor: '#f1f5f9', 
-                            overflow: 'hidden', margin: '0 auto 1.5rem', display: 'flex', alignItems: 'center', 
-                            justifyContent: 'center', border: '3px solid #e2e8f0', position: 'relative'
-                        }}>
-                            {avatarUrl ? (
-                                <img src={avatarUrl} alt="Admin Avatar" style={{width: '100%', height: '100%', objectFit: 'cover'}} />
-                            ) : (
-                                <Camera size={48} color="#94a3b8" />
-                            )}
-                            {uploadingAvatar && (
-                                <div style={{position: 'absolute', inset: 0, backgroundColor: 'rgba(255,255,255,0.8)', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
-                                    <div className="admin-spinner" style={{width: 24, height: 24, borderColor: '#0f172a', borderTopColor: 'transparent'}}></div>
-                                </div>
-                            )}
-                        </div>
-                        
-                        <div style={{position: 'relative', display: 'inline-block'}}>
-                            <input 
-                                type="file" 
-                                accept="image/*" 
-                                onChange={handleAvatarUpload} 
-                                style={{position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', zIndex: 10}}
-                                title="Upload Profile Picture"
-                                disabled={uploadingAvatar}
-                            />
-                            <button type="button" className="admin-btn-primary" style={{backgroundColor: '#f8fafc', color: '#0f172a', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '0.5rem', margin: '0 auto'}}>
-                                <UploadCloud size={18} /> {uploadingAvatar ? 'Transmitting...' : 'Upload Image via Cloudinary'}
-                            </button>
-                        </div>
-                        <p style={{margin: '1rem 0 0 0', color: '#94a3b8', fontSize: '0.8rem'}}>PNG, JPG up to 5MB.</p>
-                    </div>
-
                     {/* System Configuration Block */}
                     <div className="admin-card" style={{padding: '1.5rem', border: '1px solid #e2e8f0', backgroundColor: '#f8fafc'}}>
                         <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem'}}>
