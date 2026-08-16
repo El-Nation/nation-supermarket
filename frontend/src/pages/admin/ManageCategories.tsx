@@ -53,7 +53,7 @@ export default function ManageCategories() {
                 <h2 style={{ fontSize: '1.5rem', color: '#1e293b', margin: 0, fontWeight: 700 }}>Category Management</h2>
             </div>
             
-            <div style={{display: 'grid', gridTemplateColumns: '1fr 2fr', gap: '2rem'}}>
+            <div className="category-grid">
                 <div className="admin-card" style={{alignSelf: 'start'}}>
                     <h3 style={{margin: '0 0 1.5rem 0', color: '#1e293b'}}>Add New Category</h3>
                     <form onSubmit={handleCreate}>

@@ -343,6 +343,12 @@
   align-items: start;
 }
 
+.category-grid {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 2rem;
+}
+
 .settings-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -351,6 +357,9 @@
 
 @media (max-width: 1024px) {
   .settings-grid {
+    grid-template-columns: 1fr;
+  }
+  .category-grid {
     grid-template-columns: 1fr;
   }
 }
