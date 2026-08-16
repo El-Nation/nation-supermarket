@@ -134,7 +134,7 @@ export default function AdminLayout() {
                                 )}
                             </button>
                             {showDropdown && (
-                                <div style={{position: 'absolute', top: '120%', right: 0, width: 320, backgroundColor: 'white', borderRadius: '8px', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)', border: '1px solid #e2e8f0', zIndex: 50, overflow: 'hidden'}}>
+                                <div className="admin-notification-dropdown">
                                     <div style={{padding: '0.75rem 1rem', borderBottom: '1px solid #e2e8f0', backgroundColor: '#f8fafc'}}>
                                         <h4 style={{margin: 0, fontSize: '0.9rem', color: '#0f172a'}}>Recent Notifications</h4>
                                     </div>
