@@ -135,3 +135,13 @@ CREATE TABLE IF NOT EXISTS admin_logs (
     target VARCHAR(255),
     timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- 13. Delivery Zones
+CREATE TABLE IF NOT EXISTS delivery_zones (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    areas TEXT,
+    fee DECIMAL(10, 2) DEFAULT 0.00,
+    status VARCHAR(50) DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
