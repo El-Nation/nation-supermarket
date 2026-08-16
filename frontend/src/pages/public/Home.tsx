@@ -58,7 +58,6 @@ export default function Home() {
     const [isSliderHovered, setIsSliderHovered] = useState(false);
     
     // Primary Dynamic Carousel State
-    const [currentSlide, setCurrentSlide] = useState(0);
     const HERO_SLIDES = [
         {
             title: "A Clean, Fresh Home",
@@ -80,6 +79,55 @@ export default function Home() {
             image: "/images/cat_electronics.png",
             bg: "#fdf4ff",
             buttonLabel: "Shop Electronics"
+        },
+        {
+            title: "Oven Fresh Bakery",
+            subtitle: "Soft breads, warm pastries, and delicious baked goods delivered fresh.",
+            image: "/images/cat_bakery.png",
+            bg: "#fffbeb",
+            buttonLabel: "Shop Bakery"
+        },
+        {
+            title: "Premium Meat & Seafood",
+            subtitle: "High-quality cuts of meat and fresh ocean catches for your kitchen.",
+            image: "/images/cat_meat.png",
+            bg: "#fef2f2",
+            buttonLabel: "Shop Meat"
+        },
+        {
+            title: "Everyday Pantry Staples",
+            subtitle: "Stock up on essential oils, grains, pastas, and canned goods.",
+            image: "/images/cat_pantry.png",
+            bg: "#fefce8",
+            buttonLabel: "Shop Pantry"
+        },
+        {
+            title: "Delicious Snacks & Sweets",
+            subtitle: "Satisfy your cravings with our wide selection of treats and fast snacks.",
+            image: "/images/cat_snacks.png",
+            bg: "#fff1f2",
+            buttonLabel: "Shop Snacks"
+        },
+        {
+            title: "Modern Home & Kitchen",
+            subtitle: "Discover beautiful and practical kitchenware for a better cooking experience.",
+            image: "/images/cat_kitchen.png",
+            bg: "#faf5ff",
+            buttonLabel: "Shop Kitchen"
+        },
+        {
+            title: "Comfortable Clothing",
+            subtitle: "Trendy, soft, and stylish clothing essentials for everyday comfort.",
+            image: "/images/cat_clothing.png",
+            bg: "#eff6ff",
+            buttonLabel: "Shop Clothing"
+        },
+        {
+            title: "Farm Fresh Dairy",
+            subtitle: "Nutritious milk, cheese, and eggs harvested safely for your family.",
+            image: "/images/mock/eggs.png",
+            bg: "#f0fdf4",
+            buttonLabel: "Shop Dairy"
         }
     ];
 
