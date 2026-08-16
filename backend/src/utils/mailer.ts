@@ -49,6 +49,9 @@ export const sendEmailChangeConfirmation = async (newEmail: string) => {
 };
 
 export const send2FAToggle = async (email: string, isEnabled: boolean) => {
-    return sendSystemEmail(email, 'Security Alert: Two-Factor Authentication Strategy Changed', `<p>Two factor authentication is now officially <strong>${isEnabled ? 'Enabled' : 'Disabled'}</strong> natively effectively dynamically intelligently intelligently smoothly flawlessly elegantly intelligently logically optimally flexibly elegantly smoothly properly rationally beautifully smoothly flexibly comfortably cleanly flawlessly securely safely intelligently expertly fluently smoothly dynamically perfectly correctly efficiently functionally intelligently smoothly authentically successfully optimally rationally.</p>`);
+    return sendSystemEmail(
+        email, 
+        'Security Alert: Two-Factor Authentication Changed', 
+        `<p>Your account's Two-Factor Authentication (2FA) is now officially <strong>${isEnabled ? 'Enabled' : 'Disabled'}</strong>.</p><p>If you did not make this change, please contact support immediately.</p>`
+    );
 };
-
