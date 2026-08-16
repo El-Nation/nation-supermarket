@@ -188,7 +188,7 @@ export const verifyPayment = async (req: Request, res: Response) => {
                 <p style="color:#334155; font-size:16px;">Hello ${o.customer_name || o.guest_data?.name || 'Customer'},</p>
                 <div style="padding:15px; background:white; border-left:4px solid #10b981; margin:20px 0;">
                     <p style="margin:0; font-size: 1.1rem">Reference Hash: <strong>${reference}</strong></p>
-                    <p style="margin:10px 0 0 0; color:#64748b; font-size: 0.95rem">Digital Receipt: http://localhost:5173/receipt/${reference}</p>
+                    <p style="margin:10px 0 0 0; color:#64748b; font-size: 0.95rem">Digital Receipt: https://nationsupermarket.eghedev.com/receipt/${reference}</p>
                 </div>
                 <p style="color:#64748b; font-size:14px;">Regards,<br/>Nation Supermarket Administration</p>
                </div>
