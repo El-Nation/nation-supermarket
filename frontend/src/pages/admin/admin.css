@@ -349,6 +349,12 @@
   gap: 2rem;
 }
 
+.product-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 2fr;
+  gap: 2rem;
+}
+
 .settings-form-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -360,6 +366,9 @@
     grid-template-columns: 1fr;
   }
   .category-grid {
+    grid-template-columns: 1fr;
+  }
+  .product-grid {
     grid-template-columns: 1fr;
   }
 }

@@ -78,7 +78,7 @@ export default function ManageProducts() {
                 <h2 style={{ fontSize: '1.5rem', color: '#1e293b', margin: 0, fontWeight: 700 }}>Product Management</h2>
             </div>
 
-            <div style={{display: 'grid', gridTemplateColumns: 'minmax(350px, 1fr) 2fr', gap: '2rem'}}>
+            <div className="product-grid">
                 <div className="admin-card">
                     <h3 style={{margin: '0 0 1.5rem 0', color: '#1e293b'}}>Add New Product</h3>
                     <form onSubmit={handleCreateProduct}>
