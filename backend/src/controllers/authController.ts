@@ -67,7 +67,7 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
         } catch (skip) {}
 
         generateToken(res, user.id);
-        res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role });
+        res.status(201).json({ id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone || '' });
     } catch (error) {
         console.error('CRITICAL BACKEND ERROR IN REGISTER:', error);
         res.status(500).json({ message: 'Server error check logs' });
@@ -99,7 +99,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             const verified = speakeasy.totp.verify({
                 secret: user.two_factor_secret,
                 encoding: 'base32',
-                token: twoFactorToken
+                token: twoFactorToken,
+                window: 4
             });
             if (!verified) {
                 res.status(401).json({ message: 'Invalid 2FA token' });
@@ -108,7 +109,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         }
 
         generateToken(res, user.id);
-        res.status(200).json({ id: user.id, name: user.name, email: user.email, role: user.role });
+        res.status(200).json({ id: user.id, name: user.name, email: user.email, role: user.role, phone: user.phone || '' });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -144,7 +145,8 @@ export const verify2FA = async (req: Request, res: Response): Promise<void> => {
     const verified = speakeasy.totp.verify({
         secret: dbUser.two_factor_secret,
         encoding: 'base32',
-        token
+        token,
+        window: 4
     });
 
     if (verified) {

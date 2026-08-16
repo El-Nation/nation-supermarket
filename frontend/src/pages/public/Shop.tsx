@@ -77,10 +77,10 @@ export default function Shop() {
     }, [queryCategory, querySpecial, querySearch, appliedMaxPrice, sortBy]);
 
     return (
-        <div style={{ maxWidth: '1400px', margin: '0 auto', padding: '3rem 2rem', display: 'flex', gap: '3rem', alignItems: 'flex-start' }}>
+        <div className="mobile-col tablet-col mobile-padding mobile-gap" style={{ maxWidth: '1400px', margin: '0 auto', padding: '3rem 2rem', display: 'flex', gap: '3rem', alignItems: 'flex-start' }}>
             
             {/* Left Sidebar Filter Column */}
-            <aside style={{ flex: '0 0 280px', position: 'sticky', top: '2rem' }}>
+            <aside className="tablet-side-stack mobile-w-full" style={{ flex: '0 0 280px', position: 'sticky', top: '2rem' }}>
                 <div style={{ backgroundColor: 'white', borderRadius: '12px', padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)' }}>
                     <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: '#0f172a', margin: '0 0 1.5rem 0', letterSpacing: '-0.5px' }}>Filter by price</h3>
                     <div style={{ height: '2px', backgroundColor: '#f1f5f9', marginBottom: '1.5rem' }}></div>
@@ -133,7 +133,7 @@ export default function Shop() {
             {loading ? (
                 <div style={{ textAlign: 'center', padding: '4rem 0', color: '#64748b' }}>Pulling inventory constraints...</div>
             ) : (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '2rem' }}>
+                <div className="tablet-grid-1 xs-grid-1 xs-gap-xs" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '2rem' }}>
                     {products.length > 0 ? products.map(p => (
                         <ProductCard key={p.id} product={p} />
                     )) : (

@@ -37,8 +37,8 @@ export default function CartPage() {
     }
 
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 2rem', fontFamily: 'Inter, sans-serif' }}>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', alignItems: 'flex-start' }}>
+        <div className="mobile-padding mobile-p-y" style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 2rem', fontFamily: 'Inter, sans-serif' }}>
+            <div className="tablet-gap-sm" style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', alignItems: 'flex-start' }}>
                 
                 {/* Cart Table Area (Left) */}
                 <div style={{ flex: '1 1 60%', overflowX: 'auto' }}>
@@ -95,7 +95,7 @@ export default function CartPage() {
                 </div>
 
                 {/* Cart Totals Sidebar (Right) */}
-                <div style={{ flex: '1 1 35%', minWidth: '320px', display: 'flex', flexDirection: 'column' }}>
+                <div className="mobile-w-full" style={{ flex: '1 1 35%', minWidth: '280px', display: 'flex', flexDirection: 'column' }}>
                     <h2 style={{ fontSize: '1.25rem', color: '#0f172a', fontWeight: 600, marginBottom: '1.5rem' }}>Cart totals</h2>
                     <div style={{ border: '1px solid #f1f5f9', backgroundColor: 'transparent' }}>
                         

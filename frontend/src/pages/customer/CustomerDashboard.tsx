@@ -132,20 +132,20 @@ export default function CustomerDashboard() {
     return (
         <div style={{ backgroundColor: '#f8fafc', minHeight: '100vh', fontFamily: 'sans-serif' }}>
             {/* Header Navigation */}
-            <header style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0', padding: '1.25rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <header className="mobile-col mobile-padding mobile-gap" style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e2e8f0', padding: '1.25rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <Link to="/" style={{ height: '50px', overflow: 'hidden', display: 'flex', alignItems: 'center', marginTop: '-1rem', marginBottom: '-1rem' }}>
                     <img src="/logo.png" alt="Nation Supermarket" style={{ height: '160px', objectFit: 'contain', transform: 'scale(1.2)' }} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerHTML = '<h1 style="color: #0f172a; margin: 0; font-size: 1.5rem; font-weight: 800;">NATION SUPERMARKET</h1>'; }} />
                 </Link>
-                <nav style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
+                <nav className="mobile-col xs-gap-xs" style={{ display: 'flex', gap: '2rem', alignItems: 'center' }}>
                     <Link to="/" style={{ color: '#0f766e', fontWeight: 700, textDecoration: 'none', fontSize: '0.95rem' }}>View Storefront</Link>
                     <span style={{ color: '#475569', fontSize: '0.9rem' }}>Welcome back, <strong style={{ color: '#0f172a' }}>{user.name.split(' ')[0]}</strong></span>
-                    <button onClick={handleLogout} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', color: '#ef4444', padding: '0.4rem 1rem', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: '0.2s', fontWeight: 600 }}>
+                    <button className="mobile-w-full" onClick={handleLogout} style={{ background: '#f8fafc', border: '1px solid #e2e8f0', color: '#ef4444', padding: '0.4rem 1rem', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', transition: '0.2s', fontWeight: 600 }}>
                         <LogOut size={16} /> Logout
                     </button>
                 </nav>
             </header>
 
-            <div style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem', display: 'flex', gap: '2rem' }}>
+            <div className="tablet-col" style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem', display: 'flex', gap: '2rem' }}>
                 
                 {/* Sidebar Isolation Segment */}
                 <aside style={{ width: '250px', flexShrink: 0 }}>

@@ -44,15 +44,32 @@ export default function Navbar() {
     return (
         <header style={{ backgroundColor: 'white', borderBottom: '1px solid #e2e8f0', fontFamily: 'sans-serif' }}>
             {/* Top Tier: Logo, Search, Accounts */}
-            <div style={{ padding: '0.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto', gap: '2rem' }}>
+            <div className="mobile-padding mobile-col" style={{ padding: '0.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto', gap: '2rem' }}>
                 
-                {/* Logo Section */}
-                <Link to="/" style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center' }}>
-                    <img src="/logo.png" alt="Nation Supermarket" style={{ height: '90px', objectFit: 'contain', transform: 'scale(1.8)', transformOrigin: 'left center', margin: '0 10px' }} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerHTML = '<span style="font-weight:800;font-size:1.5rem;color:#0f172a;letter-spacing:-0.5px;">NATION SP</span>'; }} />
-                </Link>
+                {/* Mobile Top Row: Logo + Icons */}
+                <div className="mobile-nav-brand" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flex: '1' }}>
+                    {/* Logo Section */}
+                    <Link to="/" style={{ flex: '0 0 auto', display: 'flex', alignItems: 'center' }}>
+                        <img src="/logo.png" alt="Nation Supermarket" style={{ height: '90px', objectFit: 'contain', transform: 'scale(1.8)', transformOrigin: 'left center', margin: '0 10px' }} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerHTML = '<span style="font-weight:800;font-size:1.5rem;color:#0f172a;letter-spacing:-0.5px;">NATION SP</span>'; }} />
+                    </Link>
+
+                    {/* Icons Section FOR MOBILE ONLY - To keep them on top alongside logo. In desktop they go right of search */}
+                    <div className="desktop-hide" style={{ display: 'none' }}>
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <Link to="/wishlist" style={iconLinkStyle}>
+                                <Heart size={24} color="#0f172a" />
+                                {wishlist.length > 0 && <span style={badgeStyle}>{wishlist.length}</span>}
+                            </Link>
+                            <Link to="/cart" style={iconLinkStyle}>
+                                <ShoppingCart size={24} color="#0f172a" />
+                                {cartCount > 0 && <span style={badgeStyle}>{cartCount}</span>}
+                            </Link>
+                        </div>
+                    </div>
+                </div>
 
                 {/* Massive Search Bar (Active Primary Instance) */}
-                <form onSubmit={handleSearchSubmit} style={{ flex: '1 1 auto', maxWidth: '600px', display: 'flex' }}>
+                <form className="mobile-search-bar" onSubmit={handleSearchSubmit} style={{ flex: '1 1 auto', maxWidth: '600px', display: 'flex', width: '100%' }}>
                     <input 
                         type="text" 
                         value={searchQuery}
@@ -65,8 +82,8 @@ export default function Navbar() {
                     </button>
                 </form>
                 
-                {/* Icons Section */}
-                <div style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flex: '0 0 auto' }}>
+                {/* Icons Section (DESKTOP) */}
+                <div className="mobile-hide" style={{ display: 'flex', gap: '1.5rem', alignItems: 'center', flex: '0 0 auto' }}>
                     <Link to="/wishlist" style={iconLinkStyle}>
                         <div style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
                             <div style={{ position: 'relative' }}>
@@ -156,25 +173,27 @@ export default function Navbar() {
 
             {/* Bottom Tier: Browse Categories & Quick Links */}
             <div style={{ borderTop: '1px solid #f1f5f9', backgroundColor: 'white' }}>
-                <div style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center', padding: '0 2rem' }}>
+                <div className="mobile-col mobile-padding" style={{ maxWidth: '1400px', margin: '0 auto', display: 'flex', alignItems: 'center', padding: '0 2rem' }}>
                     
                     {/* Browse Categories Dropdown */}
-                    <div 
+                    <div className="mobile-w-full"
                         style={{ position: 'relative' }}
                         tabIndex={0}
                         onBlur={(e) => {
                             if (!e.currentTarget.contains(e.relatedTarget)) setDropdownOpen(false);
                         }}
                     >
-                        <button onClick={() => setDropdownOpen(!dropdownOpen)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '0.85rem 1.5rem', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', borderTopLeftRadius: '6px', borderTopRightRadius: '6px' }}>
-                            <Grid size={18} />
-                            Browse All Categories
+                        <button className="mobile-w-full" onClick={() => setDropdownOpen(!dropdownOpen)} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.75rem', backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '0.85rem 1.5rem', fontWeight: 600, fontSize: '0.95rem', cursor: 'pointer', borderTopLeftRadius: '6px', borderTopRightRadius: '6px' }}>
+                            <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem'}}>
+                                <Grid size={18} />
+                                Browse All Categories
+                            </div>
                             <ChevronDown size={16} />
                         </button>
                         
                         {/* Dropdown Menu */}
                         {dropdownOpen && (
-                            <div style={{ position: 'absolute', top: '100%', left: 0, width: '600px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderTop: 'none', borderRadius: '0 0 8px 8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', zIndex: 50, padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
+                            <div className="mobile-w-full xs-grid-1" style={{ position: 'absolute', top: '100%', left: 0, width: '600px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderTop: 'none', borderRadius: '0 0 8px 8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', zIndex: 50, padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
                                 {CATEGORIES.map(cat => (
                                     <Link key={cat.id} to={`/shop?category=${cat.id}`} onClick={() => setDropdownOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', textDecoration: 'none', color: '#0f172a', border: '1px solid #f1f5f9', borderRadius: '6px', transition: '0.2s', backgroundColor: '#fafaf9' }}>
                                         <span style={{ fontSize: '1.25rem' }}>{cat.icon}</span>
@@ -186,7 +205,7 @@ export default function Navbar() {
                     </div>
 
                     {/* Horizontal Quick Links */}
-                    <nav style={{ display: 'flex', gap: '2rem', paddingLeft: '2rem', overflowX: 'auto', scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch', whiteSpace: 'nowrap' }}>
+                    <nav className="mobile-w-full mobile-padding hide-scrollbar" style={{ display: 'flex', gap: '2rem', paddingLeft: '2rem', overflowX: 'auto', WebkitOverflowScrolling: 'touch', whiteSpace: 'nowrap' }}>
                         <Link to="/shop?special=true" style={{ ...linkStyle, color: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.35rem' }}><Flame size={16} /> Hot Deals</Link>
                         <Link to="/shop" style={linkStyle}>Shop All</Link>
                         <Link to="/shop?category=11" style={linkStyle}>Fragrance</Link>

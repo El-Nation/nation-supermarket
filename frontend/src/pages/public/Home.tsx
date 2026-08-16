@@ -106,10 +106,10 @@ export default function Home() {
             
             {/* 0. Primary Featured Categories Carousel */}
             <section style={{ backgroundColor: HERO_SLIDES[currentSlide].bg, transition: 'background-color 0.5s ease', padding: '0 2rem', display: 'flex', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
-                <div style={{ maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4rem', minHeight: '450px' }}>
+                <div className="tablet-col tablet-gap-sm mobile-padding" style={{ maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4rem', minHeight: '450px' }}>
                     
                     {/* Carousel Left Content */}
-                    <div style={{ padding: '4rem 0', flex: '1 1 500px', minWidth: '300px', zIndex: 2 }}>
+                    <div className="mobile-text-center mobile-p-y" style={{ padding: '4rem 0', flex: '1 1 500px', minWidth: '300px', zIndex: 2 }}>
                         <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 800, color: '#0f172a', margin: '0 0 1rem 0', lineHeight: 1.05, letterSpacing: '-1.5px' }}>
                             {HERO_SLIDES[currentSlide].title}
                         </h1>
@@ -184,7 +184,7 @@ export default function Home() {
                         View all popular items <ChevronRight size={16} />
                     </Link>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.5rem' }}>
+                <div className="tablet-grid-1 xs-grid-1 xs-gap-xs" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.5rem' }}>
                     {popularProducts.map(p => (
                         <ProductCard key={p.id} product={p} />
                     ))}
@@ -203,7 +203,7 @@ export default function Home() {
                             View all special offers <ChevronRight size={16} />
                         </Link>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.5rem' }}>
+                    <div className="tablet-grid-1 xs-grid-1 xs-gap-xs" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '1.5rem' }}>
                         {specialOffers.map(p => (
                             <ProductCard key={p.id} product={p} />
                         ))}
@@ -212,11 +212,11 @@ export default function Home() {
             )}
 
             {/* 4. Supermarket Promotional Hero (Moved near footer) */}
-            <section style={{ backgroundColor: '#e0f2fe', padding: '0 2rem', display: 'flex', justifyContent: 'center', overflow: 'hidden', marginTop: '4rem' }}>
-                <div style={{ maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4rem', flexWrap: 'wrap' }}>
+            <section className="mobile-padding" style={{ backgroundColor: '#e0f2fe', padding: '0 2rem', display: 'flex', justifyContent: 'center', overflow: 'hidden', marginTop: '4rem' }}>
+                <div className="mobile-gap tablet-col" style={{ maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4rem', flexWrap: 'wrap' }}>
                     
                     {/* Hero Left Content */}
-                    <div style={{ padding: '6rem 0', flex: '1 1 500px', minWidth: '300px' }}>
+                    <div className="mobile-text-center mobile-p-y mobile-w-full" style={{ padding: '6rem 0', flex: '1 1 500px', minWidth: '300px' }}>
                         <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 800, color: '#0f172a', margin: '0 0 1.5rem 0', lineHeight: 1.1, letterSpacing: '-1px' }}>
                             Stay home & get your daily needs delivered to you
                         </h1>
@@ -225,9 +225,9 @@ export default function Home() {
                         </p>
                         
                         {/* Subscription Input Layer */}
-                        <div style={{ display: 'flex', backgroundColor: 'white', borderRadius: '50px', overflow: 'hidden', padding: '0.4rem', maxWidth: '500px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}>
+                        <div className="xs-btn-stack" style={{ display: 'flex', backgroundColor: 'white', borderRadius: '50px', overflow: 'hidden', padding: '0.4rem', maxWidth: '500px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', margin: '0 auto' }}>
                             <input type="email" placeholder="Email address*" style={{ flex: 1, padding: '1rem 1.5rem', border: 'none', outline: 'none', fontSize: '1.05rem', backgroundColor: 'transparent' }} />
-                            <button style={{ backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '0 2rem', borderRadius: '50px', fontWeight: 700, fontSize: '1.05rem', cursor: 'pointer', transition: 'background-color 0.2s' }}>
+                            <button className="mobile-w-full" style={{ backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '1rem 2rem', borderRadius: '50px', fontWeight: 700, fontSize: '1.05rem', cursor: 'pointer', transition: 'background-color 0.2s' }}>
                                 Subscribe
                             </button>
                         </div>

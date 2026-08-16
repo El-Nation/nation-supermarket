@@ -72,7 +72,7 @@ export default function ProductDetails() {
                 <ChevronLeft size={20} /> Continue Shopping
             </Link>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 450px) 1fr', gap: '4rem', alignItems: 'start' }}>
+            <div className="tablet-grid-1 mobile-grid-1 mobile-gap" style={{ display: 'grid', gridTemplateColumns: 'minmax(300px, 450px) 1fr', gap: '4rem', alignItems: 'start' }}>
                 {/* Left: HD Cover Frame */}
                 <div style={{ position: 'relative', width: '100%', aspectRatio: '1', backgroundColor: '#f8fafc', borderRadius: '16px', border: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', overflow: 'hidden' }}>
                     {product.compare_price && (
@@ -142,7 +142,7 @@ export default function ProductDetails() {
                     </div>
 
                     {/* Trust Signals */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: '#f8fafc', padding: '1.5rem', borderRadius: '12px' }}>
+                    <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: '#f8fafc', padding: '1.5rem', borderRadius: '12px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#334155', fontWeight: 600 }}>
                             <Truck size={24} color="#0284c7" /> Genuine Swift Delivery Network
                         </div>

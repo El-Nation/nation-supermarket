@@ -145,3 +145,64 @@ body {
     transform: translateY(0);
   }
 }
+
+/* =======================================================
+   NATION SUPERMARKET STAGE 9: RESPONSIVE FRAMEWORK ENGINE
+   ======================================================= */
+
+/* Hide scrollbar for clean mobile sliding */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Tablet (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .tablet-col { flex-direction: column !important; }
+  .tablet-grid-1 { grid-template-columns: 1fr !important; }
+  .tablet-gap-sm { gap: 1rem !important; }
+  .tablet-p-sm { padding: 1rem !important; }
+  .tablet-side-stack { position: relative !important; width: 100% !important; min-height: auto !important; }
+}
+
+/* Mobile (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Layout Translators */
+  .mobile-col { flex-direction: column !important; align-items: stretch !important; }
+  .mobile-col-reverse { flex-direction: column-reverse !important; align-items: stretch !important; }
+  .mobile-grid-1 { grid-template-columns: 1fr !important; }
+  .mobile-grid-2 { grid-template-columns: 1fr 1fr !important; }
+  
+  /* Hiding Components */
+  .mobile-hide { display: none !important; }
+  .desktop-hide { display: block !important; }
+  
+  /* Sizing Constraints */
+  .mobile-w-full { width: 100% !important; max-width: 100% !important; }
+  .mobile-padding { padding: 1rem !important; }
+  .mobile-p-y { padding-top: 1rem !important; padding-bottom: 1rem !important; }
+  .mobile-gap { gap: 1rem !important; }
+  .mobile-gap-sm { gap: 0.5rem !important; }
+  .mobile-text-center { text-align: center !important; align-items: center !important; }
+  
+  /* Specific Elements Overrides */
+  .mobile-nav-brand { justify-content: space-between !important; width: 100% !important; }
+  .mobile-search-bar { width: 100% !important; max-width: 100% !important; margin-top: 1rem !important; }
+  .table-responsive { overflow-x: auto !important; display: block !important; width: 100% !important; }
+  
+  /* Hero Sections */
+  .mobile-hero-container { padding: 2rem 1rem !important; }
+  .mobile-hero-text { font-size: 2rem !important; line-height: 1.2 !important; }
+}
+
+/* Small Screens (max-width: 480px) */
+@media (max-width: 480px) {
+  .xs-grid-1 { grid-template-columns: 1fr !important; }
+  .xs-font-sm { font-size: 0.85rem !important; }
+  .xs-gap-xs { gap: 0.5rem !important; }
+  .xs-padding-sm { padding: 0.75rem !important; }
+  .xs-btn-stack { width: 100% !important; display: flex !important; flex-direction: column !important; }
+}
