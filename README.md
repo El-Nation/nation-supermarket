@@ -1,7 +1,7 @@
 # Nation Supermarket
-**Live Demo:** [https://nationsupermarket.eghedev.com](https://nationsupermarket.eghedev.com)  
-**Author:** Eghe Destiny
+🚀 **Live Production Demo:** [https://nationsupermarket.eghedev.com](https://nationsupermarket.eghedev.com)  
 
+👤 **Author:** Eghe Destiny
 A modern online supermarket for Nigeria, allowing customers to browse products, buy products securely, and choose delivery or pickup.
 
 ## Tech Stack
