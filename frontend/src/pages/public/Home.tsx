@@ -58,6 +58,7 @@ export default function Home() {
     const [isSliderHovered, setIsSliderHovered] = useState(false);
     
     // Primary Dynamic Carousel State
+    const [currentSlide, setCurrentSlide] = useState(0);
     const HERO_SLIDES = [
         {
             title: "A Clean, Fresh Home",
