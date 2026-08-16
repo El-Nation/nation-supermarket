@@ -5,6 +5,7 @@ import api from '../../services/api';
 export default function ManageCategories() {
     const [categories, setCategories] = useState<any[]>([]);
     const [name, setName] = useState('');
+    const [editId, setEditId] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
 
     useEffect(() => {
@@ -24,15 +25,27 @@ export default function ManageCategories() {
         e.preventDefault();
         setLoading(true);
         try {
-            await api.post('/admin/categories', { name });
+            if (editId) {
+                await api.put(`/admin/categories/${editId}`, { name });
+                alert('Category explicitly updated.');
+            } else {
+                await api.post('/admin/categories', { name });
+                alert('Category successfully instantiated.');
+            }
             setName('');
+            setEditId(null);
             fetchCats();
-            alert('Category successfully instantiated.');
         } catch (e: any) {
             alert(e.response?.data?.message || 'Error occurred mapping this category.');
         } finally {
             setLoading(false);
         }
+    };
+
+    const handleEdit = (c: any) => {
+        setEditId(c.id);
+        setName(c.name);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const handleDelete = async (id: number) => {
@@ -55,15 +68,20 @@ export default function ManageCategories() {
             
             <div className="category-grid">
                 <div className="admin-card" style={{alignSelf: 'start'}}>
-                    <h3 style={{margin: '0 0 1.5rem 0', color: '#1e293b'}}>Add New Category</h3>
+                    <h3 style={{margin: '0 0 1.5rem 0', color: '#1e293b'}}>{editId ? 'Edit Category' : 'Add New Category'}</h3>
                     <form onSubmit={handleCreate}>
                         <div style={{marginBottom: '1rem'}}>
                             <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Category Descriptor</label>
                             <input type="text" className="form-input" required value={name} onChange={e=>setName(e.target.value)} />
                         </div>
-                        <button type="submit" disabled={loading} className="admin-btn-primary" style={{width: '100%', justifyContent: 'center'}}>
-                            <Plus size={18} /> {loading ? 'Processing...' : 'Create Classification'}
-                        </button>
+                        <div style={{display: 'flex', gap: '0.5rem'}}>
+                            <button type="submit" disabled={loading} className="admin-btn-primary" style={{flex: 1, justifyContent: 'center'}}>
+                                {editId ? <Edit2 size={18} /> : <Plus size={18} />} {loading ? 'Processing...' : (editId ? 'Update Classification' : 'Create Classification')}
+                            </button>
+                            {editId && (
+                                <button type="button" onClick={() => { setEditId(null); setName(''); }} className="admin-btn-primary" style={{backgroundColor: '#e2e8f0', color: '#0f172a'}}>Cancel</button>
+                            )}
+                        </div>
                     </form>
                 </div>
                 
@@ -91,9 +109,14 @@ export default function ManageCategories() {
                                         <td style={{color: '#0ea5e9'}}>{c.slug}</td>
                                         <td>{new Date(c.created_at).toLocaleDateString()}</td>
                                         <td>
-                                            <button onClick={() => handleDelete(c.id)} style={{background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.5rem'}}>
-                                                <Trash2 size={18} />
-                                            </button>
+                                            <div style={{display: 'flex', gap: '0.5rem'}}>
+                                                <button onClick={() => handleEdit(c)} style={{background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', padding: '0.5rem'}}>
+                                                    <Edit2 size={18} />
+                                                </button>
+                                                <button onClick={() => handleDelete(c.id)} style={{background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.5rem'}}>
+                                                    <Trash2 size={18} />
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}

@@ -2,8 +2,8 @@ import express from 'express';
 import { protect, admin } from '../middlewares/authMiddleware';
 import { uploadMedia } from '../middlewares/uploadMiddleware';
 import { 
-    createProduct, getProducts, deleteProduct, updateProductStock,
-    createCategory, getCategories 
+    createProduct, getProducts, deleteProduct, updateProductStock, updateProduct,
+    createCategory, getCategories, updateCategory 
 } from '../controllers/inventoryController';
 import { getDeliveryZones, createDeliveryZone, updateDeliveryZone, deleteDeliveryZone } from '../controllers/deliveryController';
 import { getStoreSettings, updateStoreSetting } from '../controllers/storeSettingsController';
@@ -24,12 +24,14 @@ router.use(admin);
 // Inventory routes
 router.post('/products', uploadMedia.array('images', 5), createProduct);
 router.get('/products', getProducts);
+router.put('/products/:id/full', uploadMedia.array('images', 5), updateProduct);
 router.put('/products/:id', updateProductStock);
 router.delete('/products/:id', deleteProduct);
 
 // Category routes
 router.post('/categories', createCategory);
 router.get('/categories', getCategories);
+router.put('/categories/:id', updateCategory);
 
 // Delivery Configuration Routes
 router.get('/delivery', getDeliveryZones);

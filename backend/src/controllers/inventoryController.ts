@@ -65,6 +65,32 @@ export const deleteProduct = async (req: Request, res: Response) => {
     }
 };
 
+export const updateProduct = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        const { name, description, price, discount, category_id, stock_quantity, status, is_featured } = req.body;
+        
+        let updateQuery = 'UPDATE products SET name = $1, description = $2, price = $3, discount = $4, category_id = $5, stock_quantity = $6, status = $7, is_featured = $8 ';
+        const values = [name, description, price, discount || 0, category_id || null, stock_quantity, status || 'active', Boolean(is_featured)];
+        
+        const files = req.files as Express.Multer.File[];
+        if (files && files.length > 0) {
+            const images = files.map(file => file.path);
+            updateQuery += ', images = $9 WHERE id = $10 RETURNING *';
+            values.push(JSON.stringify(images), id);
+        } else {
+            updateQuery += 'WHERE id = $9 RETURNING *';
+            values.push(id);
+        }
+        
+        const result = await pool.query(updateQuery, values as any);
+        if (result.rowCount === 0) return res.status(404).json({ message: 'Product missing structurally' });
+        res.json(result.rows[0]);
+    } catch(e) {
+        res.status(500).json({ message: 'Error patching root product' });
+    }
+};
+
 // ### CATEGORY CONTROLLERS ###
 export const updateProductStock = async (req: Request, res: Response) => {
     try {
@@ -98,5 +124,18 @@ export const getCategories = async (req: Request, res: Response) => {
         res.json(categories);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching categories' });
+    }
+};
+
+export const updateCategory = async (req: Request, res: Response) => {
+    try {
+        const id = Number(req.params.id);
+        const { name } = req.body;
+        const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+        const result = await pool.query('UPDATE categories SET name = $1, slug = $2 WHERE id = $3 RETURNING *', [name, slug, id]);
+        if (result.rowCount === 0) return res.status(404).json({ message: 'Category not found' });
+        res.json(result.rows[0]);
+    } catch(e) {
+        res.status(500).json({ message: 'Error editing classification' });
     }
 };

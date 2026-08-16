@@ -13,6 +13,7 @@ export default function ManageProducts() {
     const [catId, setCatId] = useState('');
     const [desc, setDesc] = useState('');
     const [images, setImages] = useState<FileList | null>(null);
+    const [editId, setEditId] = useState<number | null>(null);
     const [uploading, setUploading] = useState(false);
 
     useEffect(() => {
@@ -50,16 +51,37 @@ export default function ManageProducts() {
                 }
             }
 
-            await api.post('/admin/products', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
-            alert('Product successfully managed globally.');
+            if (editId) {
+                await api.put(`/admin/products/${editId}/full`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+                alert('Product carefully aligned globally.');
+            } else {
+                await api.post('/admin/products', formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+                alert('Product successfully managed globally.');
+            }
+            
+            setEditId(null);
+            setName(''); setPrice(''); setStock(''); setCatId(''); setDesc(''); setImages(null);
+            
             fetchData();
         } catch (error) {
             alert('Cloudinary or API rejection.');
         } finally {
             setUploading(false);
         }
+    };
+    
+    const handleEdit = (p: any) => {
+        setEditId(p.id);
+        setName(p.name || '');
+        setPrice(p.price || '');
+        setStock(p.stock_quantity || '');
+        setCatId(p.category_id || '');
+        setDesc(p.description || '');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     };
     
     const handleDelete = async (id: number) => {
@@ -111,9 +133,19 @@ export default function ManageProducts() {
                             <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Cloudinary Images</label>
                             <input type="file" multiple accept="image/*" className="form-input" onChange={e => setImages(e.target.files)} />
                         </div>
-                        <button type="submit" disabled={uploading} className="admin-btn-primary" style={{width: '100%', justifyContent: 'center'}}>
-                            {uploading ? 'Negotiating Cloud Upload...' : 'Publish Product'}
-                        </button>
+                        <div style={{display: 'flex', gap: '0.5rem'}}>
+                            <button type="submit" disabled={uploading} className="admin-btn-primary" style={{flex: 1, justifyContent: 'center'}}>
+                                {editId ? <Edit2 size={18} /> : <Plus size={18} />} {uploading ? 'Negotiating Cloud Upload...' : (editId ? 'Update Product' : 'Publish Product')}
+                            </button>
+                            {editId && (
+                                <button type="button" onClick={() => { 
+                                    setEditId(null); 
+                                    setName(''); setPrice(''); setStock(''); setCatId(''); setDesc(''); setImages(null); 
+                                }} className="admin-btn-primary" style={{backgroundColor: '#e2e8f0', color: '#0f172a'}}>
+                                    Cancel
+                                </button>
+                            )}
+                        </div>
                     </form>
                 </div>
 
@@ -148,6 +180,9 @@ export default function ManageProducts() {
                                             <td style={{color: p.stock_quantity < 5 ? '#f43f5e' : 'inherit'}}>{p.stock_quantity}</td>
                                             <td>
                                                 <div style={{display: 'flex', gap: '0.5rem'}}>
+                                                    <button onClick={() => handleEdit(p)} style={{background: 'none', border: 'none', color: '#2563eb', cursor: 'pointer', padding: '0.5rem'}}>
+                                                        <Edit2 size={18} />
+                                                    </button>
                                                     <button onClick={() => handleDelete(p.id)} style={{background: 'none', border: 'none', color: '#ef4444', cursor: 'pointer', padding: '0.5rem'}}>
                                                         <Trash2 size={18} />
                                                     </button>
