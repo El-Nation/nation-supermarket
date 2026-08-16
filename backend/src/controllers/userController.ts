@@ -124,3 +124,13 @@ export const changeCustomerPassword = async (req: Request, res: Response): Promi
         res.status(500).json({ message: 'Error dynamically routing customer password payload.' });
     }
 };
+
+export const getCustomerProfileSecure = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = (req as any).user.id;
+        const result = await pool.query('SELECT two_factor_enabled FROM users WHERE id = $1', [userId]);
+        res.json(result.rows[0]);
+    } catch(e) {
+        res.status(500).json({ message: 'Error fetching customer strict security boundaries.' });
+    }
+};

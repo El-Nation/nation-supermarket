@@ -22,6 +22,12 @@ export default function CustomerDashboard() {
     const [confirmPass, setConfirmPass] = useState('');
     const [passStatus, setPassStatus] = useState('');
 
+    // 2FA State
+    const [qrCode, setQrCode] = useState('');
+    const [secret, setSecret] = useState('');
+    const [token, setToken] = useState('');
+    const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+
     useEffect(() => {
         if (!user) {
             navigate('/login');
@@ -33,8 +39,16 @@ export default function CustomerDashboard() {
             setPhone(user.phone || '');
             fetchOrders();
             fetchWishlist();
+            fetchSecurityScope();
         }
     }, [user, navigate]);
+
+    const fetchSecurityScope = async () => {
+        try {
+            const res = await api.get('/user/profile-secure'); 
+            setTwoFactorEnabled(res.data.two_factor_enabled || false);
+        } catch(e) {}
+    };
 
     const fetchOrders = async () => {
         try {
@@ -73,6 +87,32 @@ export default function CustomerDashboard() {
         } catch(error: any) {
             setPassStatus(error.response?.data?.message || 'Failed applying secure password matrices.');
         }
+    };
+
+    const handleGenerate2FA = async () => {
+        try {
+            const res = await api.post('/auth/2fa/generate');
+            setQrCode(res.data.qrCode);
+            setSecret(res.data.secret);
+        } catch(e) { alert('Error generating secure 2FA key.'); }
+    };
+
+    const handleVerify2FA = async () => {
+        try {
+            await api.post('/auth/2fa/verify', { token });
+            alert('2FA active successfully!');
+            setQrCode(''); setToken('');
+            setTwoFactorEnabled(true);
+        } catch(e) { alert('Invalid verification token.'); }
+    };
+
+    const handleDisable2FA = async () => {
+        if (!window.confirm("Are you sure you want to disable 2FA?")) return;
+        try {
+            await api.post('/auth/2fa/disable');
+            alert('2FA security constraint successfully removed.');
+            setTwoFactorEnabled(false);
+        } catch(e) { alert('Failed disabling 2FA'); }
     };
 
     const handleLogout = async () => {
@@ -215,11 +255,12 @@ export default function CustomerDashboard() {
                     )}
 
                     {activeTab === 'security' && (
-                        <div style={{maxWidth: '500px'}}>
-                            <h2 style={{marginTop: 0, color: '#1e293b'}}>Account Security</h2>
-                            <p style={{color: '#64748b', fontSize: '0.9rem'}}>Modify your core encryption passwords safely here.</p>
-                            {passStatus && <div style={{padding: '0.75rem', background: '#e0f2fe', color: '#0369a1', borderRadius: '4px', marginBottom: '1rem', fontSize: '0.85rem', fontWeight: 600}}>{passStatus}</div>}
-                            <form onSubmit={handlePasswordUpdate} style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
+                        <div>
+                            <div style={{maxWidth: '500px'}}>
+                                <h2 style={{marginTop: 0, color: '#1e293b'}}>Account Security</h2>
+                                <p style={{color: '#64748b', fontSize: '0.9rem'}}>Modify your core encryption passwords safely here.</p>
+                                {passStatus && <div style={{padding: '0.75rem', background: '#e0f2fe', color: '#0369a1', borderRadius: '4px', marginBottom: '1rem', fontSize: '0.85rem', fontWeight: 600}}>{passStatus}</div>}
+                                <form onSubmit={handlePasswordUpdate} style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
                                 <div>
                                     <label style={{display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#475569', fontWeight: 600}}>Current Password</label>
                                     <input required type="password" value={currentPass} onChange={e=>setCurrentPass(e.target.value)} style={{width: '95%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1'}} />
@@ -234,6 +275,50 @@ export default function CustomerDashboard() {
                                 </div>
                                 <button type="submit" style={{padding: '0.75rem', background: '#ef4444', color: 'white', borderRadius: '4px', border: 'none', fontWeight: 600, cursor: 'pointer', marginTop: '0.5rem', width: 'fit-content'}}>Change Password</button>
                             </form>
+                            </div>
+                            
+                            <div style={{marginTop: '3rem', maxWidth: '500px'}}>
+                                <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid #e2e8f0'}}>
+                                    <Shield color="#0f172a" size={24} />
+                                    <h3 style={{margin: 0, color: '#0f172a', fontWeight: 600, fontSize: '1.1rem'}}>Multi-Factor Protection Engine</h3>
+                                </div>
+                                {twoFactorEnabled ? (
+                                    <div style={{backgroundColor: '#f0fdf4', padding: '1.5rem', borderRadius: 8, border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                                        <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem'}}>
+                                            <Shield color="#10b981" size={28} />
+                                            <div>
+                                                <h4 style={{margin: '0 0 0.25rem 0', color: '#065f46', fontSize: '1rem'}}>2FA Array Active</h4>
+                                                <p style={{margin: 0, color: '#047857', fontSize: '0.85rem'}}>Your digital limits are actively intercepting authentications securely.</p>
+                                            </div>
+                                        </div>
+                                        <button onClick={handleDisable2FA} style={{padding: '0.6rem 1rem', background: '#ef4444', color: 'white', borderRadius: '4px', border: 'none', fontWeight: 600, cursor: 'pointer'}}>Destabilize 2FA</button>
+                                    </div>
+                                ) : !qrCode ? (
+                                    <div style={{backgroundColor: '#f8fafc', padding: '2rem', borderRadius: 8, border: '1px dashed #cbd5e1', textAlign: 'center'}}>
+                                        <Shield color="#94a3b8" size={32} style={{marginBottom: '0.75rem', opacity: 0.5}} />
+                                        <h4 style={{margin: '0 0 0.5rem 0', color: '#334155'}}>Security Vulnerable</h4>
+                                        <p style={{color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem'}}>It is highly recommended you encrypt this profile using TOTP constraints natively.</p>
+                                        <button onClick={handleGenerate2FA} style={{padding: '0.75rem 1.25rem', background: '#0f172a', color: 'white', borderRadius: '4px', border: 'none', fontWeight: 600, cursor: 'pointer'}}>Provision Secure Key</button>
+                                    </div>
+                                ) : (
+                                    <div style={{backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', gap: '2rem', alignItems: 'center'}}>
+                                        <div style={{backgroundColor: 'white', padding: 8, borderRadius: 12, border: '1px solid #cbd5e1'}}>
+                                            <img src={qrCode} alt="2FA QR" style={{display: 'block'}}/>
+                                        </div>
+                                        <div style={{flex: 1}}>
+                                            <p style={{margin: '0 0 0.75rem 0', color: '#334155', fontWeight: 500, fontSize: '0.9rem'}}>1. Mount this visual node securely via Authenticator.</p>
+                                            <p style={{margin: '0 0 1.25rem 0', color: '#334155', fontWeight: 500, fontSize: '0.9rem'}}>
+                                                Fallback Base32 Vector:<br/>
+                                                <code style={{background: 'white', padding: '6px', borderRadius: 6, color: '#0f172a', fontWeight: 700, fontSize: '1rem', border: '1px solid #e2e8f0', display: 'inline-block', marginTop: '6px', letterSpacing: '2px', wordBreak: 'break-all'}}>{secret}</code>
+                                            </p>
+                                            <div style={{display: 'flex', gap: '1rem'}}>
+                                                <input type="text" placeholder="6-digit verification code" value={token} onChange={e=>setToken(e.target.value)} style={{flex: 1, padding: '0.5rem', border: '1px solid #cbd5e1', borderRadius: '4px', textAlign: 'center', letterSpacing: '2px', fontWeight: 'bold'}} />
+                                                <button onClick={handleVerify2FA} style={{padding: '0.5rem 1.25rem', background: '#0f172a', color: 'white', borderRadius: '4px', border: 'none', fontWeight: 600, cursor: 'pointer'}}>Lock Key</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
                 </main>

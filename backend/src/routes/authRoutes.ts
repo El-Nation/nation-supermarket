@@ -8,9 +8,9 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 router.post('/logout', logoutUser);
 
-// Admin 2FA Setup endpoints
-router.post('/2fa/generate', protect, admin, generate2FA);
-router.post('/2fa/verify', protect, admin, verify2FA);
-router.post('/2fa/disable', protect, admin, disable2FA);
+// Universal 2FA Setup endpoints
+router.post('/2fa/generate', protect, generate2FA);
+router.post('/2fa/verify', protect, verify2FA);
+router.post('/2fa/disable', protect, disable2FA);
 
 export default router;

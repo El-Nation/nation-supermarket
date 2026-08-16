@@ -1,6 +1,6 @@
 import express from 'express';
 import { protect } from '../middlewares/authMiddleware';
-import { updateCustomerProfile, changeCustomerPassword } from '../controllers/userController';
+import { updateCustomerProfile, changeCustomerPassword, getCustomerProfileSecure } from '../controllers/userController';
 import { getCustomerOrders } from '../controllers/orderController';
 import { getWishlist, addToWishlist, removeFromWishlist } from '../controllers/wishlistController';
 
@@ -10,6 +10,7 @@ const router = express.Router();
 router.use(protect);
 
 router.post('/profile', updateCustomerProfile);
+router.get('/profile-secure', getCustomerProfileSecure);
 router.post('/password', changeCustomerPassword);
 router.get('/orders', getCustomerOrders);
 

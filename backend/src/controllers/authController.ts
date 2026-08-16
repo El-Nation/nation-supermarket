@@ -90,8 +90,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
             return;
         }
 
-        // 2FA Admin Flow Validation
-        if (user.two_factor_enabled && user.role === 'admin') {
+        // Universal 2FA Flow Validation
+        if (user.two_factor_enabled) {
             if (!twoFactorToken) {
                 res.status(403).json({ message: '2FA token required', requires2FA: true });
                 return;
@@ -121,10 +121,6 @@ export const logoutUser = (req: Request, res: Response): void => {
 
 export const generate2FA = async (req: Request, res: Response): Promise<void> => {
     const user = (req as any).user;
-    if (user.role !== 'admin') {
-        res.status(403).json({ message: 'Requires admin role to enable 2FA.' });
-        return;
-    }
 
     const secret = speakeasy.generateSecret({ name: `NationSupermarket (${user.email})` });
     
