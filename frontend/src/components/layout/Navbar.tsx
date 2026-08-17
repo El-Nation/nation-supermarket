@@ -55,15 +55,61 @@ export default function Navbar() {
 
                     {/* Icons Section FOR MOBILE ONLY - To keep them on top alongside logo. In desktop they go right of search */}
                     <div className="desktop-hide" style={{ display: 'none' }}>
-                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                            <Link to="/wishlist" style={iconLinkStyle}>
+                        <div style={{ display: 'flex', gap: '1.25rem', alignItems: 'center' }}>
+                            <Link to="/wishlist" style={{ ...iconLinkStyle, position: 'relative' }}>
                                 <Heart size={24} color="#0f172a" />
                                 {wishlist.length > 0 && <span style={badgeStyle}>{wishlist.length}</span>}
                             </Link>
-                            <Link to="/cart" style={iconLinkStyle}>
-                                <ShoppingCart size={24} color="#0f172a" />
-                                {cartCount > 0 && <span style={badgeStyle}>{cartCount}</span>}
-                            </Link>
+
+                            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                <div onClick={() => setCartClicked(prev => !prev)} style={{ ...iconLinkStyle, position: 'relative', cursor: 'pointer' }}>
+                                    <ShoppingCart size={24} color="#0f172a" />
+                                    {cartCount > 0 && <span style={badgeStyle}>{cartCount}</span>}
+                                </div>
+                                {cartClicked && (
+                                    <div style={{ position: 'absolute', top: '100%', right: '-15px', width: '320px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', zIndex: 60, padding: '1rem', marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                        {cartItems.length > 0 ? (
+                                            <>
+                                                <div style={{ maxHeight: '250px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', paddingRight: '0.25rem' }}>
+                                                    {cartItems.map(item => (
+                                                        <div key={item.product_id} style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                                                            <div style={{ width: '48px', height: '48px', backgroundColor: '#f8fafc', borderRadius: '6px', border: '1px solid #f1f5f9', display: 'flex', justifyContent: 'center', alignItems: 'center', overflow: 'hidden' }}>
+                                                                {item.image_url ? (
+                                                                    <img src={item.image_url} alt={item.name} style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }} />
+                                                                ) : (
+                                                                    <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#94a3b8' }}>{item.name.charAt(0)}</span>
+                                                                )}
+                                                            </div>
+                                                            <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                                                                <span style={{ fontSize: '0.8rem', fontWeight: 700, color: '#0f172a', lineHeight: 1.2 }}>{item.name}</span>
+                                                                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.25rem', alignItems: 'center' }}>
+                                                                    <span style={{ fontSize: '0.75rem', color: '#64748b', fontWeight: 600 }}>{item.quantity} ×</span>
+                                                                    <span style={{ fontSize: '0.8rem', color: '#1d4ed8', fontWeight: 800 }}>₦{item.price.toLocaleString()}</span>
+                                                                </div>
+                                                            </div>
+                                                            <button onClick={() => removeFromCart(item.product_id)} style={{ background: 'none', border: '1px solid #e2e8f0', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', color: '#94a3b8' }}>×</button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                                <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '0.75rem' }}>
+                                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                                                        <span style={{ fontWeight: 600, color: '#64748b', fontSize: '0.9rem' }}>Subtotal:</span>
+                                                        <span style={{ fontWeight: 800, color: '#1d4ed8', fontSize: '1rem' }}>₦{cartTotal.toLocaleString()}</span>
+                                                    </div>
+                                                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                                                        <Link to="/cart" onClick={() => setCartClicked(false)} style={{ flex: 1, padding: '0.5rem', textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', textDecoration: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem' }}>View cart</Link>
+                                                        <Link to="/checkout" onClick={() => setCartClicked(false)} style={{ flex: 1, padding: '0.5rem', textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', textDecoration: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem' }}>Checkout</Link>
+                                                        <button onClick={() => { clearCart(); setCartClicked(false); }} style={{ flex: 1, padding: '0.5rem', backgroundColor: '#1d4ed8', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>Empty</button>
+                                                    </div>
+                                                </div>
+                                            </>
+                                        ) : (
+                                            <div style={{ textAlign: 'center', color: '#94a3b8', padding: '1.5rem 0', fontWeight: 500 }}>Your cart is empty.</div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+
                             {user && user.role !== 'admin' ? (
                                 <Link to="/dashboard" style={iconLinkStyle}>
                                     <User size={24} color="#0f172a" />
