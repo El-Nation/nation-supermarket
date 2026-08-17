@@ -168,10 +168,10 @@ export default function Home() {
 
             {/* 0. Primary Featured Categories Carousel */}
             <section style={{ backgroundColor: HERO_SLIDES[currentSlide].bg, transition: 'background-color 0.5s ease', padding: '0 2rem', display: 'flex', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
-                <div className="tablet-col tablet-gap-sm mobile-padding" style={{ maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4rem', minHeight: '450px' }}>
+                <div className="tablet-col tablet-gap-sm mobile-padding" style={{ maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem', minHeight: '400px' }}>
                     
                     {/* Carousel Left Content */}
-                    <div className="mobile-text-center mobile-p-y" style={{ padding: '4rem 0', flex: '1 1 500px', minWidth: '300px', zIndex: 2 }}>
+                    <div className="mobile-text-center mobile-p-y" style={{ padding: '4rem 0', flex: 1, minWidth: '280px', zIndex: 2 }}>
                         <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 800, color: '#0f172a', margin: '0 0 1rem 0', lineHeight: 1.05, letterSpacing: '-1.5px' }}>
                             {HERO_SLIDES[currentSlide].title}
                         </h1>
@@ -184,8 +184,8 @@ export default function Home() {
                     </div>
 
                     {/* Carousel Right Graphic */}
-                    <div style={{ flex: '1 1 500px', display: 'flex', justifyContent: 'flex-end', alignSelf: 'center', position: 'relative', height: '100%', zIndex: 1 }}>
-                        <img src={HERO_SLIDES[currentSlide].image} alt="Featured Slide" style={{ maxWidth: '400px', maxHeight: '350px', objectFit: 'contain', filter: 'drop-shadow(0 25px 25px rgba(0,0,0,0.15))', transform: 'scale(1.1)', transition: 'opacity 0.5s ease' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignSelf: 'center', position: 'relative', zIndex: 1 }}>
+                        <img src={HERO_SLIDES[currentSlide].image} alt="Featured Slide" style={{ maxWidth: '400px', maxHeight: '350px', objectFit: 'contain', filter: 'drop-shadow(0 25px 25px rgba(0,0,0,0.15))', transform: 'scale(1.1)', transition: 'opacity 0.5s ease', marginTop: '1rem' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                     </div>
                 </div>
 
@@ -275,10 +275,10 @@ export default function Home() {
 
             {/* 4. Supermarket Promotional Hero (Moved near footer) */}
             <section className="mobile-padding" style={{ backgroundColor: '#e0f2fe', padding: '0 2rem', display: 'flex', justifyContent: 'center', overflow: 'hidden', marginTop: '4rem' }}>
-                <div className="mobile-gap tablet-col" style={{ maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4rem', flexWrap: 'wrap' }}>
+                <div className="mobile-gap tablet-col" style={{ maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
                     
                     {/* Hero Left Content */}
-                    <div className="mobile-text-center mobile-p-y mobile-w-full" style={{ padding: '6rem 0', flex: '1 1 500px', minWidth: '300px' }}>
+                    <div className="mobile-text-center mobile-p-y mobile-w-full" style={{ padding: '6rem 0', flex: 1, minWidth: '280px' }}>
                         <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4rem)', fontWeight: 800, color: '#0f172a', margin: '0 0 1.5rem 0', lineHeight: 1.1, letterSpacing: '-1px' }}>
                             Stay home & get your daily needs delivered to you
                         </h1>
@@ -296,7 +296,7 @@ export default function Home() {
                     </div>
 
                     {/* Hero Right Graphic */}
-                    <div style={{ flex: '1 1 500px', display: 'flex', justifyContent: 'center', alignSelf: 'flex-end', position: 'relative' }}>
+                    <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignSelf: 'flex-end', position: 'relative' }}>
                         <img src="/images/courier_hero.png" alt="Fast Supermarket Delivery" style={{ width: '100%', maxWidth: '550px', objectFit: 'contain', filter: 'drop-shadow(0 20px 25px rgba(0,0,0,0.15))', marginBottom: '-5px' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                     </div>
                 </div>
