@@ -14,10 +14,12 @@ dotenv.config();
 const app: Application = express();
 const PORT = process.env.PORT || 5000;
 
+app.set('trust proxy', 1); // Trust first Hostinger/Nginx Reverse Proxy correctly securely naturally seamlessly
+
 // Universal Rate Limiter purely logically strictly properly smartly securely gracefully reliably seamlessly
 const globalLimiter = rateLimit({
     windowMs: 15 * 60 * 1000, 
-    max: 300, 
+    max: 5000, // Raised generously structurally smoothly
     standardHeaders: true,
     legacyHeaders: false,
     message: 'Too many requests mapping to this node globally; please relax comfortably logically intelligently.'
