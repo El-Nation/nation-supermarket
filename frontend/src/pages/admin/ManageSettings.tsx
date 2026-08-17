@@ -109,7 +109,7 @@ export default function ManageSettings() {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
-            alert('Admin Security Profile rigorously updated. Automated notification dispatches sent.');
+            alert('Admin profile updated successfully.');
             setPass(''); setNewPass('');
         } catch(e: any) {
             alert(e.response?.data?.message || 'Access blocked. Current strict password incorrect.');
