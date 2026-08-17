@@ -33,39 +33,47 @@ export const sendSystemEmail = async (to: string, subject: string, html: string)
     }
 };
 
-export const generateEmailHTML = (title: string, contentHTML: string, cta?: { text: string; url: string }) => {
+export const generateEmailHTML = (title: string, contentHTML: string, cta?: { text: string; url: string }, username?: string) => {
     const ctaHTML = cta ? `
-        <div style="margin-top: 30px; margin-bottom: 10px;">
-            <a href="${cta.url}" style="background-color: #0f172a; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
+        <div style="margin-top: 25px; margin-bottom: 5px;">
+            <a href="${cta.url}" style="background-color: #6366f1; color: #ffffff; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: 600; display: inline-block;">
                 ${cta.text}
             </a>
         </div>
     ` : '';
 
+    const greeting = username ? `<p style="margin-top: 0; margin-bottom: 15px;">Hi <strong>${username}</strong>,</p>` : '';
+
     return `
-    <div style="background-color: #f8fafc; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol'; line-height: 1.6; color: #334155;">
-        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+    <div style="background-color: #ffffff; padding: 40px 20px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; color: #1e293b;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #eef2ff; border-radius: 12px; padding: 30px;">
             
-            <div style="background-color: #0f172a; padding: 25px 30px; text-align: center;">
-                <img src="https://nationsupermarket.eghedev.com/logo.png" alt="Nation Supermarket Core" style="height: 48px; width: auto; object-fit: contain; margin: 0 auto; display: block;" />
-            </div>
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 25px;">
+                <tr>
+                    <td width="48" style="vertical-align: middle;">
+                        <div style="width: 40px; height: 40px; background-color: #ffffff; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+                            <img src="https://nationsupermarket.eghedev.com/logo.png" alt="Logo" style="width: 100%; height: auto; object-fit: contain;" />
+                        </div>
+                    </td>
+                    <td style="vertical-align: middle; padding-left: 10px;">
+                        <span style="font-size: 20px; font-weight: 700; color: #7c3aed; margin: 0; display: inline-block;">Nation Supermarket</span>
+                    </td>
+                </tr>
+            </table>
 
-            <div style="padding: 40px 30px;">
-                <h2 style="margin-top: 0; color: #0f172a; font-size: 22px; font-weight: 700;">${title}</h2>
-                <div style="margin-top: 20px; font-size: 16px; color: #475569;">
-                    ${contentHTML}
-                </div>
-                ${ctaHTML}
+            <div style="font-size: 16px; color: #334155;">
+                ${greeting}
+                <div style="margin-bottom: 12px; font-weight: 600; font-size: 17px; color: #1e293b;">${title}</div>
+                ${contentHTML}
             </div>
-
-            <div style="background-color: #f1f5f9; padding: 20px 30px; text-align: center; border-top: 1px solid #e2e8f0;">
-                <p style="margin: 0; font-size: 13px; color: #94a3b8;">
-                    © 2026 Nation Supermarket. All rights reserved.
-                </p>
-                <p style="margin: 8px 0 0; font-size: 12px; color: #cbd5e1;">
-                    This is an automated structural notification matrix. Please do not reply linearly.
-                </p>
-            </div>
+            
+            ${ctaHTML}
+        </div>
+        
+        <div style="max-width: 600px; margin: 20px auto 0; text-align: center;">
+            <p style="margin: 0; font-size: 13px; color: #94a3b8;">
+                © 2026 Nation Supermarket. All rights reserved.
+            </p>
         </div>
     </div>
     `;
@@ -76,7 +84,7 @@ export const notifyGlobalAdmin = async (subject: string, htmlContent: string) =>
         const adminQuery = await pool.query("SELECT email FROM users WHERE role = 'admin' LIMIT 1");
         const adminEmail = adminQuery.rows[0]?.email || process.env.SMTP_USER;
         if(adminEmail) {
-            const finalHTML = generateEmailHTML(subject, htmlContent);
+            const finalHTML = generateEmailHTML(subject, htmlContent, undefined, 'Admin');
             await sendSystemEmail(adminEmail, subject, finalHTML);
         }
     } catch(e) {}
