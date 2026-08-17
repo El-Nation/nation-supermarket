@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { pool } from '../config/db';
 import axios from 'axios';
 import crypto from 'crypto';
-import { sendSystemEmail, notifyGlobalAdmin } from '../utils/mailer';
+import { sendSystemEmail, notifyGlobalAdmin, generateEmailHTML } from '../utils/mailer';
 import { triggerSystemNotification } from '../utils/notificationHelper';
 
 export const createMockOrder = async (req: Request, res: Response) => {
@@ -76,16 +76,17 @@ export const createMockOrder = async (req: Request, res: Response) => {
         
         const customer_email = customer?.email || 'contact@nationsupermarket.com';
         
-        await sendSystemEmail(customer_email, 'Nation Supermarket: Mock Purchase Confirmed', `
-           <div style="font-family:sans-serif; padding:20px; background:#f8fafc">
-            <h3 style="color:#0f172a">Mock Payment Authorized</h3>
-            <p style="color:#334155; font-size:16px;">Hello ${customer?.name || 'Customer'},</p>
-            <div style="padding:15px; background:white; border-left:4px solid #10b981; margin:20px 0;">
-                <p style="margin:0; font-size: 1.1rem">Order Code: <strong>${order_reference}</strong></p>
-                <p style="margin:10px 0 0 0; color:#64748b; font-size: 0.95rem">Digital Receipt (Simulated): https://nationsupermarket.eghedev.com/receipt/${order_reference}</p>
-            </div>
-           </div>
-        `);
+        const html = generateEmailHTML(
+            'Mock Payment Authorized & Verified',
+            `<p>Hello ${customer?.name || 'Customer'},</p>
+             <p>Your simulated transactional pipeline was successfully explicitly mapped and successfully resolved gracefully.</p>
+             <div style="padding:15px; background:#ecfdf5; border-left:4px solid #10b981; margin:20px 0; border-radius: 4px;">
+                 <p style="margin:0; font-size: 1.1rem; color:#0f172a;">Order Reference String: <strong>${order_reference}</strong></p>
+             </div>`,
+            { text: 'View Secure Mock Receipt', url: `https://nationsupermarket.eghedev.com/receipt/${order_reference}` }
+        );
+        
+        await sendSystemEmail(customer_email, 'Your Nation Supermarket Order Has Been Confirmed', html);
         
         await notifyGlobalAdmin('New Order Checkout (Mock Sandbox)', `<p>An external order was cleanly verified by ${customer_email}.</p><p>Total Value: ₦${total_amount}</p>`);
 
@@ -198,17 +199,17 @@ export const verifyPayment = async (req: Request, res: Response) => {
             const customer_email = o.customer_email || o.guest_data?.email || 'contact@nationsupermarket.com';
             await triggerSystemNotification(null, 'Payment Settlement Cleared', `Order ${o.order_reference} physically secured ₦${amount} organically securely via React Verification Pipeline cleanly.`);
             
-            await sendSystemEmail(customer_email, 'Nation Supermarket: Purchase Confirmed', `
-               <div style="font-family:sans-serif; padding:20px; background:#f8fafc">
-                <h3 style="color:#0f172a">Payment Authorized & Validated</h3>
-                <p style="color:#334155; font-size:16px;">Hello ${o.customer_name || o.guest_data?.name || 'Customer'},</p>
-                <div style="padding:15px; background:white; border-left:4px solid #10b981; margin:20px 0;">
-                    <p style="margin:0; font-size: 1.1rem">Reference Hash: <strong>${reference}</strong></p>
-                    <p style="margin:10px 0 0 0; color:#64748b; font-size: 0.95rem">Digital Receipt: https://nationsupermarket.eghedev.com/receipt/${reference}</p>
-                </div>
-                <p style="color:#64748b; font-size:14px;">Regards,<br/>Nation Supermarket Administration</p>
-               </div>
-            `);
+            const html = generateEmailHTML(
+                'Payment Authorized & Structurally Validated',
+                `<p>Hello ${o.customer_name || o.guest_data?.name || 'Customer'},</p>
+                 <p>Your actual production settlement successfully explicitly passed our security gateway actively.</p>
+                 <div style="padding:15px; background:#ecfdf5; border-left:4px solid #10b981; margin:20px 0; border-radius: 4px;">
+                     <p style="margin:0; font-size: 1.1rem; color:#0f172a;">Secure Reference Hash: <strong>${reference}</strong></p>
+                 </div>
+                 <p>Your order is now securely actively marked as completely paid natively.</p>`,
+                { text: 'View Verified Digital Receipt', url: `https://nationsupermarket.eghedev.com/receipt/${reference}` }
+            );
+            await sendSystemEmail(customer_email, 'Your Nation Supermarket Order Has Been Confirmed', html);
             
             await notifyGlobalAdmin('New Paid Order Secured (Paystack)', `<p>An external order physically cleared settlement by ${customer_email}.</p><p>Total Value: ₦${amount}</p><p>Review the dashboard structurally.</p>`);
 
@@ -247,7 +248,11 @@ export const paystackWebhook = async (req: Request, res: Response): Promise<void
                     );
 
                     await triggerSystemNotification(null, 'Webhook Settlement Cleared', `Order ${metadata.order_id} physically secured ₦${paymentAmount} strictly generically cleanly.`);
-                    await sendSystemEmail(metadata.customer_email || 'contact@nationsupermarket.com', 'Nation Supermarket: Purchase Confirmed via Webhook', `<p>Your purchase linked to ${reference} was successfully authorized via strict webhooks.</p>`);
+                    const html = generateEmailHTML(
+                        'Payment Settlement Cleared (Webhook)',
+                        `<p>Your transaction linked natively safely to reference gateway hash <strong>${reference}</strong> was effectively systematically explicitly authorized correctly natively globally.</p>`
+                    );
+                    await sendSystemEmail(metadata.customer_email || 'contact@nationsupermarket.com', 'Your Nation Supermarket Order Has Been Confirmed (Webhook)', html);
                     
                     await notifyGlobalAdmin('New Paid Order Secured (Webhook)', `<p>An external order settled successfully via secondary async webhooks physically routed.</p><p>Total Value: ₦${paymentAmount}</p><p>Review the generic admin dashboard safely.</p>`);
                 }

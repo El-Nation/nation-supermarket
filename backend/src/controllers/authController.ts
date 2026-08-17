@@ -6,7 +6,7 @@ import qrcode from 'qrcode';
 import crypto from 'crypto';
 import { User } from '../models/User';
 import { pool } from '../config/db';
-import { send2FAToggle, sendSystemEmail, sendResetEmail, notifyGlobalAdmin } from '../utils/mailer';
+import { send2FAToggle, sendSystemEmail, sendResetEmail, notifyGlobalAdmin, generateEmailHTML } from '../utils/mailer';
 import { triggerSystemNotification } from '../utils/notificationHelper';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'secret';
@@ -51,16 +51,15 @@ export const registerUser = async (req: Request, res: Response): Promise<void> =
             );
 
             // Welcome Customer
+            const html = generateEmailHTML(
+                `Welcome to Nation Supermarket, ${name}!`,
+                '<p>Your account has been authenticated effectively and securely.</p><p>We are thrilled to welcome you to the Nation Supermarket platform. You can now securely manage your profile, track digital receipts, and checkout properly natively.</p><p>Enjoy an incredible online shopping experience flawlessly.</p>',
+                { text: 'Start Shopping', url: 'https://nationsupermarket.eghedev.com' }
+            );
             await sendSystemEmail(
                 email,
-                'Welcome to Nation Supermarket!',
-                `<div style="font-family: sans-serif; color: #1e293b;">
-                    <h2 style="color: #ef4444;">Welcome, ${name}!</h2>
-                    <p>Congratulations! Your account has been authenticated effectively and securely.</p>
-                    <p>We are thrilled to welcome you to the Nation Supermarket platform. You can now securely manage your profile, track digital receipts, and add items natively to your Wishlist.</p>
-                    <br/>
-                    <p>Happy Shopping!</p>
-                </div>`
+                'Welcome to Nation Supermarket',
+                html
             );
         } catch (skip) {}
 
@@ -108,7 +107,11 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
 
         if (user.role === 'admin') {
-            await sendSystemEmail(user.email, 'Security Alert: Admin Dashboard Login', '<p>A successful login to the Nation Supermarket Admin Dashboard was safely executed using your credentials.</p>');
+            const html = generateEmailHTML(
+                'Admin Dashboard Authentication', 
+                '<p>A successful secured login to the Nation Supermarket Admin Dashboard was safely executed statically using your administrative credentials natively.</p><p>Please structurally engage with vigilance.</p>'
+            );
+            await sendSystemEmail(user.email, 'Security Alert: Admin Dashboard Login', html);
         }
 
         generateToken(res, user.id);
@@ -214,7 +217,11 @@ export const resetPassword = async (req: Request, res: Response): Promise<void> 
         const passwordHash = await bcrypt.hash(newPassword, salt);
         await User.updatePassword(user.id, passwordHash);
         
-        await sendSystemEmail(user.email, 'Security Alert: Password Changed', '<p>Your account password was just reset successfully. If you did not make this change, please contact support.</p>');
+        const html = generateEmailHTML(
+            'Password Security Executed', 
+            '<p>Your account password was just reset cleanly via the forgotten token loop.</p><p>If you did not execute this structural reset natively, please contact support securely immediately as your external matrix has been compromised organically.</p>'
+        );
+        await sendSystemEmail(user.email, 'Your Nation Supermarket Password Was Changed', html);
         
         res.json({ message: 'Password has been safely updated.' });
     } catch (e) {
