@@ -6,6 +6,13 @@ export default function ManageProducts() {
     const [products, setProducts] = useState<any[]>([]);
     const [categories, setCategories] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
+    const [isMobile, setIsMobile] = useState<boolean>(() => window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
     
     const [name, setName] = useState('');
     const [price, setPrice] = useState('');
@@ -95,13 +102,13 @@ export default function ManageProducts() {
     };
 
     return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.5rem', color: '#1e293b', margin: 0, fontWeight: 700 }}>Product Management</h2>
+        <div style={{ width: '100%', maxWidth: '100vw', boxSizing: 'border-box', overflowX: 'hidden' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h2 style={{ fontSize: isMobile ? '1.25rem' : '1.5rem', color: '#1e293b', margin: 0, fontWeight: 700 }}>Product Management</h2>
             </div>
 
-            <div className="product-grid">
-                <div className="admin-card">
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '1.5rem', width: '100%' }}>
+                <div className="admin-card" style={{ flex: isMobile ? '1 1 100%' : '1', width: '100%', boxSizing: 'border-box' }}>
                     <h3 style={{margin: '0 0 1.5rem 0', color: '#1e293b'}}>Add New Product</h3>
                     <form onSubmit={handleCreateProduct}>
                         <div style={{marginBottom: '1rem'}}>

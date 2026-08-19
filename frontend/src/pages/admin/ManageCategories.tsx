@@ -7,6 +7,13 @@ export default function ManageCategories() {
     const [name, setName] = useState('');
     const [editId, setEditId] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
+    const [isMobile, setIsMobile] = useState<boolean>(() => window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         fetchCats();
@@ -51,8 +58,6 @@ export default function ManageCategories() {
     const handleDelete = async (id: number) => {
         if (!window.confirm("Delete this category? This alters associated product hierarchies.")) return;
         try {
-            // Need to implement delete endpoint on backend if missing, but we assume it's created or we skip for now gracefully
-            // await api.delete(`/admin/categories/${id}`);
             alert('Deleting categories is restricted pending Product migration rules.');
             fetchCats();
         } catch(e) {
@@ -61,13 +66,13 @@ export default function ManageCategories() {
     };
 
     return (
-        <div>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
-                <h2 style={{ fontSize: '1.5rem', color: '#1e293b', margin: 0, fontWeight: 700 }}>Category Management</h2>
+        <div style={{ width: '100%', maxWidth: '100vw', boxSizing: 'border-box', overflowX: 'hidden' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+                <h2 style={{ fontSize: isMobile ? '1.25rem' : '1.5rem', color: '#1e293b', margin: 0, fontWeight: 700 }}>Category Management</h2>
             </div>
             
-            <div className="category-grid">
-                <div className="admin-card" style={{alignSelf: 'start'}}>
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '1.5rem', width: '100%' }}>
+                <div className="admin-card" style={{ flex: isMobile ? '1 1 100%' : '1', width: '100%', boxSizing: 'border-box' }}>
                     <h3 style={{margin: '0 0 1.5rem 0', color: '#1e293b'}}>{editId ? 'Edit Category' : 'Add New Category'}</h3>
                     <form onSubmit={handleCreate}>
                         <div style={{marginBottom: '1rem'}}>

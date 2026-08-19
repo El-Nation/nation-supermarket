@@ -7,6 +7,13 @@ export default function ManageSettings() {
     const { updateUser } = useAuth();
     const [storeAddress, setStoreAddress] = useState('');
     const [saving, setSaving] = useState(false);
+    const [isMobile, setIsMobile] = useState<boolean>(() => window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     // Profile State
     const [pass, setPass] = useState('');
@@ -147,17 +154,16 @@ export default function ManageSettings() {
     };
 
     return (
-        <div style={{maxWidth: 1000, color: '#1e293b'}}>
-            <div style={{ marginBottom: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div>
-                    <h2 style={{ fontSize: '1.8rem', color: '#0f172a', marginBottom: '0.25rem', fontWeight: 800, letterSpacing: '-0.5px' }}>Global Command Center</h2>
-                    <p style={{ color: '#64748b', margin: 0, fontSize: '0.95rem' }}>Configure structural environment states, security limits, and system integrations.</p>
-                </div>
+        <div style={{ maxWidth: 1000, width: '100%', boxSizing: 'border-box', overflowX: 'hidden', color: '#1e293b' }}>
+            <div style={{ marginBottom: '1.5rem' }}>
+                <h2 style={{ fontSize: isMobile ? '1.3rem' : '1.8rem', color: '#0f172a', marginBottom: '0.25rem', fontWeight: 800, letterSpacing: '-0.5px' }}>Global Command Center</h2>
+                <p style={{ color: '#64748b', margin: 0, fontSize: isMobile ? '0.85rem' : '0.95rem' }}>Configure structural environment states, security limits, and system integrations.</p>
             </div>
-            <div className="settings-grid">
+            
+            <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', gap: '1.5rem', width: '100%' }}>
                 
                 {/* Main Settings Column */}
-                <div style={{display: 'flex', flexDirection: 'column', gap: '2rem'}}>
+                <div style={{ flex: isMobile ? '1 1 100%' : '1', width: '100%', display: 'flex', flexDirection: 'column', gap: '1.5rem', boxSizing: 'border-box' }}>
                     
                     {/* Graphic Profile Avatar Module (Moved to Top) */}
                     <div className="admin-card" style={{padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', textAlign: 'center'}}>
