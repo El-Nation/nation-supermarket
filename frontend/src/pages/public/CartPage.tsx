@@ -37,12 +37,23 @@ export default function CartPage() {
     }
 
     return (
-        <div className="mobile-padding mobile-p-y" style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 2rem', fontFamily: 'Inter, sans-serif' }}>
-            <div className="tablet-gap-sm" style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', alignItems: 'flex-start' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem clamp(1rem, 4vw, 2rem)', fontFamily: 'Inter, sans-serif', boxSizing: 'border-box' }}>
+            <style>{`
+                @media (max-width: 600px) {
+                    .cart-table { display: none !important; }
+                    .cart-cards { display: flex !important; }
+                }
+                @media (min-width: 601px) {
+                    .cart-table { display: table !important; }
+                    .cart-cards { display: none !important; }
+                }
+            `}</style>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '3rem', alignItems: 'flex-start' }}>
                 
                 {/* Cart Table Area (Left) */}
                 <div style={{ flex: '1 1 60%', overflowX: 'auto' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: '600px' }}>
+                    {/* Desktop Table */}
+                    <table className="cart-table" style={{ width: '100%', borderCollapse: 'collapse', minWidth: '500px' }}>
                         <thead style={{ backgroundColor: '#f8fafc' }}>
                             <tr>
                                 <th style={{ padding: '1rem', textAlign: 'left', fontWeight: 500, color: '#334155', borderTopLeftRadius: '12px', borderBottomLeftRadius: '12px' }}>Product</th>
@@ -87,8 +98,38 @@ export default function CartPage() {
                         </tbody>
                     </table>
 
+                    {/* Mobile Cards (shown below 600px) */}
+                    <div className="cart-cards" style={{ flexDirection: 'column', gap: '1rem' }}>
+                        {cartItems.map(item => (
+                            <div key={item.product_id} style={{ border: '1px solid #f1f5f9', borderRadius: '10px', padding: '1rem', display: 'flex', gap: '0.75rem', alignItems: 'flex-start' }}>
+                                <div style={{ width: '50px', height: '50px', flexShrink: 0 }}>
+                                    {item.image_url ? (
+                                        <img src={item.image_url} alt={item.name} style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+                                    ) : (
+                                        <div style={{ width: '100%', height: '100%', backgroundColor: '#f1f5f9', borderRadius: '6px' }} />
+                                    )}
+                                </div>
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                    <Link to={`/product/${item.product_id}`} style={{ textDecoration: 'none', color: '#1d4ed8', fontWeight: 600, fontSize: '0.9rem', display: 'block', marginBottom: '0.25rem' }}>{item.name}</Link>
+                                    <div style={{ color: '#64748b', fontSize: '0.85rem', marginBottom: '0.5rem' }}>₦{item.price.toLocaleString(undefined, { minimumFractionDigits: 2 })} each</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                        <div style={{ display: 'inline-flex', border: '1px solid #1d4ed8', borderRadius: '4px', overflow: 'hidden' }}>
+                                            <input type="number" min="1" value={item.quantity} onChange={(e) => updateQuantity(item.product_id, parseInt(e.target.value) || 1)} style={{ width: '40px', padding: '0.3rem', textAlign: 'center', border: 'none', borderRight: '1px solid #1d4ed8', fontSize: '0.85rem', fontWeight: 600, color: '#1d4ed8', outline: 'none' }} />
+                                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                <button onClick={() => updateQuantity(item.product_id, item.quantity + 1)} style={{ padding: '0.1rem 0.25rem', border: 'none', background: 'white', color: '#1d4ed8', cursor: 'pointer', fontSize: '0.5rem', borderBottom: '1px solid #1d4ed8' }}>▲</button>
+                                                <button onClick={() => updateQuantity(item.product_id, Math.max(1, item.quantity - 1))} style={{ padding: '0.1rem 0.25rem', border: 'none', background: 'white', color: '#1d4ed8', cursor: 'pointer', fontSize: '0.5rem' }}>▼</button>
+                                            </div>
+                                        </div>
+                                        <span style={{ fontWeight: 700, color: '#1d4ed8', fontSize: '0.9rem' }}>₦{(item.price * item.quantity).toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+                                    </div>
+                                </div>
+                                <button onClick={() => removeFromCart(item.product_id)} style={{ width: '24px', height: '24px', borderRadius: '50%', border: '1px solid #fecaca', backgroundColor: 'white', color: '#ef4444', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '14px', flexShrink: 0 }}>×</button>
+                            </div>
+                        ))}
+                    </div>
+
                     {/* Cart Actions */}
-                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '1.5rem', gap: '0.5rem', paddingRight: '1rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', flexWrap: 'wrap', marginTop: '1.5rem', gap: '0.5rem' }}>
                         <button style={{ padding: '0.75rem 1.5rem', backgroundColor: '#93c5fd', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 600, cursor: 'not-allowed', fontSize: '0.9rem' }}>Update cart</button>
                         <button onClick={clearCart} style={{ padding: '0.75rem 1.5rem', backgroundColor: '#0f172a', color: 'white', border: 'none', borderRadius: '4px', fontWeight: 600, cursor: 'pointer', fontSize: '0.9rem' }}>Empty Cart</button>
                     </div>

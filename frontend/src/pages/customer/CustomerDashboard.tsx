@@ -145,10 +145,10 @@ export default function CustomerDashboard() {
                 </nav>
             </header>
 
-            <div className="tablet-col" style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 1rem', display: 'flex', gap: '2rem' }}>
+            <div style={{ maxWidth: '1200px', margin: '2rem auto', padding: '0 clamp(1rem, 4vw, 1rem)', display: 'flex', flexWrap: 'wrap', gap: '2rem', boxSizing: 'border-box' }}>
                 
-                {/* Sidebar Isolation Segment */}
-                <aside style={{ width: '250px', flexShrink: 0 }}>
+                {/* Sidebar */}
+                <aside style={{ flex: '0 0 250px', width: '100%', boxSizing: 'border-box' }}>
                     <div style={{ backgroundColor: 'white', borderRadius: '8px', padding: '1.5rem 1rem', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
                         <button onClick={() => setActiveTab('overview')} style={getTabStyle(activeTab === 'overview')}><User size={18}/> Account Overview</button>
                         <button onClick={() => setActiveTab('orders')} style={getTabStyle(activeTab === 'orders')}><Package size={18}/> Order History</button>
@@ -194,7 +194,7 @@ export default function CustomerDashboard() {
                             ) : (
                                 <div style={{display: 'grid', gap: '1rem'}}>
                                     {orders.map((o, i) => (
-                                        <div key={i} style={{border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center'}}>
+                                        <div key={i} style={{border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1.5rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem'}}>
                                             <div>
                                                 <div style={{fontWeight: 700, color: '#334155', marginBottom: '0.2rem'}}>{o.order_reference}</div>
                                                 <div style={{color: '#64748b', fontSize: '0.85rem', marginBottom: '0.2rem'}}>{new Date(o.created_at).toLocaleDateString()}</div>
@@ -239,15 +239,15 @@ export default function CustomerDashboard() {
                             <form onSubmit={handleProfileUpdate} style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
                                 <div>
                                     <label style={{display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#475569', fontWeight: 600}}>Full Name</label>
-                                    <input required type="text" value={name} onChange={e=>setName(e.target.value)} style={{width: '95%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1'}} />
+                                    <input required type="text" value={name} onChange={e=>setName(e.target.value)} style={{width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1', boxSizing: 'border-box'}} />
                                 </div>
                                 <div>
                                     <label style={{display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#475569', fontWeight: 600}}>Email Address</label>
-                                    <input required type="email" value={email} onChange={e=>setEmail(e.target.value)} style={{width: '95%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1'}} />
+                                    <input required type="email" value={email} onChange={e=>setEmail(e.target.value)} style={{width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1', boxSizing: 'border-box'}} />
                                 </div>
                                 <div>
                                     <label style={{display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#475569', fontWeight: 600}}>Phone Number</label>
-                                    <input type="text" value={phone} onChange={e=>setPhone(e.target.value)} style={{width: '95%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1'}} />
+                                    <input type="text" value={phone} onChange={e=>setPhone(e.target.value)} style={{width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1', boxSizing: 'border-box'}} />
                                 </div>
                                 <button type="submit" style={{padding: '0.75rem', background: '#0f172a', color: 'white', borderRadius: '4px', border: 'none', fontWeight: 600, cursor: 'pointer', marginTop: '0.5rem', width: 'fit-content'}}>Save Identity Changes</button>
                             </form>
@@ -263,15 +263,15 @@ export default function CustomerDashboard() {
                                 <form onSubmit={handlePasswordUpdate} style={{display: 'flex', flexDirection: 'column', gap: '1rem'}}>
                                 <div>
                                     <label style={{display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#475569', fontWeight: 600}}>Current Password</label>
-                                    <input required type="password" value={currentPass} onChange={e=>setCurrentPass(e.target.value)} style={{width: '95%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1'}} />
+                                    <input required type="password" value={currentPass} onChange={e=>setCurrentPass(e.target.value)} style={{width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1', boxSizing: 'border-box'}} />
                                 </div>
                                 <div>
                                     <label style={{display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#475569', fontWeight: 600}}>New Password</label>
-                                    <input required type="password" value={newPass} onChange={e=>setNewPass(e.target.value)} style={{width: '95%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1'}} />
+                                    <input required type="password" value={newPass} onChange={e=>setNewPass(e.target.value)} style={{width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1', boxSizing: 'border-box'}} />
                                 </div>
                                 <div>
                                     <label style={{display: 'block', marginBottom: '0.25rem', fontSize: '0.9rem', color: '#475569', fontWeight: 600}}>Confirm New Password</label>
-                                    <input required type="password" value={confirmPass} onChange={e=>setConfirmPass(e.target.value)} style={{width: '95%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1'}} />
+                                    <input required type="password" value={confirmPass} onChange={e=>setConfirmPass(e.target.value)} style={{width: '100%', padding: '0.75rem', borderRadius: '4px', border: '1px solid #cbd5e1', boxSizing: 'border-box'}} />
                                 </div>
                                 <button type="submit" style={{padding: '0.75rem', background: '#ef4444', color: 'white', borderRadius: '4px', border: 'none', fontWeight: 600, cursor: 'pointer', marginTop: '0.5rem', width: 'fit-content'}}>Change Password</button>
                             </form>
@@ -301,7 +301,7 @@ export default function CustomerDashboard() {
                                         <button onClick={handleGenerate2FA} style={{padding: '0.75rem 1.25rem', background: '#0f172a', color: 'white', borderRadius: '4px', border: 'none', fontWeight: 600, cursor: 'pointer'}}>Provision Secure Key</button>
                                     </div>
                                 ) : (
-                                    <div style={{backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', gap: '2rem', alignItems: 'center'}}>
+                                    <div style={{backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', flexWrap: 'wrap', gap: '1.5rem', alignItems: 'center'}}>
                                         <div style={{backgroundColor: 'white', padding: 8, borderRadius: 12, border: '1px solid #cbd5e1'}}>
                                             <img src={qrCode} alt="2FA QR" style={{display: 'block'}}/>
                                         </div>
