@@ -14,6 +14,13 @@ export default function AdminLayout() {
     const [unreadCount, setUnreadCount] = useState(0);
     const [notifications, setNotifications] = useState<any[]>([]);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [isMobile, setIsMobile] = useState<boolean>(() => window.innerWidth <= 768);
+
+    useEffect(() => {
+        const handleResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
 
     useEffect(() => {
         if(user && user.role === 'admin') {
@@ -58,16 +65,45 @@ export default function AdminLayout() {
         return '/admin/notifications';
     };
 
+    // Dynamic inline responsive styles to guarantee 100% drawer behavior on mobile regardless of CSS cache
+    const sidebarStyle: React.CSSProperties = isMobile ? {
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        bottom: 0,
+        width: '260px',
+        maxWidth: '85vw',
+        height: '100vh',
+        zIndex: 9999,
+        backgroundColor: '#1a1b26',
+        transform: sidebarOpen ? 'translateX(0)' : 'translateX(-100%)',
+        transition: 'transform 0.3s ease',
+        boxShadow: sidebarOpen ? '4px 0 25px rgba(0,0,0,0.5)' : 'none'
+    } : {};
+
+    const overlayStyle: React.CSSProperties = isMobile ? {
+        display: sidebarOpen ? 'block' : 'none',
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.6)',
+        zIndex: 9998,
+        backdropFilter: 'blur(2px)'
+    } : { display: 'none' };
+
     return (
-        <div className="admin-layout">
+        <div className="admin-layout" style={{ position: 'relative', overflowX: 'hidden', minWidth: 0 }}>
             {/* Mobile Overlay */}
             <div 
                 className={`sidebar-overlay ${sidebarOpen ? 'open' : ''}`} 
+                style={overlayStyle}
                 onClick={closeSidebar}
             />
 
             {/* Sidebar */}
-            <div className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`}>
+            <div className={`admin-sidebar ${sidebarOpen ? 'open' : ''}`} style={sidebarStyle}>
                 <div className="admin-brand" style={{ padding: '0.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80px', overflow: 'hidden', backgroundColor: '#ffffff', borderBottom: '1px solid #1e293b' }}>
                     <img src="/logo.png" alt="Nation Supermarket" style={{ height: '180px', objectFit: 'contain' }} onError={(e) => { e.currentTarget.style.display = 'none'; e.currentTarget.parentElement!.innerHTML = '<div class="admin-brand-text">Nation Supermarket</div>'; }} />
                 </div>
