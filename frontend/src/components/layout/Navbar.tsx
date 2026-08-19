@@ -98,7 +98,7 @@ export default function Navbar() {
                                                     </div>
                                                     <div style={{ display: 'flex', gap: '0.5rem' }}>
                                                         <Link to="/cart" onClick={() => setCartClicked(false)} style={{ flex: 1, padding: '0.5rem', textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', textDecoration: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem' }}>View cart</Link>
-                                                        <Link to="/checkout" onClick={() => setCartClicked(false)} style={{ flex: 1, padding: '0.5rem', textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', textDecoration: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem' }}>Checkout</Link>
+                                                        <Link to="/checkout-test" onClick={() => setCartClicked(false)} style={{ flex: 1, padding: '0.5rem', textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', textDecoration: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem' }}>Checkout</Link>
                                                         <button onClick={() => { clearCart(); setCartClicked(false); }} style={{ flex: 1, padding: '0.5rem', backgroundColor: '#1d4ed8', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.8rem', cursor: 'pointer' }}>Empty</button>
                                                     </div>
                                                 </div>
@@ -200,7 +200,7 @@ export default function Navbar() {
                                             </div>
                                             <div style={{ display: 'flex', gap: '0.5rem' }}>
                                                 <Link to="/cart" onClick={() => { setCartHover(false); setCartClicked(false); }} style={{ flex: 1, padding: '0.6rem', textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', textDecoration: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.85rem', transition: '0.2s' }}>View cart</Link>
-                                                <Link to="/checkout" onClick={() => { setCartHover(false); setCartClicked(false); }} style={{ flex: 1, padding: '0.6rem', textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', textDecoration: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.85rem', transition: '0.2s' }}>Checkout</Link>
+                                                <Link to="/checkout-test" onClick={() => { setCartHover(false); setCartClicked(false); }} style={{ flex: 1, padding: '0.6rem', textAlign: 'center', backgroundColor: '#1d4ed8', color: 'white', textDecoration: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.85rem', transition: '0.2s' }}>Checkout</Link>
                                                 <button onClick={() => { clearCart(); setCartHover(false); setCartClicked(false); }} style={{ flex: 1, padding: '0.6rem', backgroundColor: '#1d4ed8', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 700, fontSize: '0.85rem', cursor: 'pointer', transition: '0.2s' }}>Empty Cart</button>
                                             </div>
                                         </div>
