@@ -378,6 +378,7 @@
   top: 120%;
   right: 0;
   width: 320px;
+  max-width: calc(100vw - 32px);
   background-color: white;
   border-radius: 8px;
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
@@ -394,7 +395,11 @@
     padding: 1.5rem !important;
   }
   .admin-notification-dropdown {
-    right: -70px;
+    right: -10px;
     width: 300px;
+    max-width: calc(100vw - 32px);
+  }
+  .dash-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr));
   }
 }
