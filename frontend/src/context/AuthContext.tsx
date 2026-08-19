@@ -38,12 +38,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (user) {
                 timeoutId = setTimeout(() => {
                     logout();
-                    alert("Your session has securely expired natively due to 1 hour of inactivity.");
-                }, 3600000); // 1 hr securely
+                    alert("Security Protection: You have been automatically logged out due to 10 minutes of inactivity.");
+                }, 600000); // 10 minutes (600,000 ms) inactivity protection
             }
         };
 
-        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+        const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
         
         if (user) {
             events.forEach(e => window.addEventListener(e, resetTimer, { passive: true }));
