@@ -38,8 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             if (user) {
                 timeoutId = setTimeout(() => {
                     logout();
-                    alert("Security Protection: You have been automatically logged out due to 10 minutes of inactivity.");
-                }, 600000); // 10 minutes (600,000 ms) inactivity protection
+                }, 600000); // 10 minutes (600,000 ms) silent inactivity protection
             }
         };
 
