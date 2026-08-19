@@ -67,7 +67,7 @@ export default function Navbar() {
                                     {cartCount > 0 && <span style={badgeStyle}>{cartCount}</span>}
                                 </div>
                                 {cartClicked && (
-                                    <div style={{ position: 'absolute', top: '100%', right: '-15px', width: '320px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', zIndex: 60, padding: '1rem', marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                                    <div style={{ position: 'absolute', top: '100%', right: 0, width: 'max(280px, calc(100vw - 20px))', maxWidth: 'calc(100vw - 20px)', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', zIndex: 60, padding: '1rem', marginTop: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                                         {cartItems.length > 0 ? (
                                             <>
                                                 <div style={{ maxHeight: '250px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1rem', paddingRight: '0.25rem' }}>
@@ -169,7 +169,7 @@ export default function Navbar() {
 
                         {/* Sub-menu Dropdown natively safely gracefully elegantly actively securely */}
                         {(cartHover || cartClicked) && (
-                            <div style={{ position: 'absolute', top: '100%', right: 0, width: '380px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', zIndex: 60, padding: '1.5rem', marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                            <div style={{ position: 'absolute', top: '100%', right: 0, width: '380px', maxWidth: 'calc(100vw - 20px)', backgroundColor: 'white', border: '1px solid #e2e8f0', borderRadius: '8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', zIndex: 60, padding: '1.5rem', marginTop: '0.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                                 {cartItems.length > 0 ? (
                                     <>
                                         <div style={{ maxHeight: '300px', overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingRight: '0.5rem' }}>

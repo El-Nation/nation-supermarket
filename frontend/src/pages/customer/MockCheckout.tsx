@@ -160,7 +160,7 @@ export default function MockCheckout() {
     const sectionTitleStyle = { fontSize: '1.25rem', color: '#1e293b', fontWeight: 600, marginBottom: '1.25rem' };
 
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem 2rem 3rem 2rem', fontFamily: 'Inter, sans-serif' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1rem clamp(1rem, 5vw, 2.5rem) 3rem', boxSizing: 'border-box', fontFamily: 'Inter, sans-serif' }}>
             
             {/* Top Header Region natively mapping Philhallmark presentation explicitly */}
             <div style={{ textAlign: 'center', marginBottom: '3rem' }}>
@@ -180,17 +180,17 @@ export default function MockCheckout() {
                 <p style={{ color: '#64748b', maxWidth: '800px', margin: '0 auto 2rem auto', lineHeight: 1.6 }}>
                     Please review your items and confirm your delivery and payment details below. We'll handle the rest and get your orders to you fresh and on time. If you have any issues, feel free to contact us — we're here to help.
                 </p>
-                <div style={{ display: 'flex', justifyContent: 'center', gap: '3rem', color: '#94a3b8', fontSize: '0.9rem', fontWeight: 500 }}>
+                <div style={{ display: 'flex', justifyContent: 'center', flexWrap: 'wrap', gap: 'clamp(1rem, 3vw, 3rem)', color: '#94a3b8', fontSize: '0.9rem', fontWeight: 500 }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><ShieldCheck size={18} /> SSL secured checkout</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><Clock size={18} /> 24/7 support available</span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}><CreditCard size={18} /> Secure payment options</span>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: '3rem', gap: '1rem', color: '#cbd5e1' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', marginTop: '3rem', gap: '1rem', color: '#cbd5e1' }}>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}><div style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid #cbd5e1' }}></div> Cart</span>
-                    <span style={{ width: '60px', height: '2px', backgroundColor: '#e2e8f0' }}></span>
+                    <span style={{ width: '60px', height: '2px', backgroundColor: '#e2e8f0', flexShrink: 1 }}></span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#0f172a', fontWeight: 600 }}><div style={{ width: '16px', height: '16px', borderRadius: '50%', border: '4px solid #a855f7' }}></div> Information</span>
-                    <span style={{ width: '60px', height: '2px', backgroundColor: '#e2e8f0' }}></span>
+                    <span style={{ width: '60px', height: '2px', backgroundColor: '#e2e8f0', flexShrink: 1 }}></span>
                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 600 }}><div style={{ width: '16px', height: '16px', borderRadius: '50%', border: '2px solid #cbd5e1' }}></div> Finish</span>
                 </div>
             </div>
@@ -214,24 +214,23 @@ export default function MockCheckout() {
                         </div>
                     </div>
 
-                    {/* Billing Details */}
                     <div>
                         <h2 style={sectionTitleStyle}>Billing details</h2>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                <div style={{ flex: '1 1 200px' }}>
                                     <label style={labelStyle}>First name <span style={{ color: '#ef4444' }}>*</span></label>
-                                    <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} style={inputStyle} />
+                                    <input type="text" value={firstName} onChange={e => setFirstName(e.target.value)} style={{...inputStyle, boxSizing: 'border-box'}} />
                                 </div>
-                                <div style={{ flex: 1 }}>
+                                <div style={{ flex: '1 1 200px' }}>
                                     <label style={labelStyle}>Last name <span style={{ color: '#ef4444' }}>*</span></label>
-                                    <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} style={inputStyle} />
+                                    <input type="text" value={lastName} onChange={e => setLastName(e.target.value)} style={{...inputStyle, boxSizing: 'border-box'}} />
                                 </div>
                             </div>
                             
                             <div>
                                 <label style={labelStyle}>Company name</label>
-                                <input type="text" style={inputStyle} />
+                                <input type="text" style={{...inputStyle, boxSizing: 'border-box'}} />
                             </div>
 
                             <div style={{ width: '100%', maxWidth: '200px' }}>
@@ -241,25 +240,25 @@ export default function MockCheckout() {
                                 </select>
                             </div>
 
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                <div style={{ flex: '1 1 200px' }}>
                                     <label style={labelStyle}>House number and street name <span style={{ color: '#ef4444' }}>*</span></label>
-                                    <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} style={inputStyle} />
+                                    <input type="text" value={addressLine1} onChange={e => setAddressLine1(e.target.value)} style={{...inputStyle, boxSizing: 'border-box'}} />
                                 </div>
-                                <div style={{ flex: 1 }}>
+                                <div style={{ flex: '1 1 200px' }}>
                                     <label style={labelStyle}>Apartment, suite, unit, etc. (optional)</label>
-                                    <input type="text" value={addressLine2} onChange={e => setAddressLine2(e.target.value)} style={inputStyle} />
+                                    <input type="text" value={addressLine2} onChange={e => setAddressLine2(e.target.value)} style={{...inputStyle, boxSizing: 'border-box'}} />
                                 </div>
                             </div>
 
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                <div style={{ flex: 1 }}>
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                <div style={{ flex: '1 1 150px' }}>
                                     <label style={labelStyle}>Town / City <span style={{ color: '#ef4444' }}>*</span></label>
-                                    <input type="text" value={city} onChange={e => setCity(e.target.value)} style={inputStyle} />
+                                    <input type="text" value={city} onChange={e => setCity(e.target.value)} style={{...inputStyle, boxSizing: 'border-box'}} />
                                 </div>
-                                <div style={{ flex: '0 0 150px' }}>
+                                <div style={{ flex: '1 1 150px' }}>
                                     <label style={labelStyle}>State <span style={{ color: '#ef4444' }}>*</span></label>
-                                    <select value={state} onChange={e => setState(e.target.value)} style={{ ...inputStyle }}>
+                                    <select value={state} onChange={e => setState(e.target.value)} style={{ ...inputStyle, boxSizing: 'border-box' }}>
                                         {NIGERIAN_STATES.map(st => <option key={st} value={st}>{st}</option>)}
                                     </select>
                                 </div>
@@ -267,7 +266,7 @@ export default function MockCheckout() {
 
                             <div>
                                 <label style={labelStyle}>Phone <span style={{ color: '#ef4444' }}>*</span></label>
-                                <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} style={inputStyle} />
+                                <input type="tel" value={phone} onChange={e => setPhone(e.target.value)} style={{...inputStyle, boxSizing: 'border-box'}} />
                             </div>
 
                             <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', marginTop: '1rem' }}>
@@ -276,7 +275,7 @@ export default function MockCheckout() {
                             </label>
 
                             <div>
-                                <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Notes about your order, e.g. special notes for delivery." style={{ ...inputStyle, minHeight: '100px', borderRadius: '12px' }}></textarea>
+                                <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Notes about your order, e.g. special notes for delivery." style={{ ...inputStyle, minHeight: '100px', borderRadius: '12px', boxSizing: 'border-box', maxWidth: '100%' }}></textarea>
                             </div>
                         </div>
                     </div>
@@ -390,7 +389,7 @@ export default function MockCheckout() {
                 </div>
 
                 {/* Right Column: Your Order neatly aligned seamlessly seamlessly structurally natively safely appropriately */}
-                <div style={{ flex: '1 1 35%', minWidth: '320px' }}>
+                <div style={{ flex: '1 1 35%', minWidth: 'min(320px, 100%)', maxWidth: '100%', boxSizing: 'border-box' }}>
                     <h2 style={{ fontSize: '1.25rem', color: '#1e293b', fontWeight: 600, marginBottom: '1.25rem' }}>Your order</h2>
                     
                     <div style={{ border: '1px solid #e2e8f0', backgroundColor: 'transparent' }}>
