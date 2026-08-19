@@ -247,28 +247,30 @@ export default function ManageSettings() {
                     </div>
 
                     {/* 2FA Panel */}
-                    <div className="admin-card" style={{padding: '2rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)'}}>
+                    <div className="admin-card" style={{padding: '1.5rem', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)', boxSizing: 'border-box', width: '100%'}}>
                         <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '1.5rem', paddingBottom: '1rem', borderBottom: '1px solid #f1f5f9'}}>
                             <Smartphone color="#0f172a" size={24} />
-                            <h3 style={{margin: 0, color: '#0f172a', fontWeight: 600, fontSize: '1.2rem'}}>Multi-Factor Protection Engine</h3>
+                            <h3 style={{margin: 0, color: '#0f172a', fontWeight: 600, fontSize: '1.1rem'}}>Multi-Factor Protection Engine</h3>
                         </div>
                         {twoFactorEnabled ? (
-                            <div style={{backgroundColor: '#f0fdf4', padding: '1.5rem', borderRadius: 8, border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', justifyContent: 'space-between'}}>
+                            <div style={{backgroundColor: '#f0fdf4', padding: '1.25rem', borderRadius: 8, border: '1px solid #bbf7d0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem'}}>
                                 <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem'}}>
                                     <Shield color="#10b981" size={32} />
                                     <div>
-                                        <h4 style={{margin: '0 0 0.25rem 0', color: '#065f46', fontSize: '1.1rem'}}>2FA Array Active</h4>
-                                        <p style={{margin: 0, color: '#047857', fontSize: '0.9rem'}}>Your digital limits are actively intercepting authentication routines securely.</p>
+                                        <h4 style={{margin: '0 0 0.25rem 0', color: '#065f46', fontSize: '1rem'}}>2FA Array Active</h4>
+                                        <p style={{margin: 0, color: '#047857', fontSize: '0.85rem'}}>Your digital limits are actively intercepting authentication routines securely.</p>
                                     </div>
                                 </div>
                                 <button onClick={handleDisable2FA} className="admin-btn-primary" style={{backgroundColor: '#ef4444'}}>Destabilize 2FA</button>
                             </div>
                         ) : !qrCode ? (
-                            <div style={{backgroundColor: '#f8fafc', padding: '2rem', borderRadius: 8, border: '1px dashed #cbd5e1', textAlign: 'center'}}>
-                                <Shield color="#94a3b8" size={48} style={{marginBottom: '1rem', opacity: 0.5}} />
+                            <div style={{backgroundColor: '#f8fafc', padding: '1.25rem', borderRadius: 8, border: '1px dashed #cbd5e1', textAlign: 'center', boxSizing: 'border-box', width: '100%'}}>
+                                <Shield color="#94a3b8" size={40} style={{marginBottom: '0.75rem', opacity: 0.5}} />
                                 <h4 style={{margin: '0 0 0.5rem 0', color: '#334155'}}>2FA Authentication</h4>
-                                <p style={{color: '#64748b', fontSize: '0.9rem', marginBottom: '1.5rem'}}>Secure your administrative account strictly against unauthorized access by enabling Two-Factor Authentication. This integrates seamlessly with Google Authenticator or Authy natively.</p>
-                                <button onClick={handleGenerate2FA} className="admin-btn-primary" style={{backgroundColor: '#0f172a'}}>Provision Secure Key</button>
+                                <p style={{color: '#64748b', fontSize: '0.85rem', lineHeight: 1.5, marginBottom: '1.25rem', wordBreak: 'normal', overflowWrap: 'break-word', maxWidth: '100%'}}>
+                                    Secure your administrative account strictly against unauthorized access by enabling Two-Factor Authentication. This integrates seamlessly with Google Authenticator or Authy natively.
+                                </p>
+                                <button onClick={handleGenerate2FA} className="admin-btn-primary" style={{backgroundColor: '#0f172a', padding: '0.75rem 1.5rem'}}>Provision Secure Key</button>
                             </div>
                         ) : (
                             <div style={{backgroundColor: '#f8fafc', padding: '1.5rem', borderRadius: 8, border: '1px solid #e2e8f0', display: 'flex', gap: '2rem', alignItems: 'center', flexWrap: 'wrap'}}>
