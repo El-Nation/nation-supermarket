@@ -159,14 +159,35 @@ export default function AdminLayout() {
 
             {/* Main Area */}
             <div className="admin-main">
-                <header className="admin-header">
-                    <div className="admin-header-title">
-                        <button className="hamburger-btn" onClick={() => setSidebarOpen(true)}>
-                            <Menu size={24} />
+                <header className="admin-header" style={{ padding: isMobile ? '0.5rem 0.75rem' : '0 2.5rem', gap: '0.5rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', borderBottom: '1px solid #e2e8f0', backgroundColor: '#ffffff', minHeight: '60px', height: 'auto' }}>
+                    <div className="admin-header-title" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: isMobile ? '0.95rem' : '1.3rem', flex: 1, minWidth: 0, overflow: 'hidden' }}>
+                        <button 
+                            className="hamburger-btn" 
+                            onClick={() => setSidebarOpen(true)}
+                            aria-label="Open Navigation Menu"
+                            style={{
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                background: '#1e293b',
+                                color: '#ffffff',
+                                border: 'none',
+                                borderRadius: '8px',
+                                padding: '0.45rem',
+                                cursor: 'pointer',
+                                flexShrink: 0,
+                                minWidth: '38px',
+                                minHeight: '38px',
+                                boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                            }}
+                        >
+                            <Menu size={22} color="#ffffff" />
                         </button>
-                        Welcome back, {user.name.split(' ')[0]} <span>👋</span>
+                        <span style={{ fontWeight: 700, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', color: '#0f172a' }}>
+                            Welcome back, {user.name.split(' ')[0]} 👋
+                        </span>
                     </div>
-                    <div className="admin-header-actions">
+                    <div className="admin-header-actions" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
                         <div style={{position: 'relative'}}>
                             <button onClick={() => setShowDropdown(!showDropdown)} style={{background: 'none', border: 'none', cursor: 'pointer', position: 'relative', display: 'flex', color: 'inherit'}}>
                                 <Bell size={22} />
