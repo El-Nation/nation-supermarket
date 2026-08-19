@@ -167,36 +167,36 @@ export default function Home() {
             </div>
 
             {/* 0. Primary Featured Categories Carousel */}
-            <section style={{ backgroundColor: HERO_SLIDES[currentSlide].bg, transition: 'background-color 0.5s ease', padding: '0 2rem', display: 'flex', justifyContent: 'center', overflow: 'hidden', position: 'relative' }}>
-                <div className="tablet-col tablet-gap-sm mobile-padding" style={{ maxWidth: '1200px', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '2rem', minHeight: '400px' }}>
+            <section style={{ backgroundColor: HERO_SLIDES[currentSlide].bg, transition: 'background-color 0.5s ease', padding: '0 clamp(1rem, 4vw, 2rem)', display: 'flex', justifyContent: 'center', overflow: 'hidden', position: 'relative', boxSizing: 'border-box', width: '100%' }}>
+                <div style={{ maxWidth: '1200px', width: '100%', display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'center', gap: '2rem', minHeight: '350px', boxSizing: 'border-box' }}>
                     
                     {/* Carousel Left Content */}
-                    <div className="mobile-text-center mobile-p-y" style={{ padding: '4rem 0', flex: 1, minWidth: '280px', zIndex: 2 }}>
-                        <h1 style={{ fontSize: 'clamp(2.5rem, 5vw, 4.5rem)', fontWeight: 800, color: '#0f172a', margin: '0 0 1rem 0', lineHeight: 1.05, letterSpacing: '-1.5px' }}>
+                    <div style={{ padding: 'clamp(2rem, 5vw, 4rem) 0', flex: '1 1 280px', minWidth: 0, zIndex: 2, textAlign: 'center' }}>
+                        <h1 style={{ fontSize: 'clamp(1.75rem, 6vw, 4.5rem)', fontWeight: 800, color: '#0f172a', margin: '0 0 1rem 0', lineHeight: 1.1, letterSpacing: '-1px' }}>
                             {HERO_SLIDES[currentSlide].title}
                         </h1>
-                        <p style={{ fontSize: '1.25rem', color: '#475569', margin: '0 0 2.5rem 0', fontWeight: 600, maxWidth: '450px' }}>
+                        <p style={{ fontSize: 'clamp(0.9rem, 3vw, 1.25rem)', color: '#475569', margin: '0 0 2rem 0', fontWeight: 600, maxWidth: '450px', marginLeft: 'auto', marginRight: 'auto' }}>
                             {HERO_SLIDES[currentSlide].subtitle}
                         </p>
-                        <Link to="/shop" style={{ display: 'inline-block', backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '1rem 2.5rem', borderRadius: '6px', fontWeight: 700, fontSize: '1.05rem', cursor: 'pointer', transition: 'background-color 0.2s', textDecoration: 'none' }}>
+                        <Link to="/shop" style={{ display: 'inline-block', backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '0.85rem 2rem', borderRadius: '6px', fontWeight: 700, fontSize: 'clamp(0.9rem, 3vw, 1.05rem)', cursor: 'pointer', transition: 'background-color 0.2s', textDecoration: 'none' }}>
                             {HERO_SLIDES[currentSlide].buttonLabel}
                         </Link>
                     </div>
 
-                    {/* Carousel Right Graphic */}
-                    <div style={{ flex: 1, display: 'flex', justifyContent: 'center', alignSelf: 'center', position: 'relative', zIndex: 1 }}>
-                        <img src={HERO_SLIDES[currentSlide].image} alt="Featured Slide" style={{ maxWidth: '400px', maxHeight: '350px', objectFit: 'contain', filter: 'drop-shadow(0 25px 25px rgba(0,0,0,0.15))', transform: 'scale(1.1)', transition: 'opacity 0.5s ease', marginTop: '1rem' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
+                    {/* Carousel Right Graphic - hidden on very small phones */}
+                    <div style={{ flex: '1 1 200px', display: 'flex', justifyContent: 'center', alignSelf: 'center', position: 'relative', zIndex: 1, minWidth: 0 }}>
+                        <img src={HERO_SLIDES[currentSlide].image} alt="Featured Slide" style={{ maxWidth: 'min(350px, 90%)', maxHeight: '300px', objectFit: 'contain', filter: 'drop-shadow(0 25px 25px rgba(0,0,0,0.15))', transition: 'opacity 0.5s ease', marginTop: '1rem' }} onError={(e) => { e.currentTarget.style.display = 'none'; }} />
                     </div>
                 </div>
 
                 {/* Carousel Pagination Dots */}
-                <div style={{ position: 'absolute', bottom: '2rem', left: '0', right: '0', display: 'flex', justifyContent: 'center', gap: '1rem', zIndex: 10 }}>
+                <div style={{ position: 'absolute', bottom: '1rem', left: '0', right: '0', display: 'flex', justifyContent: 'center', gap: '0.6rem', zIndex: 10 }}>
                     {HERO_SLIDES.map((_, i) => (
                         <button 
                             key={i} 
                             onClick={() => setCurrentSlide(i)}
                             style={{ 
-                                width: '16px', height: '16px', borderRadius: '50%', cursor: 'pointer',
+                                width: '12px', height: '12px', borderRadius: '50%', cursor: 'pointer',
                                 border: '2px solid #0f172a', padding: 0,
                                 backgroundColor: currentSlide === i ? '#0f172a' : 'transparent',
                                 transition: '0.2s'
