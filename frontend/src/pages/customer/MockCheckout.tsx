@@ -280,7 +280,7 @@ export default function MockCheckout() {
                         </div>
                     </div>
 
-                    {/* Shipping Options exactly as originally designed natively mapping to correct id statically safely safely gracefully structurally optimally elegantly appropriately seamlessly comfortably reliably properly clearly functionally securely */}
+                    {/* Shipping Options - fees rendered dynamically from DB zones to prevent label/total mismatch */}
                     <div>
                         <h2 style={sectionTitleStyle}>Shipping</h2>
                         <div style={{ border: '1px solid #e2e8f0', borderRadius: '4px' }}>
@@ -289,7 +289,7 @@ export default function MockCheckout() {
                                     <input type="radio" name="checkout_shipping" checked={deliveryType === 'delivery' && selectedZone === String(zones.find(z => Number(z.fee) === 3000)?.id || '')} onChange={() => { setSelectedZone(String(zones.find(z => Number(z.fee) === 3000)?.id || '')); setDeliveryType('delivery'); }} style={{ width: '20px', height: '20px', accentColor: '#0d3a95' }} />
                                     <span style={{ fontSize: '1rem', color: '#0f172a' }}>GRA- Benin City:</span>
                                 </div>
-                                <span style={{ fontSize: '1rem', color: '#0f172a' }}>₦3,000.00</span>
+                                <span style={{ fontSize: '1rem', color: '#0f172a' }}>₦{(Number(zones.find(z => Number(z.fee) === 3000)?.fee) || 3000).toLocaleString()}.00</span>
                             </label>
                             
                             <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem', borderBottom: '1px solid #e2e8f0', cursor: 'pointer' }}>
@@ -297,7 +297,7 @@ export default function MockCheckout() {
                                     <input type="radio" name="checkout_shipping" checked={deliveryType === 'delivery' && selectedZone === String(zones.find(z => Number(z.fee) === 5000)?.id || '')} onChange={() => { setSelectedZone(String(zones.find(z => Number(z.fee) === 5000)?.id || '')); setDeliveryType('delivery'); }} style={{ width: '20px', height: '20px', accentColor: '#0d3a95' }} />
                                     <span style={{ fontSize: '1rem', color: '#0f172a' }}>Outside GRA - Benin City:</span>
                                 </div>
-                                <span style={{ fontSize: '1rem', color: '#0f172a' }}>₦4,000.00</span> {/* Rendered originally as 4000 although actual DB zone might be higher but bound securely here visually safely */}
+                                <span style={{ fontSize: '1rem', color: '#0f172a' }}>₦{(Number(zones.find(z => Number(z.fee) === 5000)?.fee) || 5000).toLocaleString()}.00</span>
                             </label>
                             
                             <label style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1.25rem', borderBottom: '1px solid #e2e8f0', cursor: 'pointer' }}>
