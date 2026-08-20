@@ -91,8 +91,8 @@ export const generateReceiptEmailHTML = (receipt: any) => {
             <td style="padding: 10px 0; vertical-align: middle;">
                 <table cellpadding="0" cellspacing="0" border="0">
                     <tr>
-                        <td width="40" style="vertical-align: middle;">
-                            ${item.image ? `<img src="${item.image}" alt="${item.name}" width="36" height="36" style="border-radius: 4px; object-fit: cover; display: block;" />` : `<div style="width:36px; height:36px; background:#e2e8f0; border-radius:4px; text-align:center; line-height:36px; font-size:10px; color:#94a3b8;">IMG</div>`}
+                        <td width="44" style="vertical-align: middle;">
+                            ${item.image ? `<img src="${item.image}" alt="${item.name}" width="40" height="40" style="border-radius: 6px; object-fit: cover; display: block; border: 1px solid #e2e8f0;" />` : `<div style="width:40px; height:40px; background:#f1f5f9; border-radius:6px; text-align:center; line-height:40px; font-size:10px; color:#94a3b8; font-weight:700;">ITEM</div>`}
                         </td>
                         <td style="padding-left: 10px; vertical-align: middle;">
                             <div style="font-weight: 600; font-size: 14px; color: #334155;">${item.name}</div>
@@ -111,13 +111,20 @@ export const generateReceiptEmailHTML = (receipt: any) => {
     <div style="background-color: #f5f5f5; padding: 30px 15px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.5; color: #1e293b;">
         <div style="max-width: 500px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
             
-            <!-- Brand Header -->
-            <div style="text-align: center; margin-bottom: 15px;">
-                <img src="https://nationsupermarket.eghedev.com/logo.png" alt="Nation Supermarket" width="120" style="margin-bottom: 8px; display: inline-block;" />
-                <h1 style="color: #ef4444; margin: 0; font-size: 20px; letter-spacing: 1px; font-weight: 800;">NATION SUPERMARKET</h1>
-                <p style="margin: 3px 0 0 0; color: #334155; font-size: 14px; font-weight: 600;">Official Digital Receipt</p>
-                <p style="margin: 2px 0 0 0; color: #94a3b8; font-size: 12px;">${isPickup ? (receipt.pickup_location || 'Store Pickup') : 'Online Delivery Ecosystem'}</p>
-            </div>
+            <!-- Brand Header: Logo on Left, Title on Right (matching Image 2) -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin-bottom: 20px;">
+                <tr>
+                    <td width="48" style="vertical-align: middle;">
+                        <div style="width: 44px; height: 44px; background-color: #ffffff; border-radius: 50%; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); text-align: center; line-height: 44px;">
+                            <img src="https://nationsupermarket.eghedev.com/logo.png" alt="Logo" width="44" height="44" style="width: 100%; height: 100%; object-fit: contain; display: block;" />
+                        </div>
+                    </td>
+                    <td style="vertical-align: middle; padding-left: 12px;">
+                        <div style="font-size: 20px; font-weight: 800; color: #ef4444; margin: 0; letter-spacing: 0.5px;">Nation Supermarket</div>
+                        <div style="font-size: 12px; font-weight: 600; color: #64748b; margin-top: 1px;">Official Digital Receipt</div>
+                    </td>
+                </tr>
+            </table>
 
             <div style="border-bottom: 1px dashed #cbd5e1; margin: 15px 0;"></div>
 

@@ -189,13 +189,30 @@ async function processOrderSettlement(reference: string, gatewayRef: string, ord
                 fulfilment_method: o.delivery_type,
                 delivery_address: o.delivery_type === 'store_pickup' ? undefined : o.delivery_address,
                 pickup_location: o.delivery_type === 'store_pickup' ? physicalStoreString : undefined,
-                items: items.map((i: any) => ({
-                    name: i.name,
-                    quantity: i.quantity,
-                    unit_price: Number(i.price),
-                    item_total: Number(i.price) * i.quantity,
-                    image: i.images && i.images.length > 0 ? i.images[0] : null
-                })),
+                items: items.map((i: any) => {
+                    let imgUrl = '';
+                    if (Array.isArray(i.images) && i.images.length > 0) {
+                        imgUrl = i.images[0];
+                    } else if (typeof i.images === 'string') {
+                        try {
+                            const parsed = JSON.parse(i.images);
+                            if (Array.isArray(parsed) && parsed.length > 0) imgUrl = parsed[0];
+                            else if (typeof parsed === 'string') imgUrl = parsed;
+                        } catch (e) {
+                            imgUrl = i.images;
+                        }
+                    }
+                    if (imgUrl && !imgUrl.startsWith('http')) {
+                        imgUrl = `https://nationsupermarket.eghedev.com${imgUrl.startsWith('/') ? '' : '/'}${imgUrl}`;
+                    }
+                    return {
+                        name: i.name,
+                        quantity: i.quantity,
+                        unit_price: Number(i.price),
+                        item_total: Number(i.price) * i.quantity,
+                        image: imgUrl
+                    };
+                }),
                 subtotal: Number(o.subtotal),
                 delivery_fee: o.delivery_type === 'store_pickup' ? 0 : Number(o.delivery_fee),
                 total_paid: Number(o.total_amount),
