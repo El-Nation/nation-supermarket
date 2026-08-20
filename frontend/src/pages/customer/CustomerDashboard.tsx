@@ -197,7 +197,9 @@ export default function CustomerDashboard() {
                                         <div key={i} style={{border: '1px solid #e2e8f0', borderRadius: '8px', padding: '1.5rem', display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem'}}>
                                             <div>
                                                 <div style={{fontWeight: 700, color: '#334155', marginBottom: '0.2rem'}}>{o.order_reference}</div>
-                                                <div style={{color: '#64748b', fontSize: '0.85rem', marginBottom: '0.2rem'}}>{new Date(o.created_at).toLocaleDateString()}</div>
+                                                <div style={{color: '#64748b', fontSize: '0.85rem', marginBottom: '0.2rem'}}>
+                                                    {new Date(o.created_at).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' })}
+                                                </div>
                                                 <div style={{display: 'flex', gap: '0.5rem', alignItems: 'center', fontSize: '0.8rem'}}>
                                                     <span style={{background: '#f1f5f9', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 600}}>{o.order_status}</span>
                                                     <span style={{background: o.payment_status === 'Paid' ? '#dcfce7' : '#fef9c3', color: o.payment_status === 'Paid' ? '#166534' : '#854d0e', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 600}}>{o.payment_status}</span>

@@ -40,6 +40,7 @@ export default function ManageOrders() {
                         <thead>
                             <tr style={{backgroundColor: '#f1f5f9', borderBottom: '1px solid #e2e8f0'}}>
                                 <th style={{padding: '1rem', color: '#475569', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Order Ref</th>
+                                <th style={{padding: '1rem', color: '#475569', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Date & Time</th>
                                 <th style={{padding: '1rem', color: '#475569', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Client Target</th>
                                 <th style={{padding: '1rem', color: '#475569', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Location (Matrix)</th>
                                 <th style={{padding: '1rem', color: '#475569', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px'}}>Total (₦)</th>
@@ -49,14 +50,14 @@ export default function ManageOrders() {
                         <tbody>
                             {loading ? (
                                 <tr>
-                                    <td colSpan={5} style={{textAlign: 'center', color: '#94a3b8', padding: '5rem 2rem'}}>
+                                    <td colSpan={6} style={{textAlign: 'center', color: '#94a3b8', padding: '5rem 2rem'}}>
                                         <div className="admin-spinner" style={{width: 32, height: 32, borderColor: '#0f172a', borderTopColor: 'transparent', margin: '0 auto 1rem'}}></div>
                                         Gathering active orders from PostgreSQL backend...
                                     </td>
                                 </tr>
                             ) : orders.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} style={{textAlign: 'center', color: '#94a3b8', padding: '5rem 2rem'}}>
+                                    <td colSpan={6} style={{textAlign: 'center', color: '#94a3b8', padding: '5rem 2rem'}}>
                                         <ShoppingCart size={48} color="#cbd5e1" style={{margin: '0 auto 1rem', display: 'block'}} />
                                         No active orders generated natively yet. Create one via Checkout Simulator.
                                     </td>
@@ -68,6 +69,9 @@ export default function ManageOrders() {
                                 return (
                                     <tr key={o.id} style={{borderBottom: i === orders.length - 1 ? 'none' : '1px solid #f1f5f9'}}>
                                         <td style={{padding: '1rem', fontWeight: 700, color: '#0ea5e9', fontSize: '0.95rem'}}>{o.order_reference}</td>
+                                        <td style={{padding: '1rem', color: '#64748b', fontSize: '0.85rem', whiteSpace: 'nowrap'}}>
+                                            {o.created_at ? new Date(o.created_at).toLocaleString('en-US', { dateStyle: 'short', timeStyle: 'short' }) : '-'}
+                                        </td>
                                         <td style={{padding: '1rem', fontWeight: 600, color: '#1e293b'}}>
                                             <div style={{display: 'flex', alignItems: 'center', gap: '0.5rem'}}><User size={14} color="#64748b"/> {customerName}</div>
                                         </td>
