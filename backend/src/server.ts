@@ -68,13 +68,66 @@ app.get('/api/debug-receipts', async (req, res) => {
     }
 });
 
+import jwt from 'jsonwebtoken';
+
 app.get('/api/receipt/:reference', async (req: Request, res: Response) => {
     try {
         const { reference } = req.params;
-        const rRes = await pool.query('SELECT receipt_data FROM receipts WHERE receipt_url = $1', [`/receipts/${reference}`]);
-        if(rRes.rows.length === 0) return res.status(404).json({ message: 'Receipt tracking vector unresolved.' });
-        res.json(rRes.rows[0].receipt_data);
+        
+        // Extract optional JWT token from cookies or authorization header
+        const token = req.cookies?.jwt || (req.headers.authorization?.startsWith('Bearer ') ? req.headers.authorization.split(' ')[1] : null);
+        let reqUser: any = null;
+        if (token) {
+            try {
+                const JWT_SECRET = process.env.JWT_SECRET || 'secret';
+                const decoded: any = jwt.verify(token, JWT_SECRET);
+                const uRes = await pool.query('SELECT id, role FROM users WHERE id = $1', [decoded.id]);
+                if (uRes.rows.length > 0) reqUser = uRes.rows[0];
+            } catch (e) {
+                // Token invalid/expired - continue as unauthenticated
+            }
+        }
+
+        // Fetch receipt + order owner metadata
+        const rRes = await pool.query(
+            `SELECT r.receipt_data, o.user_id, o.order_reference, p.payment_reference 
+             FROM receipts r 
+             JOIN payments p ON r.payment_id = p.id 
+             JOIN orders o ON p.order_id = o.id 
+             WHERE p.payment_reference = $1 OR o.order_reference = $1 OR r.receipt_url = $2`,
+            [reference, `/receipts/${reference}`]
+        );
+        
+        if (rRes.rows.length === 0) {
+            // Fallback check for mock receipts or legacy records without joins
+            const fallback = await pool.query('SELECT receipt_data FROM receipts WHERE receipt_url = $1', [`/receipts/${reference}`]);
+            if (fallback.rows.length > 0) return res.json(fallback.rows[0].receipt_data);
+            return res.status(404).json({ message: 'Receipt reference unresolved.' });
+        }
+
+        const row = rRes.rows[0];
+        const isPaymentRef = reference === row.payment_reference || `/receipts/${reference}` === row.receipt_url;
+
+        // Security Authorization Logic:
+        // 1. Admin can access any receipt
+        if (reqUser && reqUser.role === 'admin') {
+            return res.json(row.receipt_data);
+        }
+
+        // 2. Authenticated Customer owning this order can access via order_reference OR payment_reference
+        if (reqUser && Number(reqUser.id) === Number(row.user_id)) {
+            return res.json(row.receipt_data);
+        }
+
+        // 3. Unauthenticated / Guest post-checkout screen access allowed ONLY via long unguessable payment_reference
+        if (isPaymentRef) {
+            return res.json(row.receipt_data);
+        }
+
+        // 4. Deny unauthenticated access to short order_reference guessing
+        return res.status(403).json({ message: 'Access denied: You do not have permission to view this receipt.' });
     } catch(e) {
+        console.error("Error retrieving receipt:", e);
         res.status(500).json({ message: 'Error mapping digital receipt parameters globally.' });
     }
 });
