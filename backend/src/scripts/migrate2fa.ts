@@ -16,5 +16,4 @@ const runMigration = async () => {
         process.exit(1);
     }
 };
-
-runMigration();s
+runMigration();
