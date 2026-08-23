@@ -50,7 +50,7 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             } catch (e) { console.error(e); }
         } else {
             setWishlist(prev => {
-                if(prev.find(p => p.product_id === item.product_id)) return prev;
+                if(prev.find(p => Number(p.product_id) === Number(item.product_id) || Number((p as any).id) === Number(item.product_id))) return prev;
                 const updated = [...prev, item];
                 localStorage.setItem('nation_wishlist', JSON.stringify(updated));
                 return updated;
@@ -66,7 +66,7 @@ export const WishlistProvider: React.FC<{ children: React.ReactNode }> = ({ chil
             } catch(e) { console.error(e); }
         } else {
             setWishlist(prev => {
-                const updated = prev.filter(p => p.product_id !== product_id);
+                const updated = prev.filter(p => Number(p.product_id) !== Number(product_id) && Number((p as any).id) !== Number(product_id));
                 localStorage.setItem('nation_wishlist', JSON.stringify(updated));
                 return updated;
             });

@@ -17,4 +17,4 @@ const runMigration = async () => {
     }
 };
 
-runMigration();
+runMigration();s
