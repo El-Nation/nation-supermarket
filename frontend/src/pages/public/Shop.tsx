@@ -34,8 +34,10 @@ export default function Shop() {
     const [loading, setLoading] = useState(true);
 
     // Advanced Sidebar Filtering State Architecture natively mirroring the blueprint
-    const [priceRange, setPriceRange] = useState(300000);
-    const [appliedMaxPrice, setAppliedMaxPrice] = useState(300000);
+    const [minPrice, setMinPrice] = useState<number | ''>('');
+    const [maxPrice, setMaxPrice] = useState<number | ''>('');
+    const [appliedMinPrice, setAppliedMinPrice] = useState<number | ''>('');
+    const [appliedMaxPrice, setAppliedMaxPrice] = useState<number | ''>('');
     const [sortBy, setSortBy] = useState('relevance');
 
     useEffect(() => {
@@ -46,7 +48,8 @@ export default function Shop() {
                 if (queryCategory) params.append('category', queryCategory);
                 if (querySpecial === 'true') params.append('special_offers', 'true');
                 if (querySearch) params.append('search', querySearch);
-                if (appliedMaxPrice < 300000) params.append('maxPrice', appliedMaxPrice.toString());
+                if (appliedMinPrice !== '') params.append('minPrice', appliedMinPrice.toString());
+                if (appliedMaxPrice !== '') params.append('maxPrice', appliedMaxPrice.toString());
                 if (sortBy) params.append('sort', sortBy);
 
                 const res = await api.get(`/public/products?${params.toString()}`);
@@ -74,7 +77,7 @@ export default function Shop() {
 
         const defer = setTimeout(fetchLiveInventory, 250);
         return () => clearTimeout(defer);
-    }, [queryCategory, querySpecial, querySearch, appliedMaxPrice, sortBy]);
+    }, [queryCategory, querySpecial, querySearch, appliedMinPrice, appliedMaxPrice, sortBy]);
 
     return (
         <div className="mobile-col tablet-col mobile-padding mobile-gap" style={{ maxWidth: '1400px', margin: '0 auto', padding: '3rem 2rem', display: 'flex', gap: '3rem', alignItems: 'flex-start' }}>
@@ -87,23 +90,34 @@ export default function Shop() {
                     
                     {/* Native Input Range Controller securely managed */}
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                        <input 
-                            type="range" 
-                            min={0} 
-                            max={300000} 
-                            step={100} 
-                            value={priceRange} 
-                            onChange={e => setPriceRange(Number(e.target.value))}
-                            style={{ width: '100%', cursor: 'pointer', height: '6px', borderRadius: '4px', appearance: 'none', backgroundColor: '#e2e8f0', outline: 'none' }}
-                        />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <button onClick={() => setAppliedMaxPrice(priceRange)} style={{ backgroundColor: '#1d4ed8', color: 'white', border: 'none', padding: '0.5rem 1.5rem', borderRadius: '6px', fontWeight: 700, cursor: 'pointer', transition: '0.2s' }}>
-                                Filter
-                            </button>
-                            <span style={{ fontSize: '0.9rem', color: '#1e293b', fontWeight: 600 }}>
-                                Price: ₦0 — ₦{priceRange.toLocaleString()}
-                            </span>
+                        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                            <input 
+                                type="number" 
+                                min={0} 
+                                value={minPrice} 
+                                onChange={e => setMinPrice(e.target.value === '' ? '' : Number(e.target.value))}
+                                placeholder="From ₦"
+                                style={{ width: '100%', padding: '0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                            />
+                            <span style={{ color: '#64748b' }}>-</span>
+                            <input 
+                                type="number" 
+                                min={0} 
+                                value={maxPrice} 
+                                onChange={e => setMaxPrice(e.target.value === '' ? '' : Number(e.target.value))}
+                                placeholder="To ₦"
+                                style={{ width: '100%', padding: '0.6rem', borderRadius: '6px', border: '1px solid #cbd5e1', outline: 'none', fontSize: '0.95rem' }}
+                            />
                         </div>
+                        <button 
+                            onClick={() => {
+                                setAppliedMinPrice(minPrice);
+                                setAppliedMaxPrice(maxPrice);
+                            }} 
+                            style={{ backgroundColor: '#1d4ed8', color: 'white', border: 'none', padding: '0.6rem 1.5rem', borderRadius: '6px', fontWeight: 700, cursor: 'pointer', transition: '0.2s', width: '100%' }}
+                        >
+                            Apply Filter
+                        </button>
                     </div>
                 </div>
             </aside>

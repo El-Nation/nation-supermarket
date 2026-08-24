@@ -31,27 +31,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     useEffect(() => {
-        let timeoutId: number;
+        if (!user) return;
 
-        const resetTimer = () => {
-            clearTimeout(timeoutId);
-            if (user) {
-                timeoutId = setTimeout(() => {
-                    logout();
-                }, 600000); // 10 minutes (600,000 ms) silent inactivity protection
+        let lastWrite = Date.now();
+        const updateActivity = () => {
+            const now = Date.now();
+            if (now - lastWrite > 1000) {
+                localStorage.setItem('lastActivity', now.toString());
+                lastWrite = now;
             }
         };
 
+        const checkInactivity = setInterval(() => {
+            const lastActive = localStorage.getItem('lastActivity');
+            if (lastActive && Date.now() - parseInt(lastActive, 10) > 600000) {
+                logout();
+            }
+        }, 10000);
+
         const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart', 'click'];
         
-        if (user) {
-            events.forEach(e => window.addEventListener(e, resetTimer, { passive: true }));
-            resetTimer();
-        }
+        events.forEach(e => window.addEventListener(e, updateActivity, { passive: true }));
+        localStorage.setItem('lastActivity', Date.now().toString());
 
         return () => {
-            clearTimeout(timeoutId);
-            events.forEach(e => window.removeEventListener(e, resetTimer));
+            clearInterval(checkInactivity);
+            events.forEach(e => window.removeEventListener(e, updateActivity));
         };
     }, [user]);
 
