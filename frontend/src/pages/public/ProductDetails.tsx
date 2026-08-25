@@ -5,15 +5,22 @@ import { useWishlist } from '../../context/WishlistContext';
 import { ChevronLeft, ShoppingCart, Heart, Truck, Tag, ShieldCheck } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import api from '../../services/api';
+import { useAuth } from '../../context/AuthContext';
+import ProductCard from '../../components/shop/ProductCard';
 
 export default function ProductDetails() {
     const { id } = useParams();
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
-    const [quantity, setQuantity] = useState(1);
     const [product, setProduct] = useState<any>(null);
+    const [reviews, setReviews] = useState<any[]>([]);
+    const [recommendations, setRecommendations] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
+    const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+    const [postingReview, setPostingReview] = useState(false);
+    const { user } = useAuth(); 
+
     const inWishlist = wishlist.some(item => (item as any).product_id === product?.id || (item as any).id === product?.id);
 
     useEffect(() => {
@@ -21,8 +28,12 @@ export default function ProductDetails() {
         const fetchIsolatedProduct = async () => {
             setLoading(true);
             try {
-                const res = await api.get(`/public/products/${id}`);
-                const p = res.data;
+                const [pRes, rRes, recRes] = await Promise.all([
+                    api.get(`/public/products/${id}`),
+                    api.get(`/public/products/${id}/reviews`),
+                    api.get(`/public/products/${id}/recommendations`)
+                ]);
+                const p = pRes.data;
                 setProduct({
                     id: p.id,
                     name: p.name,
@@ -33,6 +44,8 @@ export default function ProductDetails() {
                     stock: p.stock_quantity,
                     category_id: p.category_id
                 });
+                setReviews(rRes.data);
+                setRecommendations(recRes.data);
             } catch(e) {
                 setProduct(null);
             } finally {
@@ -85,6 +98,26 @@ export default function ProductDetails() {
         sessionStorage.setItem('buy_now_product', JSON.stringify([{ ...product, quantity }]));
         navigate('/checkout-test?mode=buy_now');
     };
+
+    const submitReview = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user) return alert("Please login to submit heavily weighted reviews natively.");
+        setPostingReview(true);
+        try {
+            await api.post(`/user/products/${product.id}/reviews`, reviewForm);
+            const rRes = await api.get(`/public/products/${product.id}/reviews`);
+            setReviews(rRes.data);
+            setReviewForm({ rating: 5, comment: '' });
+            alert("Review successfully deployed seamlessly!");
+        } catch (error: any) {
+            alert(error.response?.data?.message || "Error submitting review strictly");
+        } finally {
+            setPostingReview(false);
+        }
+    };
+
+    const avgRating = reviews.length > 0 ? (reviews.reduce((a, b) => a + b.rating, 0) / reviews.length).toFixed(1) : '0.0';
+    const verifiedCount = reviews.filter(r => r.is_verified_purchase).length;
 
     return (
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '3rem 2rem' }}>
@@ -152,7 +185,7 @@ export default function ProductDetails() {
                         )}
                     </div>
                     
-                    <p style={{ fontSize: '1.1rem', color: '#64748b', lineHeight: 1.6, marginBottom: '3rem', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', padding: '1.5rem 0' }}>
+                    <p style={{ fontSize: '1.1rem', color: '#64748b', lineHeight: 1.6, marginBottom: '3rem', borderTop: '1px solid #e2e8f0', borderBottom: '1px solid #e2e8f0', padding: '1.5rem 0', whiteSpace: 'pre-line' }}>
                         {product.description}
                     </p>
 
@@ -187,7 +220,7 @@ export default function ProductDetails() {
                     </div>
 
                     {/* Trust Signals */}
-                    <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: '#f8fafc', padding: '1.5rem', borderRadius: '12px' }}>
+                    <div className="mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', marginBottom: '3rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#334155', fontWeight: 600 }}>
                             <Truck size={24} color="#0284c7" /> Genuine Swift Delivery Network
                         </div>
@@ -195,6 +228,91 @@ export default function ProductDetails() {
                             <ShieldCheck size={24} color="#16a34a" /> 100% Quality Guaranteed
                         </div>
                     </div>
+                    
+                    {/* Customer Reviews Section natively mapped */}
+                    <div style={{ borderTop: '2px solid #e2e8f0', paddingTop: '3rem' }}>
+                        <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            Customer Reviews 
+                            {reviews.length > 0 && <span style={{ fontSize: '1rem', padding: '0.25rem 0.75rem', background: '#f1f5f9', borderRadius: '20px', color: '#475569' }}>{reviews.length}</span>}
+                        </h2>
+                        
+                        {reviews.length > 0 ? (
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem', marginBottom: '2rem', background: '#fffbeb', padding: '1.5rem', borderRadius: '12px', border: '1px solid #fde68a' }}>
+                                <div style={{ fontSize: '3rem', fontWeight: 900, color: '#d97706', lineHeight: 1 }}>⭐ {avgRating}</div>
+                                <div>
+                                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#92400e' }}>out of 5 stars</div>
+                                    <div style={{ color: '#b45309', fontSize: '0.95rem' }}>Based on {reviews.length} reviews ({verifiedCount} verified)</div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div style={{ color: '#64748b', marginBottom: '2rem', fontStyle: 'italic' }}>Be the first to review this item uniquely cleanly!</div>
+                        )}
+                        
+                        {/* Add Review Hook */}
+                        {user ? (
+                            <form onSubmit={submitReview} style={{ background: '#f8fafc', padding: '1.5rem', borderRadius: '12px', border: '1px solid #e2e8f0', marginBottom: '3rem' }}>
+                                <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#0f172a', margin: '0 0 1rem 0' }}>Write a Review</h3>
+                                <div style={{ marginBottom: '1rem' }}>
+                                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '0.5rem' }}>Rating</label>
+                                    <select value={reviewForm.rating} onChange={e => setReviewForm(f => ({ ...f, rating: Number(e.target.value) }))} style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
+                                        {[5, 4, 3, 2, 1].map(num => <option key={num} value={num}>{num} Stars</option>)}
+                                    </select>
+                                </div>
+                                <div style={{ marginBottom: '1rem' }}>
+                                    <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '0.5rem' }}>Your Review</label>
+                                    <textarea required rows={3} value={reviewForm.comment} onChange={e => setReviewForm(f => ({ ...f, comment: e.target.value }))} style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #cbd5e1', resize: 'vertical' }} placeholder="What did you like or dislike about this product?"></textarea>
+                                </div>
+                                <button type="submit" disabled={postingReview} style={{ padding: '0.65rem 1.5rem', background: '#0f172a', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 600, cursor: postingReview ? 'not-allowed' : 'pointer' }}>
+                                    {postingReview ? 'Posting...' : 'Submit Review'}
+                                </button>
+                            </form>
+                        ) : (
+                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: '#f1f5f9', padding: '1rem 1.5rem', borderRadius: '8px', marginBottom: '3rem' }}>
+                                <span style={{ color: '#475569', fontWeight: 500 }}>Want to leave a trusted review?</span>
+                                <Link to="/auth/login" style={{ color: '#0284c7', fontWeight: 700, textDecoration: 'none' }}>Login to Review</Link>
+                            </div>
+                        )}
+
+                        {/* Review Feed */}
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+                            {reviews.map(r => (
+                                <div key={r.id} style={{ padding: '1.5rem', background: 'white', border: '1px solid #f1f5f9', borderRadius: '12px', boxShadow: '0 1px 3px rgba(0,0,0,0.02)' }}>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem' }}>
+                                        <div>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                                                <span style={{ fontWeight: 700, color: '#0f172a', fontSize: '1.05rem' }}>{r.user_name}</span>
+                                                {r.is_verified_purchase && (
+                                                    <span style={{ fontSize: '0.75rem', fontWeight: 700, background: '#dcfce7', color: '#166534', padding: '0.2rem 0.5rem', borderRadius: '20px', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                                        <ShieldCheck size={12} /> Verified Purchase
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <div style={{ color: '#d97706', fontSize: '0.9rem', letterSpacing: '2px' }}>
+                                                {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                                            </div>
+                                        </div>
+                                        <span style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
+                                            {new Date(r.created_at).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                    <p style={{ margin: 0, color: '#475569', lineHeight: 1.6 }}>{r.comment}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Enhanced Discovery / You May Also Like System */}
+                    {recommendations.length > 0 && (
+                        <div style={{ borderTop: '2px solid #e2e8f0', paddingTop: '3rem', marginTop: '3rem' }}>
+                            <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#0f172a', marginBottom: '2rem' }}>You May Also Like</h2>
+                            <div className="tablet-grid-2 desktop-grid-4 mobile-grid-1" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))', gap: '2rem' }}>
+                                {recommendations.map((p: any) => (
+                                    <ProductCard key={p.id} product={p} />
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
                 </div>
             </div>
         </div>

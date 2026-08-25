@@ -40,7 +40,8 @@ app.use('/api/user', userRoutes);
 import { createEnquiry } from './controllers/enquiryController';
 import { paystackWebhook, createMockOrder, initializePayment, verifyPayment } from './controllers/paymentController';
 import { getDeliveryZones } from './controllers/deliveryController';
-import { getPublicProducts, getSingleProduct, getCategories } from './controllers/inventoryController';
+import { getPublicProducts, getSingleProduct, getCategories, getRecommendations } from './controllers/inventoryController';
+import { getProductReviews } from './controllers/reviewController';
 
 app.post('/api/enquiries', createEnquiry);
 app.post('/api/paystack/webhook', paystackWebhook);
@@ -50,6 +51,8 @@ app.get('/api/public/delivery', getDeliveryZones);
 app.get('/api/public/categories', getCategories);
 app.get('/api/public/products', getPublicProducts);
 app.get('/api/public/products/:id', getSingleProduct);
+app.get('/api/public/products/:id/recommendations', getRecommendations);
+app.get('/api/public/products/:productId/reviews', getProductReviews);
 app.post('/api/public/payments/mock-order', createMockOrder);
 app.post('/api/public/payments/initialize', initializePayment);
 app.post('/api/public/payments/verify', verifyPayment);
@@ -153,7 +156,18 @@ const startServer = async () => {
 
   try {
       await pool.query(`ALTER TABLE categories ADD COLUMN IF NOT EXISTS icon VARCHAR(20) DEFAULT '📦'`);
-      console.log('Automated Schema Migration: Category icons ensured natively.');
+      
+      await pool.query(`
+      CREATE TABLE IF NOT EXISTS reviews (
+          id SERIAL PRIMARY KEY,
+          product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+          user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+          rating INTEGER CHECK (rating >= 1 AND rating <= 5) NOT NULL,
+          comment TEXT,
+          is_verified_purchase BOOLEAN DEFAULT false,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )`);
+      console.log('Automated Schema Migration: Category icons and Reviews infrastructure safely ensured natively.');
   } catch(e) {
       console.log('Schema Sync Notice:', e);
   }

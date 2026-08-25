@@ -133,8 +133,8 @@ export default function ManageProducts() {
                             </select>
                         </div>
                         <div style={{marginBottom: '1rem'}}>
-                            <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Description (Optional)</label>
-                            <textarea className="form-input" rows={3} value={desc} onChange={e => setDesc(e.target.value)} />
+                            <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Description (Detailed)</label>
+                            <textarea className="form-input" rows={8} placeholder="Enter full specifications, features, and rich details here..." value={desc} onChange={e => setDesc(e.target.value)} />
                         </div>
                         <div style={{marginBottom: '1.5rem'}}>
                             <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Cloudinary Images</label>

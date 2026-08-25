@@ -55,6 +55,29 @@ export const getSingleProduct = async (req: Request, res: Response) => {
     }
 };
 
+export const getRecommendations = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const currentProd = await pool.query('SELECT category_id FROM products WHERE id = $1', [id]);
+        if (currentProd.rows.length === 0) return res.json([]);
+        
+        const catId = currentProd.rows[0].category_id;
+        
+        // Natively pull randomized relative category siblings explicitly excluding the anchor securely smartly
+        const recs = await pool.query(
+            `SELECT id, name, price, discount, images, stock_quantity 
+             FROM products 
+             WHERE category_id = $1 AND id != $2 AND status = 'active'
+             ORDER BY RANDOM() LIMIT 4`,
+            [catId, id]
+        );
+        res.json(recs.rows);
+    } catch(e) {
+        console.error("Recommendations Matrix error:", e);
+        res.status(500).json({ message: 'Error mapping relative lateral product suggestions globally.' });
+    }
+};
+
 export const deleteProduct = async (req: Request, res: Response) => {
     try {
         const deleted = await Product.delete(Number(req.params.id));
