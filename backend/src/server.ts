@@ -151,6 +151,13 @@ const startServer = async () => {
   // Connect to Database
   await connectDB();
 
+  try {
+      await pool.query(`ALTER TABLE categories ADD COLUMN IF NOT EXISTS icon VARCHAR(20) DEFAULT '📦'`);
+      console.log('Automated Schema Migration: Category icons ensured natively.');
+  } catch(e) {
+      console.log('Schema Sync Notice:', e);
+  }
+
   app.listen(PORT, () => {
     console.log(`Server HOT-RELOAD triggered smoothly mapping perfectly globally.`);
     console.log(`Server is running on port ${PORT}`);
