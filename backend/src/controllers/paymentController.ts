@@ -38,6 +38,10 @@ export const createMockOrder = async (req: Request, res: Response) => {
                'INSERT INTO order_items (order_id, product_id, quantity, price) VALUES ($1, $2, $3, $4)',
                [order_id, item.product_id, item.quantity, pRes.rows[0].price]
            );
+           await pool.query(
+               'UPDATE products SET stock_quantity = GREATEST(stock_quantity - $1, 0) WHERE id = $2',
+               [item.quantity, item.product_id]
+           );
         }
 
         const formattedItems = [];
@@ -165,6 +169,15 @@ async function processOrderSettlement(reference: string, gatewayRef: string, ord
                 `UPDATE orders SET payment_status = 'paid', order_status = 'processing', updated_at = CURRENT_TIMESTAMP WHERE id = $1`,
                 [order_id]
             );
+
+            // Deduct Stock Quantity Dynamically
+            const orderedItemsRes = await client.query('SELECT product_id, quantity FROM order_items WHERE order_id = $1', [order_id]);
+            for (const oItem of orderedItemsRes.rows) {
+                await client.query(
+                    'UPDATE products SET stock_quantity = GREATEST(stock_quantity - $1, 0) WHERE id = $2',
+                    [oItem.quantity, oItem.product_id]
+                );
+            }
         } else {
             payment_id = existingPayment.rows[0].id;
         }
