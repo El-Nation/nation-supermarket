@@ -26,6 +26,8 @@ const CATEGORY_ICONS: Record<string, string> = {
     "Kids Provisions": "🧸",
     "Laundry": "🧺",
     "Provisions": "🛒",
+    "Kitchen Appliances": "🍳",
+    "Men's clothing": "👕",
 };
 
 export default function Navbar() {
