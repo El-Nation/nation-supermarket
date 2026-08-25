@@ -29,7 +29,7 @@ export default function Shop() {
 
     let headerTitle = 'Shop All';
     if (queryCategory) {
-        const cat = categories.find(c => String(c.id) === queryCategory);
+        const cat = categories.find(c => String(c.id) === queryCategory || c.slug === queryCategory);
         if (cat) headerTitle = cat.name;
     } else if (querySpecial === 'true') {
         headerTitle = '🔥 Hot Deals';

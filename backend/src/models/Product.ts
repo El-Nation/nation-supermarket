@@ -79,8 +79,13 @@ export class Product {
             valueCount++;
         }
         if (queryParams.category) {
-            queryText += ` AND p.category_id = $${valueCount}`;
-            values.push(queryParams.category);
+            if (!isNaN(Number(queryParams.category))) {
+                queryText += ` AND p.category_id = $${valueCount}`;
+                values.push(queryParams.category);
+            } else {
+                queryText += ` AND c.slug = $${valueCount}`;
+                values.push(queryParams.category);
+            }
             valueCount++;
         }
         if (queryParams.minPrice) {

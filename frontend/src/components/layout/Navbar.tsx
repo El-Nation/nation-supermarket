@@ -284,14 +284,14 @@ export default function Navbar() {
                     <nav className="mobile-w-full mobile-padding hide-scrollbar" style={{ display: 'flex', gap: '2rem', paddingLeft: '2rem', overflowX: 'auto', WebkitOverflowScrolling: 'touch', whiteSpace: 'nowrap' }}>
                         <Link to="/shop?special=true" style={{ ...linkStyle, color: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.35rem' }}><Flame size={16} /> Hot Deals</Link>
                         <Link to="/shop" style={linkStyle}>Shop All</Link>
-                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'pharmacy')?.id || ''}`} style={linkStyle}>Pharmacy</Link>
-                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'fragrance')?.id || ''}`} style={linkStyle}>Fragrance</Link>
-                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'household')?.id || ''}`} style={linkStyle}>Household</Link>
-                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'kids provisions')?.id || ''}`} style={linkStyle}>Kids Provisions</Link>
-                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'kitchen appliances')?.id || ''}`} style={linkStyle}>Kitchen Appliances</Link>
-                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'laundry')?.id || ''}`} style={linkStyle}>Laundry</Link>
-                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'provisions')?.id || ''}`} style={linkStyle}>Provisions</Link>
-                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'snacks & sweets')?.id || ''}`} style={linkStyle}>Snacks & Sweets</Link>
+                        <Link to={`/shop?category=pharmacy`} style={linkStyle}>Pharmacy</Link>
+                        <Link to={`/shop?category=fragrance`} style={linkStyle}>Fragrance</Link>
+                        <Link to={`/shop?category=household`} style={linkStyle}>Household</Link>
+                        <Link to={`/shop?category=kids-provisions`} style={linkStyle}>Kids Provisions</Link>
+                        <Link to={`/shop?category=kitchen-appliances`} style={linkStyle}>Kitchen Appliances</Link>
+                        <Link to={`/shop?category=laundry`} style={linkStyle}>Laundry</Link>
+                        <Link to={`/shop?category=pantry-staples`} style={linkStyle}>Provisions</Link>
+                        <Link to={`/shop?category=snacks-sweets`} style={linkStyle}>Snacks & Sweets</Link>
                     </nav>
                 </div>
             </div>
