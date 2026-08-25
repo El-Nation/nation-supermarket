@@ -274,7 +274,7 @@ export default function Navbar() {
                             <div className="mobile-w-full xs-grid-1" style={{ position: 'absolute', top: '100%', left: 0, width: '600px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderTop: 'none', borderRadius: '0 0 8px 8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', zIndex: 50, padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', maxHeight: '450px', overflowY: 'auto' }}>
                                 {categories.map(cat => (
                                     <Link key={cat.id} to={`/shop?category=${cat.id}`} onClick={() => setDropdownOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', textDecoration: 'none', color: '#0f172a', border: '1px solid #f1f5f9', borderRadius: '6px', transition: '0.2s', backgroundColor: '#fafaf9' }}>
-                                        <span style={{ fontSize: '1.25rem' }}>{cat.icon || CATEGORY_ICONS[cat.name] || '📦'}</span>
+                                        <span style={{ fontSize: '1.25rem' }}>{(cat.icon && cat.icon !== '📦') ? cat.icon : (CATEGORY_ICONS[cat.name] || '📦')}</span>
                                         <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{cat.name}</span>
                                     </Link>
                                 ))}
