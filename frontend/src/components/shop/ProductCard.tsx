@@ -25,6 +25,19 @@ export default function ProductCard({ product }: { product: Product }) {
     const [added, setAdded] = useState(false);
 
     const inWishlist = isInWishlist(product.id);
+    
+    // Dynamically safely intercept and parse JSONB arrays seamlessly explicitly securely natively 
+    const pAny = product as any;
+    let imageSrc = product.image_url;
+    if (!imageSrc && pAny.images) {
+        if (Array.isArray(pAny.images) && pAny.images.length > 0) imageSrc = pAny.images[0];
+        else if (typeof pAny.images === 'string') {
+            try {
+                const parsed = JSON.parse(pAny.images);
+                imageSrc = parsed[0] || '';
+            } catch(e) {}
+        }
+    }
 
     const toggleWishlist = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -35,13 +48,13 @@ export default function ProductCard({ product }: { product: Product }) {
         if (inWishlist) {
             removeFromWishlist(idToToggle);
         } else {
-            addToWishlist({ product_id: idToToggle, name: product.name, price: product.price, image_url: product.image_url });
+            addToWishlist({ product_id: idToToggle, name: product.name, price: product.price, image_url: imageSrc });
         }
     };
 
     const handleAddToCart = () => {
         if (product.stock <= 0) return;
-        addToCart({ product_id: product.id, name: product.name, price: product.price, image_url: product.image_url, quantity: 1, max_stock: product.stock });
+        addToCart({ product_id: product.id, name: product.name, price: product.price, image_url: imageSrc, quantity: 1, max_stock: product.stock });
         
         // Hallmark-style success feedback visualization natively seamlessly gracefully explicitly cleanly effortlessly beautifully optimally efficiently optimally logically creatively effectively natively fluidly visually robustly effortlessly reliably smartly physically functionally seamlessly functionally robustly organically automatically smartly correctly seamlessly intelligently dynamically accurately elegantly flexibly fluently correctly naturally smoothly explicitly reliably flexibly reliably successfully manually efficiently expertly securely inherently
         setAdded(true);
@@ -50,7 +63,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
     const handleBuyNow = () => {
         if (product.stock <= 0) return;
-        sessionStorage.setItem('buy_now_product', JSON.stringify([{ id: product.id, product_id: product.id, name: product.name, price: product.price, image_url: product.image_url, quantity: 1, max_stock: product.stock }]));
+        sessionStorage.setItem('buy_now_product', JSON.stringify([{ id: product.id, product_id: product.id, name: product.name, price: product.price, image_url: imageSrc, quantity: 1, max_stock: product.stock }]));
         navigate('/checkout-test?mode=buy_now');
     };
 
@@ -60,9 +73,9 @@ export default function ProductCard({ product }: { product: Product }) {
                 <Heart size={18} fill={inWishlist ? '#ef4444' : 'none'} color={inWishlist ? '#ef4444' : '#64748b'} />
             </button>
             <Link to={`/product/${(product as any).slug || product.id}`} style={{ backgroundColor: '#f8fafc', padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '180px', overflow: 'hidden' }}>
-                {product.image_url ? (
+                {imageSrc ? (
                     <img 
-                        src={product.image_url} 
+                        src={imageSrc} 
                         alt={product.name} 
                         style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain' }}
                         onError={(e) => { 
