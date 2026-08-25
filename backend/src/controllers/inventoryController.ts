@@ -106,9 +106,9 @@ export const updateProductStock = async (req: Request, res: Response) => {
 
 export const createCategory = async (req: Request, res: Response) => {
     try {
-        const { name } = req.body;
+        const { name, icon } = req.body;
         const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-        const newCat = await Category.create(name, slug);
+        const newCat = await Category.create(name, slug, icon || '📦');
         res.status(201).json(newCat);
     } catch (error: any) {
         if (error.code === '23505') { // Unique constraint violation in PG
@@ -130,9 +130,9 @@ export const getCategories = async (req: Request, res: Response) => {
 export const updateCategory = async (req: Request, res: Response) => {
     try {
         const id = Number(req.params.id);
-        const { name } = req.body;
+        const { name, icon } = req.body;
         const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-        const result = await pool.query('UPDATE categories SET name = $1, slug = $2 WHERE id = $3 RETURNING *', [name, slug, id]);
+        const result = await pool.query('UPDATE categories SET name = $1, slug = $2, icon = $3 WHERE id = $4 RETURNING *', [name, slug, icon || '📦', id]);
         if (result.rowCount === 0) return res.status(404).json({ message: 'Category not found' });
         res.json(result.rows[0]);
     } catch(e) {

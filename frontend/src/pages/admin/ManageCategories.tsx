@@ -5,6 +5,7 @@ import api from '../../services/api';
 export default function ManageCategories() {
     const [categories, setCategories] = useState<any[]>([]);
     const [name, setName] = useState('');
+    const [icon, setIcon] = useState('📦');
     const [editId, setEditId] = useState<number | null>(null);
     const [loading, setLoading] = useState(false);
     const [isMobile, setIsMobile] = useState<boolean>(() => window.innerWidth <= 768);
@@ -33,13 +34,14 @@ export default function ManageCategories() {
         setLoading(true);
         try {
             if (editId) {
-                await api.put(`/admin/categories/${editId}`, { name });
+                await api.put(`/admin/categories/${editId}`, { name, icon });
                 alert('Category explicitly updated.');
             } else {
-                await api.post('/admin/categories', { name });
+                await api.post('/admin/categories', { name, icon });
                 alert('Category successfully instantiated.');
             }
             setName('');
+            setIcon('📦');
             setEditId(null);
             fetchCats();
         } catch (e: any) {
@@ -52,6 +54,7 @@ export default function ManageCategories() {
     const handleEdit = (c: any) => {
         setEditId(c.id);
         setName(c.name);
+        setIcon(c.icon || '📦');
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
@@ -75,9 +78,15 @@ export default function ManageCategories() {
                 <div className="admin-card" style={{ flex: isMobile ? '1 1 100%' : '1', width: '100%', boxSizing: 'border-box' }}>
                     <h3 style={{margin: '0 0 1.5rem 0', color: '#1e293b'}}>{editId ? 'Edit Category' : 'Add New Category'}</h3>
                     <form onSubmit={handleCreate}>
-                        <div style={{marginBottom: '1rem'}}>
-                            <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Category Descriptor</label>
-                            <input type="text" className="form-input" required value={name} onChange={e=>setName(e.target.value)} />
+                        <div style={{ display: 'flex', gap: '1rem', marginBottom: '1rem' }}>
+                            <div style={{ flex: 1 }}>
+                                <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Category Descriptor</label>
+                                <input type="text" className="form-input" required value={name} onChange={e=>setName(e.target.value)} placeholder="e.g. Toys" />
+                            </div>
+                            <div style={{ width: '100px' }}>
+                                <label style={{display: 'block', fontSize: '0.9rem', marginBottom: '0.5rem', color: '#64748b'}}>Emoji Icon</label>
+                                <input type="text" className="form-input" required value={icon} onChange={e=>setIcon(e.target.value)} maxLength={5} style={{ textAlign: 'center', fontSize: '1.25rem', padding: '0.5rem' }} />
+                            </div>
                         </div>
                         <div style={{display: 'flex', gap: '0.5rem'}}>
                             <button type="submit" disabled={loading} className="admin-btn-primary" style={{flex: 1, justifyContent: 'center'}}>
@@ -95,6 +104,7 @@ export default function ManageCategories() {
                         <table className="admin-table">
                             <thead>
                                 <tr>
+                                    <th>Icon</th>
                                     <th>Name</th>
                                     <th>URL Slug</th>
                                     <th>Created On</th>
@@ -104,12 +114,13 @@ export default function ManageCategories() {
                             <tbody>
                                 {categories.length === 0 ? (
                                     <tr>
-                                        <td colSpan={4} style={{textAlign: 'center', color: '#94a3b8', padding: '3rem 1rem'}}>
+                                        <td colSpan={5} style={{textAlign: 'center', color: '#94a3b8', padding: '3rem 1rem'}}>
                                             No explicit categories established.
                                         </td>
                                     </tr>
                                 ) : categories.map(c => (
                                     <tr key={c.id}>
+                                        <td style={{ fontSize: '1.5rem', textAlign: 'center' }}>{c.icon || '📦'}</td>
                                         <td style={{fontWeight: 600, color: '#1e293b'}}>{c.name}</td>
                                         <td style={{color: '#0ea5e9'}}>{c.slug}</td>
                                         <td>{new Date(c.created_at).toLocaleDateString()}</td>

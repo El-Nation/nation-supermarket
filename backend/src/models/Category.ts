@@ -1,10 +1,10 @@
 import { pool } from '../config/db';
 
 export class Category {
-    static async create(name: string, slug: string) {
+    static async create(name: string, slug: string, icon: string = '📦') {
         const result = await pool.query(
-            'INSERT INTO categories (name, slug) VALUES ($1, $2) RETURNING *',
-            [name, slug]
+            'INSERT INTO categories (name, slug, icon) VALUES ($1, $2, $3) RETURNING *',
+            [name, slug, icon]
         );
         return result.rows[0];
     }
