@@ -13,6 +13,7 @@ export default function ProductDetails() {
     const navigate = useNavigate();
     const { addToCart } = useCart();
     const { wishlist, addToWishlist, removeFromWishlist } = useWishlist();
+    const [quantity, setQuantity] = useState(1);
     const [product, setProduct] = useState<any>(null);
     const [reviews, setReviews] = useState<any[]>([]);
     const [recommendations, setRecommendations] = useState<any[]>([]);
