@@ -40,14 +40,37 @@ export const createMockOrder = async (req: Request, res: Response) => {
            );
         }
 
-        const formattedItems = items.map((item: any) => ({
-            product_id: item.product_id,
-            name: item.name,
-            quantity: item.quantity,
-            unit_price: Number(item.price),
-            item_total: Number(item.price) * item.quantity,
-            image: item.image_url || ''
-        }));
+        const formattedItems = [];
+        for(const item of items) {
+           const pRes = await pool.query('SELECT name, price, images FROM products WHERE id = $1', [item.product_id]);
+           const product = pRes.rows[0];
+           if(!product) continue;
+           
+           let imgUrl = '';
+           if (Array.isArray(product.images) && product.images.length > 0) {
+               imgUrl = product.images[0];
+           } else if (typeof product.images === 'string') {
+               try {
+                   const parsed = JSON.parse(product.images);
+                   if (Array.isArray(parsed) && parsed.length > 0) imgUrl = parsed[0];
+                   else if (typeof parsed === 'string') imgUrl = parsed;
+               } catch (e) {
+                   imgUrl = product.images;
+               }
+           }
+           if (imgUrl && !imgUrl.startsWith('http')) {
+               imgUrl = `https://nationsupermarket.eghedev.com${imgUrl.startsWith('/') ? '' : '/'}${imgUrl}`;
+           }
+
+           formattedItems.push({
+               product_id: item.product_id,
+               name: product.name,
+               quantity: item.quantity,
+               unit_price: Number(product.price),
+               item_total: Number(product.price) * item.quantity,
+               image: imgUrl
+           });
+        }
 
         const rData = {
             order_reference: order_reference,

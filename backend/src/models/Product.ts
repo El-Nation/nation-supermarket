@@ -74,7 +74,7 @@ export class Product {
         let valueCount = 1;
 
         if (queryParams.search) {
-            queryText += ` AND (p.name ILIKE $${valueCount} OR p.description ILIKE $${valueCount})`;
+            queryText += ` AND (p.name ILIKE $${valueCount} OR p.description ILIKE $${valueCount} OR c.name ILIKE $${valueCount})`;
             values.push(`%${queryParams.search}%`);
             valueCount++;
         }

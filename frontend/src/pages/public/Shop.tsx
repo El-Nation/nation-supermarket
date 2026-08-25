@@ -13,17 +13,24 @@ export default function Shop() {
     const querySpecial = queryParams.get('special');
     const querySearch = queryParams.get('search');
 
-    // Natively decode semantic category labels for dynamic header presentation
-    const CATEGORY_NAMES: Record<string, string> = {
-        "1": "Fresh Produce", "2": "Bakery & Bread", "3": "Dairy & Eggs", "4": "Meat & Seafood",
-        "5": "Pantry Staples", "6": "Snacks & Sweets", "7": "Beverages", "8": "Clothing",
-        "9": "Electronics", "10": "Home & Kitchen", "11": "Health & Beauty", "12": "Baby Care",
-        "13": "Pet Supplies", "14": "Household"
-    };
+    const [categories, setCategories] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await api.get('/public/categories');
+                setCategories(res.data);
+            } catch (e) {
+                console.error("Failed to fetch categories natively:", e);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     let headerTitle = 'Shop All';
-    if (queryCategory && CATEGORY_NAMES[queryCategory]) {
-        headerTitle = CATEGORY_NAMES[queryCategory];
+    if (queryCategory) {
+        const cat = categories.find(c => String(c.id) === queryCategory);
+        if (cat) headerTitle = cat.name;
     } else if (querySpecial === 'true') {
         headerTitle = '🔥 Hot Deals';
     } else if (querySearch) {

@@ -1,26 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Heart, User, Search, Grid, ChevronDown, Flame } from 'lucide-react';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { useAuth } from '../../context/AuthContext';
-
-const CATEGORIES = [
-    { id: 1, name: "Fresh Produce", icon: "🥬" },
-    { id: 2, name: "Bakery & Bread", icon: "🥐" },
-    { id: 3, name: "Dairy & Eggs", icon: "🥚" },
-    { id: 4, name: "Meat & Seafood", icon: "🥩" },
-    { id: 5, name: "Pantry Staples", icon: "🥫" },
-    { id: 6, name: "Snacks & Sweets", icon: "🍫" },
-    { id: 7, name: "Beverages", icon: "🧃" },
-    { id: 8, name: "Clothing", icon: "👕" },
-    { id: 9, name: "Electronics", icon: "🔌" },
-    { id: 10, name: "Home & Kitchen", icon: "🍳" },
-    { id: 11, name: "Health & Beauty", icon: "🧴" },
-    { id: 12, name: "Baby Care", icon: "🍼" },
-    { id: 13, name: "Pet Supplies", icon: "🐕" },
-    { id: 14, name: "Household", icon: "🧽" },
-];
+import api from '../../services/api';
 
 export default function Navbar() {
     const { cartCount, cartItems, cartTotal, removeFromCart, clearCart } = useCart();
@@ -33,6 +17,19 @@ export default function Navbar() {
     const [cartClicked, setCartClicked] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const navigate = useNavigate();
+    const [categories, setCategories] = useState<any[]>([]);
+
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const res = await api.get('/public/categories');
+                setCategories(res.data);
+            } catch (e) {
+                console.error("Failed to load categories seamlessly:", e);
+            }
+        };
+        fetchCategories();
+    }, []);
 
     const handleSearchSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -250,10 +247,10 @@ export default function Navbar() {
                         
                         {/* Dropdown Menu */}
                         {dropdownOpen && (
-                            <div className="mobile-w-full xs-grid-1" style={{ position: 'absolute', top: '100%', left: 0, width: '600px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderTop: 'none', borderRadius: '0 0 8px 8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', zIndex: 50, padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem' }}>
-                                {CATEGORIES.map(cat => (
+                            <div className="mobile-w-full xs-grid-1" style={{ position: 'absolute', top: '100%', left: 0, width: '600px', backgroundColor: 'white', border: '1px solid #e2e8f0', borderTop: 'none', borderRadius: '0 0 8px 8px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', zIndex: 50, padding: '1.5rem', display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', maxHeight: '450px', overflowY: 'auto' }}>
+                                {categories.map(cat => (
                                     <Link key={cat.id} to={`/shop?category=${cat.id}`} onClick={() => setDropdownOpen(false)} style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem', textDecoration: 'none', color: '#0f172a', border: '1px solid #f1f5f9', borderRadius: '6px', transition: '0.2s', backgroundColor: '#fafaf9' }}>
-                                        <span style={{ fontSize: '1.25rem' }}>{cat.icon}</span>
+                                        <span style={{ fontSize: '1.25rem' }}>📦</span>
                                         <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>{cat.name}</span>
                                     </Link>
                                 ))}
@@ -265,13 +262,14 @@ export default function Navbar() {
                     <nav className="mobile-w-full mobile-padding hide-scrollbar" style={{ display: 'flex', gap: '2rem', paddingLeft: '2rem', overflowX: 'auto', WebkitOverflowScrolling: 'touch', whiteSpace: 'nowrap' }}>
                         <Link to="/shop?special=true" style={{ ...linkStyle, color: '#ef4444', display: 'flex', alignItems: 'center', gap: '0.35rem' }}><Flame size={16} /> Hot Deals</Link>
                         <Link to="/shop" style={linkStyle}>Shop All</Link>
-                        <Link to="/shop?category=11" style={linkStyle}>Fragrance</Link>
-                        <Link to="/shop?category=14" style={linkStyle}>Household</Link>
-                        <Link to="/shop?category=12" style={linkStyle}>Kids Provisions</Link>
-                        <Link to="/shop?category=10" style={linkStyle}>Kitchen Appliances</Link>
-                        <Link to="/shop?category=14" style={linkStyle}>Laundry</Link>
-                        <Link to="/shop?category=5" style={linkStyle}>Provisions</Link>
-                        <Link to="/shop?category=6" style={linkStyle}>Snacks & Sweets</Link>
+                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'pharmacy')?.id || ''}`} style={linkStyle}>Pharmacy</Link>
+                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'fragrance')?.id || ''}`} style={linkStyle}>Fragrance</Link>
+                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'household')?.id || ''}`} style={linkStyle}>Household</Link>
+                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'kids provisions')?.id || ''}`} style={linkStyle}>Kids Provisions</Link>
+                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'kitchen appliances')?.id || ''}`} style={linkStyle}>Kitchen Appliances</Link>
+                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'laundry')?.id || ''}`} style={linkStyle}>Laundry</Link>
+                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'provisions')?.id || ''}`} style={linkStyle}>Provisions</Link>
+                        <Link to={`/shop?category=${categories.find((c: any) => c.name.toLowerCase() === 'snacks & sweets')?.id || ''}`} style={linkStyle}>Snacks & Sweets</Link>
                     </nav>
                 </div>
             </div>

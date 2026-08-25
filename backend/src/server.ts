@@ -40,13 +40,14 @@ app.use('/api/user', userRoutes);
 import { createEnquiry } from './controllers/enquiryController';
 import { paystackWebhook, createMockOrder, initializePayment, verifyPayment } from './controllers/paymentController';
 import { getDeliveryZones } from './controllers/deliveryController';
-import { getPublicProducts, getSingleProduct } from './controllers/inventoryController';
+import { getPublicProducts, getSingleProduct, getCategories } from './controllers/inventoryController';
 
 app.post('/api/enquiries', createEnquiry);
 app.post('/api/paystack/webhook', paystackWebhook);
 
 // Public Checkout Pipelines bypassing stage 4 admin closures
 app.get('/api/public/delivery', getDeliveryZones);
+app.get('/api/public/categories', getCategories);
 app.get('/api/public/products', getPublicProducts);
 app.get('/api/public/products/:id', getSingleProduct);
 app.post('/api/public/payments/mock-order', createMockOrder);
