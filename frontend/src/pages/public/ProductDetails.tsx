@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
-import { ChevronLeft, ShoppingCart, Heart, Truck, Tag, ShieldCheck } from 'lucide-react';
+import { ChevronLeft, ShoppingCart, Heart, Truck, Tag, ShieldCheck, Star } from 'lucide-react';
 import { Helmet } from 'react-helmet-async';
 import api from '../../services/api';
 import { useAuth } from '../../context/AuthContext';
@@ -19,8 +19,9 @@ export default function ProductDetails() {
     const [recommendations, setRecommendations] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '', guest_name: '' });
+    const [hoverRating, setHoverRating] = useState(0);
     const [postingReview, setPostingReview] = useState(false);
-    const { user } = useAuth(); 
+    const { user } = useAuth();
 
     const inWishlist = wishlist.some(item => (item as any).product_id === product?.id || (item as any).id === product?.id);
 
@@ -260,11 +261,26 @@ export default function ProductDetails() {
                                 </div>
                             )}
 
-                            <div style={{ marginBottom: '1rem' }}>
+                            <div style={{ marginBottom: '1.25rem' }}>
                                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '0.5rem' }}>Rating</label>
-                                <select value={reviewForm.rating} onChange={e => setReviewForm(f => ({ ...f, rating: Number(e.target.value) }))} style={{ padding: '0.5rem', borderRadius: '6px', border: '1px solid #cbd5e1' }}>
-                                    {[5, 4, 3, 2, 1].map(num => <option key={num} value={num}>{num} Stars</option>)}
-                                </select>
+                                <div style={{ display: 'flex', gap: '0.25rem' }} onMouseLeave={() => setHoverRating(0)}>
+                                    {[1, 2, 3, 4, 5].map(num => (
+                                        <button 
+                                            key={num} 
+                                            type="button" 
+                                            onClick={() => setReviewForm(f => ({ ...f, rating: num }))}
+                                            onMouseEnter={() => setHoverRating(num)}
+                                            style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', outline: 'none' }}
+                                        >
+                                            <Star 
+                                                size={28} 
+                                                fill={(hoverRating || reviewForm.rating) >= num ? '#f59e0b' : 'transparent'} 
+                                                color={(hoverRating || reviewForm.rating) >= num ? '#d97706' : '#cbd5e1'} 
+                                                style={{ transition: 'all 0.15s ease', transform: hoverRating === num ? 'scale(1.1)' : 'scale(1)' }} 
+                                            />
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                             <div style={{ marginBottom: '1rem' }}>
                                 <label style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, color: '#475569', marginBottom: '0.5rem' }}>Your Review</label>
