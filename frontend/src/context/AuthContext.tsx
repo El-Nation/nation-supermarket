@@ -77,12 +77,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const logout = async () => {
         try {
             await api.post('/auth/logout');
+        } catch (error) {
+            console.error('Logout backend request failed, but clearing local state', error);
+        } finally {
             setUser(null);
             setIsGuest(true);
             localStorage.removeItem('user');
             localStorage.setItem('isGuest', 'true');
-        } catch (error) {
-            console.error('Logout failed', error);
         }
     };
 
