@@ -45,6 +45,18 @@ export default function MockCheckout() {
     const [notes, setNotes] = useState('');
     const [agreedToTerms, setAgreedToTerms] = useState(false);
 
+    // Alternate Shipping Address States
+    const [shipToDifferentAddress, setShipToDifferentAddress] = useState(false);
+    const [shipFirstName, setShipFirstName] = useState('');
+    const [shipLastName, setShipLastName] = useState('');
+    const [shipCompany, setShipCompany] = useState('');
+    const [shipCountry, setShipCountry] = useState('Nigeria');
+    const [shipAddressLine1, setShipAddressLine1] = useState('');
+    const [shipAddressLine2, setShipAddressLine2] = useState('');
+    const [shipCity, setShipCity] = useState('');
+    const [shipState, setShipState] = useState('Edo');
+    const [shipPhone, setShipPhone] = useState('');
+
     useEffect(() => {
         if (user) {
             setEmail(user.email || '');
@@ -104,7 +116,9 @@ export default function MockCheckout() {
 
         const guestName = `${firstName} ${lastName}`.trim();
         const customer = { name: guestName, email, phone };
-        const fullAddress = `${addressLine1} ${addressLine2}, ${city}, ${state}`.trim();
+        const fullAddress = shipToDifferentAddress 
+            ? `${shipAddressLine1} ${shipAddressLine2}, ${shipCity}, ${shipState}`.trim()
+            : `${addressLine1} ${addressLine2}, ${city}, ${state}`.trim();
 
         try {
             const rInit = await api.post('/public/payments/mock-order', {
@@ -270,9 +284,65 @@ export default function MockCheckout() {
                             </div>
 
                             <label style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', cursor: 'pointer', marginTop: '1rem' }}>
-                                <input type="checkbox" style={{ width: '18px', height: '18px', accentColor: '#1d4ed8' }} />
+                                <input type="checkbox" checked={shipToDifferentAddress} onChange={e => setShipToDifferentAddress(e.target.checked)} style={{ width: '18px', height: '18px', accentColor: '#1d4ed8' }} />
                                 <span style={{ fontSize: '1.1rem', fontWeight: 500, color: '#1e293b' }}>Ship to a different address?</span>
                             </label>
+
+                            {shipToDifferentAddress && (
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', marginTop: '1rem', padding: '1.5rem', backgroundColor: '#f8fafc', borderRadius: '12px', border: '1px solid #e2e8f0' }}>
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                        <div style={{ flex: '1 1 200px' }}>
+                                            <label style={labelStyle}>First name <span style={{ color: '#ef4444' }}>*</span></label>
+                                            <input type="text" value={shipFirstName} onChange={e => setShipFirstName(e.target.value)} style={{...inputStyle, backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxSizing: 'border-box'}} />
+                                        </div>
+                                        <div style={{ flex: '1 1 200px' }}>
+                                            <label style={labelStyle}>Last name <span style={{ color: '#ef4444' }}>*</span></label>
+                                            <input type="text" value={shipLastName} onChange={e => setShipLastName(e.target.value)} style={{...inputStyle, backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxSizing: 'border-box'}} />
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label style={labelStyle}>Company name</label>
+                                        <input type="text" value={shipCompany} onChange={e => setShipCompany(e.target.value)} style={{...inputStyle, backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxSizing: 'border-box'}} />
+                                    </div>
+
+                                    <div style={{ width: '100%', maxWidth: '200px' }}>
+                                        <label style={labelStyle}>Country / Region <span style={{ color: '#ef4444' }}>*</span></label>
+                                        <select value={shipCountry} onChange={e => setShipCountry(e.target.value)} style={{ ...inputStyle, backgroundColor: '#ffffff', border: '1px solid #e2e8f0', paddingRight: '2rem' }}>
+                                            <option>Nigeria</option>
+                                        </select>
+                                    </div>
+
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                        <div style={{ flex: '1 1 200px' }}>
+                                            <label style={labelStyle}>House number and street name <span style={{ color: '#ef4444' }}>*</span></label>
+                                            <input type="text" value={shipAddressLine1} onChange={e => setShipAddressLine1(e.target.value)} style={{...inputStyle, backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxSizing: 'border-box'}} />
+                                        </div>
+                                        <div style={{ flex: '1 1 200px' }}>
+                                            <label style={labelStyle}>Apartment, suite, unit, etc. (optional)</label>
+                                            <input type="text" value={shipAddressLine2} onChange={e => setShipAddressLine2(e.target.value)} style={{...inputStyle, backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxSizing: 'border-box'}} />
+                                        </div>
+                                    </div>
+
+                                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '1rem' }}>
+                                        <div style={{ flex: '1 1 150px' }}>
+                                            <label style={labelStyle}>Town / City <span style={{ color: '#ef4444' }}>*</span></label>
+                                            <input type="text" value={shipCity} onChange={e => setShipCity(e.target.value)} style={{...inputStyle, backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxSizing: 'border-box'}} />
+                                        </div>
+                                        <div style={{ flex: '1 1 150px' }}>
+                                            <label style={labelStyle}>State <span style={{ color: '#ef4444' }}>*</span></label>
+                                            <select value={shipState} onChange={e => setShipState(e.target.value)} style={{ ...inputStyle, backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxSizing: 'border-box' }}>
+                                                {NIGERIAN_STATES.map(st => <option key={st} value={st}>{st}</option>)}
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label style={labelStyle}>Phone <span style={{ color: '#ef4444' }}>*</span></label>
+                                        <input type="tel" value={shipPhone} onChange={e => setShipPhone(e.target.value)} style={{...inputStyle, backgroundColor: '#ffffff', border: '1px solid #e2e8f0', boxSizing: 'border-box'}} />
+                                    </div>
+                                </div>
+                            )}
 
                             <div>
                                 <textarea value={notes} onChange={e => setNotes(e.target.value)} placeholder="Notes about your order, e.g. special notes for delivery." style={{ ...inputStyle, minHeight: '100px', borderRadius: '12px', boxSizing: 'border-box', maxWidth: '100%' }}></textarea>
