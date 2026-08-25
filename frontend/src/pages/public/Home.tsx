@@ -26,6 +26,27 @@ const CATEGORIES = [
 export default function Home() {
     const [popularProducts, setPopularProducts] = useState<any[]>([]);
     const [specialOffers, setSpecialOffers] = useState<any[]>([]);
+    const [subEmail, setSubEmail] = useState("");
+    const [subStatus, setSubStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+
+    const handleSubscribe = async () => {
+        if (!subEmail || !subEmail.includes('@')) return;
+        setSubStatus("loading");
+        try {
+            await api.post('/enquiries', {
+                name: "Newsletter Subscriber",
+                email: subEmail,
+                subject: "Newsletter Subscription Request",
+                message: "I want to receive daily needs delivery and supermarket updates."
+            });
+            setSubStatus("success");
+            setSubEmail("");
+            setTimeout(() => setSubStatus("idle"), 3000);
+        } catch (e) {
+            setSubStatus("error");
+            setTimeout(() => setSubStatus("idle"), 3000);
+        }
+    };
     
     useEffect(() => {
         const fetchFeatures = async () => {
@@ -288,9 +309,20 @@ export default function Home() {
                         
                         {/* Subscription Input Layer */}
                         <div className="xs-btn-stack" style={{ display: 'flex', backgroundColor: 'white', borderRadius: '50px', overflow: 'hidden', padding: '0.4rem', maxWidth: '500px', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', margin: '0 auto' }}>
-                            <input type="email" placeholder="Email address*" style={{ flex: 1, padding: '1rem 1.5rem', border: 'none', outline: 'none', fontSize: '1.05rem', backgroundColor: 'transparent' }} />
-                            <button className="mobile-w-full" style={{ backgroundColor: '#0f172a', color: 'white', border: 'none', padding: '1rem 2rem', borderRadius: '50px', fontWeight: 700, fontSize: '1.05rem', cursor: 'pointer', transition: 'background-color 0.2s' }}>
-                                Subscribe
+                            <input 
+                                type="email" 
+                                placeholder="Email address*" 
+                                value={subEmail}
+                                onChange={(e) => setSubEmail(e.target.value)}
+                                style={{ flex: 1, padding: '1rem 1.5rem', border: 'none', outline: 'none', fontSize: '1.05rem', backgroundColor: 'transparent' }} 
+                            />
+                            <button 
+                                className="mobile-w-full" 
+                                onClick={handleSubscribe}
+                                disabled={subStatus === 'loading' || subStatus === 'success'}
+                                style={{ backgroundColor: subStatus === 'success' ? '#22c55e' : (subStatus === 'error' ? '#ef4444' : '#0f172a'), color: 'white', border: 'none', padding: '1rem 2rem', borderRadius: '50px', fontWeight: 700, fontSize: '1.05rem', cursor: 'pointer', transition: 'background-color 0.2s', opacity: subStatus === 'loading' ? 0.7 : 1 }}
+                            >
+                                {subStatus === 'loading' ? 'Sending...' : subStatus === 'success' ? 'Subscribed!' : subStatus === 'error' ? 'Failed' : 'Subscribe'}
                             </button>
                         </div>
                     </div>
