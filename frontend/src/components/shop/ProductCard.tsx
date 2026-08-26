@@ -28,6 +28,10 @@ export default function ProductCard({ product }: { product: Product }) {
     
     // Dynamically safely intercept and parse JSONB arrays seamlessly explicitly securely natively 
     const pAny = product as any;
+    
+    // Normalize stock property globally safely efficiently accurately cleanly smartly logically
+    const normalizedStock = pAny.stock !== undefined ? pAny.stock : (pAny.stock_quantity !== undefined ? pAny.stock_quantity : 0);
+
     let imageSrc = product.image_url;
     if (!imageSrc && pAny.images) {
         if (Array.isArray(pAny.images) && pAny.images.length > 0) imageSrc = pAny.images[0];
@@ -53,8 +57,8 @@ export default function ProductCard({ product }: { product: Product }) {
     };
 
     const handleAddToCart = () => {
-        if (product.stock <= 0) return;
-        addToCart({ product_id: product.id, name: product.name, price: product.price, image_url: imageSrc, quantity: 1, max_stock: product.stock });
+        if (normalizedStock <= 0) return;
+        addToCart({ product_id: product.id, name: product.name, price: product.price, image_url: imageSrc, quantity: 1, max_stock: normalizedStock });
         
         // Hallmark-style success feedback visualization natively seamlessly gracefully explicitly cleanly effortlessly beautifully optimally efficiently optimally logically creatively effectively natively fluidly visually robustly effortlessly reliably smartly physically functionally seamlessly functionally robustly organically automatically smartly correctly seamlessly intelligently dynamically accurately elegantly flexibly fluently correctly naturally smoothly explicitly reliably flexibly reliably successfully manually efficiently expertly securely inherently
         setAdded(true);
@@ -62,8 +66,8 @@ export default function ProductCard({ product }: { product: Product }) {
     };
 
     const handleBuyNow = () => {
-        if (product.stock <= 0) return;
-        sessionStorage.setItem('buy_now_product', JSON.stringify([{ id: product.id, product_id: product.id, name: product.name, price: product.price, image_url: imageSrc, quantity: 1, max_stock: product.stock }]));
+        if (normalizedStock <= 0) return;
+        sessionStorage.setItem('buy_now_product', JSON.stringify([{ id: product.id, product_id: product.id, name: product.name, price: product.price, image_url: imageSrc, quantity: 1, max_stock: normalizedStock }]));
         navigate('/checkout-test?mode=buy_now');
     };
 
@@ -72,9 +76,9 @@ export default function ProductCard({ product }: { product: Product }) {
             
             {/* Dynamic Stock Indicator Badges */}
             <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 10, display: 'flex', flexDirection: 'column', gap: '5px' }}>
-                {product.stock <= 0 && <span style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '0.25rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Out of Stock</span>}
-                {product.stock > 0 && product.stock <= 5 && <span style={{ backgroundColor: '#fef3c7', color: '#b45309', padding: '0.25rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Low Stock: Only {product.stock} left</span>}
-                {product.stock > 5 && <span style={{ backgroundColor: '#dcfce7', color: '#166534', padding: '0.25rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>In Stock</span>}
+                {normalizedStock <= 0 && <span style={{ backgroundColor: '#fee2e2', color: '#b91c1c', padding: '0.25rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Out of Stock</span>}
+                {normalizedStock > 0 && normalizedStock <= 5 && <span style={{ backgroundColor: '#fef3c7', color: '#b45309', padding: '0.25rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>Low Stock: Only {normalizedStock} left</span>}
+                {normalizedStock > 5 && <span style={{ backgroundColor: '#dcfce7', color: '#166534', padding: '0.25rem 0.6rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>In Stock</span>}
             </div>
 
             <button onClick={toggleWishlist} style={{ position: 'absolute', top: '10px', right: '10px', background: 'white', border: 'none', borderRadius: '50%', padding: '0.5rem', cursor: 'pointer', boxShadow: '0 2px 5px rgba(0,0,0,0.1)', zIndex: 10, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -119,7 +123,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 </div>
 
                 <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    {product.stock > 0 ? (
+                    {normalizedStock > 0 ? (
                         <>
                             {added ? (
                                 <button style={{ width: '100%', padding: '0.75rem', backgroundColor: '#fbbf24', color: 'white', border: 'none', borderRadius: '6px', fontWeight: 700, cursor: 'default', fontSize: '0.9rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem', transition: '0.2s' }}>
