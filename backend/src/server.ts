@@ -42,6 +42,7 @@ import { paystackWebhook, createMockOrder, initializePayment, verifyPayment } fr
 import { getDeliveryZones } from './controllers/deliveryController';
 import { getPublicProducts, getSingleProduct, getCategories, getRecommendations } from './controllers/inventoryController';
 import { getProductReviews, addReview } from './controllers/reviewController';
+import { submitFeedback, getPublicFeedback } from './controllers/feedbackController';
 
 app.post('/api/enquiries', createEnquiry);
 app.post('/api/paystack/webhook', paystackWebhook);
@@ -54,6 +55,8 @@ app.get('/api/public/products/:id', getSingleProduct);
 app.get('/api/public/products/:id/recommendations', getRecommendations);
 app.get('/api/public/products/:productId/reviews', getProductReviews);
 app.post('/api/public/products/:productId/reviews', addReview);
+app.post('/api/public/feedback', submitFeedback);
+app.get('/api/public/feedback', getPublicFeedback);
 app.post('/api/public/payments/mock-order', createMockOrder);
 app.post('/api/public/payments/initialize', initializePayment);
 app.post('/api/public/payments/verify', verifyPayment);
@@ -169,6 +172,16 @@ const startServer = async () => {
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )`);
       await pool.query(`ALTER TABLE reviews ADD COLUMN IF NOT EXISTS guest_name VARCHAR(255)`);
+
+      await pool.query(`
+      CREATE TABLE IF NOT EXISTS store_feedbacks (
+          id SERIAL PRIMARY KEY,
+          rating INTEGER CHECK (rating >= 1 AND rating <= 5) NOT NULL,
+          comment TEXT,
+          user_name VARCHAR(255),
+          is_approved BOOLEAN DEFAULT false,
+          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      )`);
       console.log('Automated Schema Migration: Category icons and Reviews infrastructure safely ensured natively.');
   } catch(e) {
       console.log('Schema Sync Notice:', e);

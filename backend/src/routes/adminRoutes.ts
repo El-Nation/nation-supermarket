@@ -14,6 +14,7 @@ import { getAllOrders } from '../controllers/orderController';
 import { getAllUsers, updateAdminProfile, getAdminProfile } from '../controllers/userController';
 import { getAllPayments, getEnquiries, getNotifications, markNotificationRead } from '../controllers/miscAdminController';
 import { replyEnquiry } from '../controllers/enquiryController';
+import { getAdminReviews, approveStoreFeedback, deleteProductReview, deleteStoreFeedback } from '../controllers/adminReviewController';
 
 const router = express.Router();
 
@@ -63,6 +64,12 @@ router.get('/enquiries', getEnquiries);
 router.put('/enquiries/:id/reply', replyEnquiry);
 router.get('/notifications', getNotifications);
 router.put('/notifications/:id/read', markNotificationRead);
+
+// Reviews & Feedback
+router.get('/reviews', getAdminReviews);
+router.put('/feedbacks/:id/approve', approveStoreFeedback);
+router.delete('/reviews/product/:id', deleteProductReview);
+router.delete('/reviews/feedbacks/:id', deleteStoreFeedback);
 
 // Payments Checkouts (Public scope but bundled here for simplicity during Stage 4 Checkout simulation)
 router.post('/payments/mock-order', createMockOrder);

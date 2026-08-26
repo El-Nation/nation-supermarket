@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { 
     LayoutDashboard, ShoppingBag, PackageSearch, Tags, 
     Users, CreditCard, Receipt, MessageCircle, Bell, 
-    Truck, Settings, ExternalLink, LogOut, Menu
+    Truck, Settings, ExternalLink, LogOut, Menu, Star
 } from 'lucide-react';
 import './admin.css';
 
@@ -135,6 +135,9 @@ export default function AdminLayout() {
                     </NavLink>
                     <NavLink to="/admin/enquiries" onClick={closeSidebar} className={({isActive}) => isActive ? 'admin-nav-item active' : 'admin-nav-item'}>
                         <MessageCircle size={20} /> Enquiries
+                    </NavLink>
+                    <NavLink to="/admin/reviews" onClick={closeSidebar} className={({isActive}) => isActive ? 'admin-nav-item active' : 'admin-nav-item'}>
+                        <Star size={20} /> Reviews
                     </NavLink>
                     <NavLink to="/admin/notifications" onClick={closeSidebar} className={({isActive}) => isActive ? 'admin-nav-item active' : 'admin-nav-item'}>
                         <Bell size={20} /> Notifications

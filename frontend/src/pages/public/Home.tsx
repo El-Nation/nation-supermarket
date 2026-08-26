@@ -26,6 +26,7 @@ const CATEGORIES = [
 export default function Home() {
     const [popularProducts, setPopularProducts] = useState<any[]>([]);
     const [specialOffers, setSpecialOffers] = useState<any[]>([]);
+    const [storeFeedbacks, setStoreFeedbacks] = useState<any[]>([]);
     const [subEmail, setSubEmail] = useState("");
     const [subStatus, setSubStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
 
@@ -56,8 +57,11 @@ export default function Home() {
 
                 const specialRes = await api.get('/public/products?special_offers=true&limit=8');
                 setSpecialOffers(specialRes.data.map(formatProduct));
+
+                const sfRes = await api.get('/public/feedback');
+                setStoreFeedbacks(sfRes.data);
             } catch (e) {
-                console.error("Home DB link failed");
+                console.error("Home DB link failed dynamically natively globally.");
             }
         };
         fetchFeatures();
@@ -333,6 +337,27 @@ export default function Home() {
                     </div>
                 </div>
             </section>
+
+            {/* 4.5 What Our Customers Say (Store Testimonials) */}
+            {storeFeedbacks.length > 0 && (
+                <section style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', padding: '0 1.5rem' }}>
+                    <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                        <h2 style={{ fontSize: '1.75rem', color: '#0f172a', margin: '0 0 0.5rem 0', fontWeight: 800 }}>What Our Customers Say</h2>
+                        <p style={{ color: '#64748b', fontSize: '1rem', margin: 0 }}>Real shopping experiences heavily verified seamlessly.</p>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                        {storeFeedbacks.slice(0, 3).map((f: any) => (
+                            <div key={f.id} style={{ background: 'white', borderRadius: '12px', border: '1px solid #e2e8f0', padding: '1.5rem', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', position: 'relative', display: 'flex', flexDirection: 'column' }}>
+                                <div style={{ color: '#d97706', fontSize: '1.2rem', marginBottom: '0.75rem' }}>{'★'.repeat(f.rating)}{'☆'.repeat(5 - f.rating)}</div>
+                                <p style={{ color: '#334155', fontSize: '1rem', lineHeight: '1.5', margin: '0 0 1.5rem 0', flex: 1, fontStyle: 'italic' }}>"{f.comment}"</p>
+                                <div style={{ borderTop: '1px solid #f1f5f9', paddingTop: '1rem', fontWeight: 700, color: '#0f172a' }}>
+                                    &mdash; {f.user_name || 'Verified Shopper'}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
 
             {/* 5. Explore All Products */}
             <section style={{ maxWidth: '1200px', margin: '4rem auto 0 auto', padding: '0 1.5rem', textAlign: 'center' }}>

@@ -3,6 +3,7 @@ import { useAuth } from '../../context/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../../services/api';
 import { User, LogOut, Package, Heart, Shield, Settings, CheckCircle2 } from 'lucide-react';
+import ReviewPromptModal from '../../components/modals/ReviewPromptModal';
 
 export default function CustomerDashboard() {
     const { user, logout, updateUser } = useAuth();
@@ -11,6 +12,10 @@ export default function CustomerDashboard() {
     
     const [orders, setOrders] = useState<any[]>([]);
     const [wishlist, setWishlist] = useState<any[]>([]);
+    
+    const [reviewModalOpen, setReviewModalOpen] = useState(false);
+    const [selectedOrderItems, setSelectedOrderItems] = useState<any[]>([]);
+    const [selectedOrderReference, setSelectedOrderReference] = useState<string>('');
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -129,6 +134,17 @@ export default function CustomerDashboard() {
 
     if (!user || user.role === 'admin') return null;
 
+    const handleLeaveReview = async (orderRef: string) => {
+        try {
+            const res = await api.get(`/receipt/${orderRef}`);
+            setSelectedOrderItems(res.data.items);
+            setSelectedOrderReference(res.data.order_reference);
+            setReviewModalOpen(true);
+        } catch(e) {
+            alert('Failed to structurally resolve the order items mapping securely.');
+        }
+    };
+
     return (
         <div style={{ backgroundColor: '#f8fafc', minHeight: '100vh', fontFamily: 'sans-serif' }}>
             {/* Header Navigation */}
@@ -207,7 +223,12 @@ export default function CustomerDashboard() {
                                             </div>
                                             <div style={{textAlign: 'right'}}>
                                                 <div style={{fontWeight: 800, fontSize: '1.25rem', color: '#0f172a'}}>₦{o.total_amount.toLocaleString()}</div>
-                                                <Link to={`/receipt/${o.order_reference}`} target="_blank" style={{color: '#3b82f6', fontSize: '0.85rem', textDecoration: 'none', fontWeight: 600}}>View Receipt &rarr;</Link>
+                                                <div style={{display: 'flex', flexDirection: 'column', gap: '0.25rem', marginTop: '0.25rem'}}>
+                                                    <Link to={`/receipt/${o.order_reference}`} target="_blank" style={{color: '#3b82f6', fontSize: '0.85rem', textDecoration: 'none', fontWeight: 600}}>View Receipt &rarr;</Link>
+                                                    {o.order_status === 'Shipped' || o.order_status === 'Ready for Pickup' ? (
+                                                        <button onClick={() => handleLeaveReview(o.order_reference)} style={{background: 'none', border: 'none', color: '#0f172a', fontWeight: 700, cursor: 'pointer', fontSize: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.2rem', padding: 0, justifyContent: 'flex-end'}}>Leave a Review</button>
+                                                    ) : null}
+                                                </div>
                                             </div>
                                         </div>
                                     ))}
@@ -325,6 +346,8 @@ export default function CustomerDashboard() {
                     )}
                 </main>
             </div>
+            
+            <ReviewPromptModal isOpen={reviewModalOpen} onClose={() => setReviewModalOpen(false)} items={selectedOrderItems} reference={selectedOrderReference} />
         </div>
     );
 }

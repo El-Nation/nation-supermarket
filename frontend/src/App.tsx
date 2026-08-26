@@ -20,6 +20,7 @@ import ManageReceipts from './pages/admin/ManageReceipts';
 import ManagePayments from './pages/admin/ManagePayments';
 import ManageEnquiries from './pages/admin/ManageEnquiries';
 import ManageNotifications from './pages/admin/ManageNotifications';
+import ManageReviews from './pages/admin/ManageReviews';
 import MockCheckout from './pages/customer/MockCheckout';
 import DigitalReceipt from './pages/customer/DigitalReceipt';
 import ContactUs from './pages/customer/ContactUs';
@@ -70,6 +71,7 @@ function App() {
             <Route path="payments" element={<ManagePayments />} />
             <Route path="receipts" element={<ManageReceipts />} />
             <Route path="enquiries" element={<ManageEnquiries />} />
+            <Route path="reviews" element={<ManageReviews />} />
             <Route path="notifications" element={<ManageNotifications />} />
             <Route path="delivery" element={<ManageDelivery />} />
             <Route path="settings" element={<ManageSettings />} />

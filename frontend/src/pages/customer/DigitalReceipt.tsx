@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { CheckCircle2 } from 'lucide-react';
 import api from '../../services/api';
+import ReviewPromptModal from '../../components/modals/ReviewPromptModal';
 
 export default function DigitalReceipt() {
     const { reference } = useParams();
     const [receipt, setReceipt] = useState<any>(null);
     const [loading, setLoading] = useState(true);
+    const [reviewModalOpen, setReviewModalOpen] = useState(false);
 
     useEffect(() => {
         const getReceiptMap = async () => {
@@ -137,6 +139,14 @@ export default function DigitalReceipt() {
                     <p style={{ margin: 0, color: '#94a3b8', fontSize: '0.7rem' }}>Payment verified via Paystack • NATION SUPERMARKET © {new Date().getFullYear()}</p>
                 </div>
             </div>
+            
+            <div style={{ marginTop: '2.5rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                <button onClick={() => setReviewModalOpen(true)} style={{ padding: '0.85rem 2.5rem', backgroundColor: '#0f172a', color: 'white', border: 'none', borderRadius: '8px', fontWeight: 700, cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', fontSize: '0.95rem', transition: 'transform 0.2s' }}>
+                    Leave a Review
+                </button>
+            </div>
+
+            <ReviewPromptModal isOpen={reviewModalOpen} onClose={() => setReviewModalOpen(false)} items={receipt.items} reference={receipt.order_reference} />
             
             <style>{`
                 @media print {
