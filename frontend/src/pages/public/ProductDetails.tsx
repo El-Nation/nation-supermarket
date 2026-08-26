@@ -175,8 +175,9 @@ export default function ProductDetails() {
 
                 {/* Right: Explicit Product Payload Mapping */}
                 <div>
-                    {product.stock <= 0 && <span style={{ display: 'inline-block', backgroundColor: '#fee2e2', color: '#b91c1c', padding: '0.25rem 0.75rem', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 700, marginBottom: '1rem' }}>Out of Stock</span>}
-                    {product.stock > 0 && product.stock <= 20 && <span style={{ display: 'inline-block', backgroundColor: '#fef3c7', color: '#b45309', padding: '0.25rem 0.75rem', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 700, marginBottom: '1rem' }}>Low Stock: Only {product.stock} left</span>}
+                    {product.stock <= 0 && <span style={{ display: 'inline-block', backgroundColor: '#fee2e2', color: '#b91c1c', padding: '0.25rem 0.75rem', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 700, marginBottom: '1rem', marginRight: '0.5rem' }}>Out of Stock</span>}
+                    {product.stock > 0 && product.stock <= 5 && <span style={{ display: 'inline-block', backgroundColor: '#fef3c7', color: '#b45309', padding: '0.25rem 0.75rem', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 700, marginBottom: '1rem', marginRight: '0.5rem' }}>Low Stock: Only {product.stock} left</span>}
+                    {product.stock > 5 && <span style={{ display: 'inline-block', backgroundColor: '#dcfce7', color: '#166534', padding: '0.25rem 0.75rem', borderRadius: '4px', fontSize: '0.85rem', fontWeight: 700, marginBottom: '1rem', marginRight: '0.5rem' }}>In Stock</span>}
 
                     <h1 style={{ fontSize: '2.5rem', fontWeight: 800, color: '#0f172a', margin: '0 0 1rem 0', lineHeight: 1.1 }}>{product.name}</h1>
                     
