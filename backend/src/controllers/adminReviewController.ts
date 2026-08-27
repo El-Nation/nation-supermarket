@@ -4,7 +4,7 @@ import { pool } from '../config/db';
 export const getAdminReviews = async (req: Request, res: Response) => {
     try {
         const productReviews = await pool.query(`
-            SELECT r.*, p.name as product_name, u.full_name as db_user_name 
+            SELECT r.*, p.name as product_name, u.name as db_user_name 
             FROM reviews r 
             LEFT JOIN products p ON r.product_id = p.id
             LEFT JOIN users u ON r.user_id = u.id
