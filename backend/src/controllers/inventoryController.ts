@@ -28,7 +28,8 @@ export const createProduct = async (req: Request, res: Response) => {
 
 export const getProducts = async (req: Request, res: Response) => {
     try {
-        const products = await Product.getAll();
+        const search = req.query.search as string;
+        const products = await Product.getAll(search);
         res.json(products);
     } catch (error) {
         res.status(500).json({ message: 'Internal error fetching products' });
@@ -143,7 +144,8 @@ export const createCategory = async (req: Request, res: Response) => {
 
 export const getCategories = async (req: Request, res: Response) => {
     try {
-        const categories = await Category.getAll();
+        const search = req.query.search as string;
+        const categories = await Category.getAll(search);
         res.json(categories);
     } catch (error) {
         res.status(500).json({ message: 'Error fetching categories' });

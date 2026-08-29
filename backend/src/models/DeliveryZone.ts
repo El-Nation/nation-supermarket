@@ -1,8 +1,15 @@
 import { pool } from '../config/db';
 
 export class DeliveryZone {
-    static async getAll() {
-        const res = await pool.query('SELECT * FROM delivery_zones ORDER BY name ASC');
+    static async getAll(search?: string) {
+        let query = 'SELECT * FROM delivery_zones';
+        const values: any[] = [];
+        if (search) {
+            query += ` WHERE name ILIKE $1 OR areas ILIKE $1`;
+            values.push(`%${search}%`);
+        }
+        query += ` ORDER BY name ASC`;
+        const res = await pool.query(query, values);
         return res.rows;
     }
 

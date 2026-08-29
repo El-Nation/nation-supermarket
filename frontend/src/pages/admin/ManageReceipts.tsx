@@ -5,17 +5,20 @@ import api from '../../services/api';
 export default function ManageReceipts() {
     const [receipts, setReceipts] = useState<any[]>([]);
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     useEffect(() => {
-        const fetchReceipts = async () => {
-            try {
-                const res = await api.get('/admin/receipts');
+        fetchReceipts();
+    }, []);
+
+    const fetchReceipts = async (query: string = '') => {
+        try {
+            const res = await api.get(`/admin/receipts${query ? `?search=${encodeURIComponent(query)}` : ''}`);
                 setReceipts(res.data);
             } catch (e) {
                 console.error("Receipts fetch failure", e);
             }
-        };
-        fetchReceipts();
-    }, []);
+    };
 
     const handleViewReceipt = (payment_reference: string) => {
         window.open(`/receipt/${payment_reference}`, "_blank");
@@ -31,9 +34,25 @@ export default function ManageReceipts() {
             </div>
             
             <div className="admin-card" style={{padding: '0', overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)'}}>
-                <div style={{padding: '1.5rem 2rem', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '0.75rem'}}>
-                    <FileText color="#0f172a" size={24} />
-                    <h3 style={{margin: 0, color: '#0f172a', fontWeight: 600, fontSize: '1.1rem'}}>Cryptographic Signature Log</h3>
+                <div style={{padding: '1.5rem 2rem', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem'}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem'}}>
+                        <FileText color="#0f172a" size={24} />
+                        <h3 style={{margin: 0, color: '#0f172a', fontWeight: 600, fontSize: '1.1rem'}}>Cryptographic Signature Log</h3>
+                    </div>
+                    <form onSubmit={(e) => { e.preventDefault(); fetchReceipts(searchQuery); }} style={{ display: 'flex', gap: '0.5rem' }}>
+                        <input 
+                            type="text" 
+                            className="form-input" 
+                            placeholder="Search receipt details..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            style={{ width: '250px', padding: '0.5rem', margin: 0 }}
+                        />
+                        <button type="submit" className="admin-btn-primary" style={{ padding: '0.5rem 1rem' }}>Search</button>
+                        {searchQuery && (
+                            <button type="button" onClick={() => { setSearchQuery(''); fetchReceipts(''); }} className="admin-btn-primary" style={{ backgroundColor: '#e2e8f0', color: '#0f172a', padding: '0.5rem 1rem' }}>Clear</button>
+                        )}
+                    </form>
                 </div>
                 
                 <div style={{overflowX: 'auto'}}>
@@ -51,7 +70,7 @@ export default function ManageReceipts() {
                                 <tr>
                                     <td colSpan={4} style={{textAlign: 'center', color: '#94a3b8', padding: '5rem 2rem'}}>
                                         <FileText size={48} color="#cbd5e1" style={{margin: '0 auto 1rem', display: 'block'}} />
-                                        No digital receipts generated yet. Complete a checkout to populate limits natively.
+                                        {searchQuery ? 'No results found.' : 'No digital receipts generated yet. Complete a checkout to populate limits natively.'}
                                     </td>
                                 </tr>
                             ) : receipts.map((r, i) => (

@@ -16,13 +16,15 @@ export default function ManageCategories() {
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     useEffect(() => {
         fetchCats();
     }, []);
 
-    const fetchCats = async () => {
+    const fetchCats = async (query: string = '') => {
         try {
-            const res = await api.get('/admin/categories');
+            const res = await api.get(`/admin/categories${query ? `?search=${encodeURIComponent(query)}` : ''}`);
             setCategories(res.data);
         } catch (error) {
             console.error('Failed category payload', error);
@@ -100,6 +102,23 @@ export default function ManageCategories() {
                 </div>
                 
                 <div className="admin-table-panel">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+                        <h3 style={{ margin: 0, color: '#1e293b' }}>Categories</h3>
+                        <form onSubmit={(e) => { e.preventDefault(); fetchCats(searchQuery); }} style={{ display: 'flex', gap: '0.5rem' }}>
+                            <input 
+                                type="text" 
+                                className="form-input" 
+                                placeholder="Search by name, slug..." 
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                style={{ width: '200px', padding: '0.5rem' }}
+                            />
+                            <button type="submit" className="admin-btn-primary" style={{ padding: '0.5rem 1rem' }}>Search</button>
+                            {searchQuery && (
+                                <button type="button" onClick={() => { setSearchQuery(''); fetchCats(''); }} className="admin-btn-primary" style={{ backgroundColor: '#e2e8f0', color: '#0f172a', padding: '0.5rem 1rem' }}>Clear</button>
+                            )}
+                        </form>
+                    </div>
                     <div style={{overflowX: 'auto'}}>
                         <table className="admin-table">
                             <thead>
@@ -115,7 +134,7 @@ export default function ManageCategories() {
                                 {categories.length === 0 ? (
                                     <tr>
                                         <td colSpan={5} style={{textAlign: 'center', color: '#94a3b8', padding: '3rem 1rem'}}>
-                                            No explicit categories established.
+                                            {searchQuery ? 'No results found.' : 'No explicit categories established.'}
                                         </td>
                                     </tr>
                                 ) : categories.map(c => (

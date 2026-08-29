@@ -5,17 +5,20 @@ import api from '../../services/api';
 export default function ManageInventory() {
     const [products, setProducts] = useState<any[]>([]);
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     useEffect(() => {
-        const fetchStock = async () => {
-            try {
-                const res = await api.get('/admin/products');
-                setProducts(res.data);
-            } catch(e) {
-                console.error(e);
-            }
-        };
         fetchStock();
     }, []);
+
+    const fetchStock = async (query: string = '') => {
+        try {
+            const res = await api.get(`/admin/products${query ? `?search=${encodeURIComponent(query)}` : ''}`);
+            setProducts(res.data);
+        } catch(e) {
+            console.error(e);
+        }
+    };
 
     const handleUpdateStock = async (id: number, currentStock: number) => {
         const result = window.prompt("Modify exact stock count available on shelves:", currentStock.toString());
@@ -38,6 +41,23 @@ export default function ManageInventory() {
             </div>
             
             <div className="admin-table-panel">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+                    <h3 style={{ margin: 0, color: '#1e293b' }}>Stock Directives</h3>
+                    <form onSubmit={(e) => { e.preventDefault(); fetchStock(searchQuery); }} style={{ display: 'flex', gap: '0.5rem' }}>
+                        <input 
+                            type="text" 
+                            className="form-input" 
+                            placeholder="Search by product name..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            style={{ width: '250px', padding: '0.5rem', margin: 0 }}
+                        />
+                        <button type="submit" className="admin-btn-primary" style={{ padding: '0.5rem 1rem' }}>Search</button>
+                        {searchQuery && (
+                            <button type="button" onClick={() => { setSearchQuery(''); fetchStock(''); }} className="admin-btn-primary" style={{ backgroundColor: '#e2e8f0', color: '#0f172a', padding: '0.5rem 1rem' }}>Clear</button>
+                        )}
+                    </form>
+                </div>
                 <div style={{overflowX: 'auto'}}>
                     <table className="admin-table">
                         <thead>
@@ -53,7 +73,7 @@ export default function ManageInventory() {
                             {products.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} style={{textAlign: 'center', color: '#94a3b8', padding: '3rem 1rem'}}>
-                                        Connecting stock arrays...
+                                        {searchQuery ? 'No results found.' : 'Connecting stock arrays...'}
                                     </td>
                                 </tr>
                             ) : products.map(p => {

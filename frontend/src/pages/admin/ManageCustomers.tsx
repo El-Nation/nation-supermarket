@@ -4,19 +4,20 @@ import api from '../../services/api';
 export default function ManageCustomers() {
     const [customers, setCustomers] = useState<any[]>([]);
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     useEffect(() => {
-        const fetchCustomers = async () => {
-            try {
-                // Since this route wasn't explicitly scaffolded in Stage 3, we mock it visually for now or bind it closely based on structural directives
-                // We'll implement a secure generalized payload loop
-                const res = await api.get('/admin/users'); // We will create this backend controller next!
+        fetchCustomers();
+    }, []);
+
+    const fetchCustomers = async (query: string = '') => {
+        try {
+            const res = await api.get(`/admin/users${query ? `?search=${encodeURIComponent(query)}` : ''}`);
                 setCustomers(res.data);
             } catch (e) {
                 console.error('Customer fetch failure');
             }
-        };
-        fetchCustomers();
-    }, []);
+    };
 
     return (
         <div>
@@ -26,6 +27,23 @@ export default function ManageCustomers() {
             </div>
             
             <div className="admin-table-panel">
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+                    <h3 style={{ margin: 0, color: '#1e293b' }}>Customer Base</h3>
+                    <form onSubmit={(e) => { e.preventDefault(); fetchCustomers(searchQuery); }} style={{ display: 'flex', gap: '0.5rem' }}>
+                        <input 
+                            type="text" 
+                            className="form-input" 
+                            placeholder="Search by name, email, phone..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            style={{ width: '250px', padding: '0.5rem', margin: 0 }}
+                        />
+                        <button type="submit" className="admin-btn-primary" style={{ padding: '0.5rem 1rem' }}>Search</button>
+                        {searchQuery && (
+                            <button type="button" onClick={() => { setSearchQuery(''); fetchCustomers(''); }} className="admin-btn-primary" style={{ backgroundColor: '#e2e8f0', color: '#0f172a', padding: '0.5rem 1rem' }}>Clear</button>
+                        )}
+                    </form>
+                </div>
                 <div style={{overflowX: 'auto'}}>
                     <table className="admin-table">
                         <thead>
@@ -41,7 +59,7 @@ export default function ManageCustomers() {
                             {customers.length === 0 ? (
                                 <tr>
                                     <td colSpan={5} style={{textAlign: 'center', color: '#94a3b8', padding: '3rem 1rem'}}>
-                                        Synchronizing user datastore...
+                                        {searchQuery ? 'No results found.' : 'Synchronizing user datastore...'}
                                     </td>
                                 </tr>
                             ) : customers.map(u => (

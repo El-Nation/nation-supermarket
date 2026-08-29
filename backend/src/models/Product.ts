@@ -15,13 +15,19 @@ export class Product {
         return result.rows[0];
     }
 
-    static async getAll() {
-        const result = await pool.query(`
+    static async getAll(search?: string) {
+        let query = `
             SELECT p.*, c.name as category_name 
             FROM products p 
             LEFT JOIN categories c ON p.category_id = c.id 
-            ORDER BY p.created_at DESC
-        `);
+        `;
+        const values: any[] = [];
+        if (search) {
+            query += ` WHERE p.name ILIKE $1 OR p.description ILIKE $1 OR p.slug ILIKE $1 OR c.name ILIKE $1 `;
+            values.push(`%${search}%`);
+        }
+        query += ` ORDER BY p.created_at DESC`;
+        const result = await pool.query(query, values);
         return result.rows;
     }
 

@@ -5,7 +5,15 @@ import { pool } from '../config/db';
 import { sendPasswordChange, sendEmailChangeWarning, sendEmailChangeConfirmation, sendPhoneChange, sendSystemEmail, generateEmailHTML } from '../utils/mailer';
 export const getAllUsers = async (req: Request, res: Response) => {
     try {
-        const users = await pool.query('SELECT id, name, email, phone, role, created_at, account_status FROM users ORDER BY created_at DESC');
+        const search = req.query.search as string;
+        let queryStr = 'SELECT id, name, email, phone, role, created_at, account_status FROM users';
+        const values: any[] = [];
+        if (search) {
+            queryStr += ` WHERE name ILIKE $1 OR email ILIKE $1 OR phone ILIKE $1`;
+            values.push(`%${search}%`);
+        }
+        queryStr += ` ORDER BY created_at DESC`;
+        const users = await pool.query(queryStr, values);
         res.json(users.rows);
     } catch(e) {
         res.status(500).json({message: 'Server error retrieving users.'});

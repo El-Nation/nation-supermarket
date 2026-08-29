@@ -9,8 +9,15 @@ export class Category {
         return result.rows[0];
     }
 
-    static async getAll() {
-        const result = await pool.query('SELECT * FROM categories ORDER BY created_at DESC');
+    static async getAll(search?: string) {
+        let query = `SELECT * FROM categories`;
+        const values: any[] = [];
+        if (search) {
+            query += ` WHERE name ILIKE $1 OR slug ILIKE $1`;
+            values.push(`%${search}%`);
+        }
+        query += ` ORDER BY created_at DESC`;
+        const result = await pool.query(query, values);
         return result.rows;
     }
 

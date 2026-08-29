@@ -5,13 +5,16 @@ import api from '../../services/api';
 export default function ManagePayments() {
     const [payments, setPayments] = useState<any[]>([]);
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     useEffect(() => {
-        const fetchPayments = async () => {
-             const res = await api.get('/admin/payments');
-             setPayments(res.data);
-        };
         fetchPayments();
     }, []);
+
+    const fetchPayments = async (query: string = '') => {
+        const res = await api.get(`/admin/payments${query ? `?search=${encodeURIComponent(query)}` : ''}`);
+             setPayments(res.data);
+    };
 
     return (
         <div style={{maxWidth: 1200, color: '#1e293b'}}>
@@ -23,9 +26,25 @@ export default function ManagePayments() {
             </div>
             
             <div className="admin-card" style={{padding: '0', overflow: 'hidden', border: '1px solid #e2e8f0', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.05)'}}>
-                <div style={{padding: '1.5rem 2rem', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', gap: '0.75rem'}}>
-                    <CreditCard color="#0f172a" size={24} />
-                    <h3 style={{margin: 0, color: '#0f172a', fontWeight: 600, fontSize: '1.1rem'}}>Cryptographic Settlement Vault</h3>
+                <div style={{padding: '1.5rem 2rem', backgroundColor: '#f8fafc', borderBottom: '1px solid #e2e8f0', display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '1rem'}}>
+                    <div style={{display: 'flex', alignItems: 'center', gap: '0.75rem'}}>
+                        <CreditCard color="#0f172a" size={24} />
+                        <h3 style={{margin: 0, color: '#0f172a', fontWeight: 600, fontSize: '1.1rem'}}>Cryptographic Settlement Vault</h3>
+                    </div>
+                    <form onSubmit={(e) => { e.preventDefault(); fetchPayments(searchQuery); }} style={{ display: 'flex', gap: '0.5rem' }}>
+                        <input 
+                            type="text" 
+                            className="form-input" 
+                            placeholder="Search payment reference..." 
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            style={{ width: '250px', padding: '0.5rem', margin: 0 }}
+                        />
+                        <button type="submit" className="admin-btn-primary" style={{ padding: '0.5rem 1rem' }}>Search</button>
+                        {searchQuery && (
+                            <button type="button" onClick={() => { setSearchQuery(''); fetchPayments(''); }} className="admin-btn-primary" style={{ backgroundColor: '#e2e8f0', color: '#0f172a', padding: '0.5rem 1rem' }}>Clear</button>
+                        )}
+                    </form>
                 </div>
                 
                 <div style={{overflowX: 'auto'}}>
@@ -44,7 +63,7 @@ export default function ManagePayments() {
                                 <tr>
                                     <td colSpan={5} style={{textAlign: 'center', color: '#94a3b8', padding: '5rem 2rem'}}>
                                         <Activity size={48} color="#cbd5e1" style={{margin: '0 auto 1rem', display: 'block'}} />
-                                        No active payments mapped recursively.
+                                        {searchQuery ? 'No results found.' : 'No active payments mapped recursively.'}
                                     </td>
                                 </tr>
                             ) : payments.map((p, i) => (

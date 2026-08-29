@@ -23,14 +23,17 @@ export default function ManageProducts() {
     const [editId, setEditId] = useState<number | null>(null);
     const [uploading, setUploading] = useState(false);
 
+    const [searchQuery, setSearchQuery] = useState('');
+    const [isSearching, setIsSearching] = useState(false);
+
     useEffect(() => {
         fetchData();
     }, []);
 
-    const fetchData = async () => {
+    const fetchData = async (query: string = '') => {
         try {
             const [pRes, cRes] = await Promise.all([
-                api.get('/admin/products'),
+                api.get(`/admin/products${query ? `?search=${encodeURIComponent(query)}` : ''}`),
                 api.get('/admin/categories')
             ]);
             setProducts(pRes.data);
@@ -157,6 +160,23 @@ export default function ManageProducts() {
                 </div>
 
                 <div className="admin-table-panel" style={{alignSelf: 'start'}}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+                        <h3 style={{ margin: 0, color: '#1e293b' }}>Product Directory</h3>
+                        <form onSubmit={(e) => { e.preventDefault(); fetchData(searchQuery); }} style={{ display: 'flex', gap: '0.5rem' }}>
+                            <input 
+                                type="text" 
+                                className="form-input" 
+                                placeholder="Search products, SKUs..." 
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                style={{ width: '250px', padding: '0.5rem' }}
+                            />
+                            <button type="submit" className="admin-btn-primary" style={{ padding: '0.5rem 1rem' }}>Search</button>
+                            {searchQuery && (
+                                <button type="button" onClick={() => { setSearchQuery(''); fetchData(''); }} className="admin-btn-primary" style={{ backgroundColor: '#e2e8f0', color: '#0f172a', padding: '0.5rem 1rem' }}>Clear</button>
+                            )}
+                        </form>
+                    </div>
                     <div style={{overflowX: 'auto'}}>
                         <table className="admin-table">
                             <thead>
@@ -173,7 +193,7 @@ export default function ManageProducts() {
                                 {products.length === 0 ? (
                                     <tr>
                                         <td colSpan={6} style={{textAlign: 'center', color: '#94a3b8', padding: '3rem 1rem'}}>
-                                            No products available in this namespace.
+                                            {searchQuery ? 'No results found.' : 'No products available in this namespace.'}
                                         </td>
                                     </tr>
                                 ) : products.map(p => {

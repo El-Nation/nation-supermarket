@@ -3,7 +3,8 @@ import { DeliveryZone } from '../models/DeliveryZone';
 
 export const getDeliveryZones = async (req: Request, res: Response) => {
     try {
-        const zones = await DeliveryZone.getAll();
+        const search = req.query.search as string;
+        const zones = await DeliveryZone.getAll(search);
         res.json(zones);
     } catch (e) {
         res.status(500).json({ message: 'Failed to retrieve delivery zones' });
